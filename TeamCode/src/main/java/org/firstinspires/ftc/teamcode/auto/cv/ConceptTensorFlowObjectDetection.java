@@ -35,7 +35,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
+import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
@@ -49,7 +51,6 @@ import java.util.List;
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list.
  */
 @TeleOp(name = "Concept: TensorFlow Object Detection", group = "Concept")
-@Disabled
 public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
@@ -58,6 +59,9 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
      * The variable to store our instance of the TensorFlow Object Detection processor.
      */
     private TfodProcessor tfod;
+
+//    private String TFOD_MODEL_ASSET = '';
+//    private String[] LABELS = {};
 
     /**
      * The variable to store our instance of the vision portal.
@@ -152,7 +156,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        //tfod.setMinResultConfidence(0.75f);
+        tfod.setMinResultConfidence(0.5f); //higher --> more strict on determining if the thing seen is the desired object. Lower --> less strict.
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
@@ -174,8 +178,14 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
 
             telemetry.addData(""," ");
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
-            telemetry.addData("- Position", "%.0f / %.0f", x, y);
+            telemetry.addData("- Position", "%.0f / %.0f", x, y); //units all in pixels.
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+            telemetry.addData("- Image Size", "%.0f x %.0f", recognition.getImageWidth(), recognition.getImageHeight());
+
+            telemetry.addData("- Angle", "%.0f", recognition.estimateAngleToObject(AngleUnit.DEGREES));
+            telemetry.addData("- Distance to Object", "%.0f", recognition.getWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+            telemetry.addData("- Distance to Object", "%.0f", recognition.getImageWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+
         }   // end for() loop
 
     }   // end method telemetryTfod()
