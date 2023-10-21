@@ -28,7 +28,7 @@ public class Constants {
     //Distance Between swerve module and Center
     public static float DISTANCE_BETWEEN_MODULE_AND_CENTER = 3.406f; //3.405512
 
-    public static double DEFAULT_SPEED = 0.75;
+    public static double DEFAULT_SPEED = 0.65;
 
     //Camera Constants
     public static float WIDTH = 1280.0f;

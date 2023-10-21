@@ -134,33 +134,6 @@ public class HardwareDrive
         lb.setDirection(DcMotorSimple.Direction.FORWARD);
         rf.setDirection(DcMotorSimple.Direction.REVERSE);
         rb.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        setMotorPower(0);
-        setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-    }
-
-    public void setMotorPower(double power){
-        if (power == 0.0){
-            lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-            rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-        } else {
-            lb.setPower(0);
-            lf.setPower(0);
-            rf.setPower(0);
-            rb.setPower(0);
-        }
-    }
-
-    public void setRunMode(DcMotor.RunMode runState){
-        lb.setMode(runState);
-        lf.setMode(runState);
-        rb.setMode(runState);
-        rf.setMode(runState);
     }
 }
 
