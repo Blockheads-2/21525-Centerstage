@@ -82,11 +82,11 @@ public class HardwareDrive
     HardwareMap hwMap =  null;
     private final ElapsedTime period  =  new ElapsedTime();
 
-    public HardwareDrive(Telemetry telemetry) {
-        this.telemetry = telemetry;
+    public HardwareDrive() {
+
     }
 
-    public void init(HardwareMap ahwMap) throws InterruptedException {
+    public void init(HardwareMap ahwMap) {
 
         hwMap = ahwMap;
         lf = hwMap.get(DcMotorEx.class, "left_front");
