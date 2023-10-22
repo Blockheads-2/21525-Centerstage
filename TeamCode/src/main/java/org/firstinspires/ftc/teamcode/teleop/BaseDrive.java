@@ -22,7 +22,10 @@ public class BaseDrive extends LinearOpMode {
         runtime = new ElapsedTime();
 
         robot.init(hardwareMap);
+//        robot.initCamera();
         runtime.reset();
+
+        waitForStart();
 
         while (opModeIsActive()) {
             Methods.teleOp.robotDrive(Constants.DEFAULT_SPEED, robot, gamepad1, telemetry);

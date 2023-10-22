@@ -29,6 +29,8 @@
 
 package org.firstinspires.ftc.teamcode.auto.cv;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -136,7 +138,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         }
 
         // Choose a camera resolution. Not all cameras support all resolutions.
-        //builder.setCameraResolution(new Size(640, 480));
+        builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
         //builder.enableCameraMonitoring(true);
@@ -156,7 +158,7 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
         visionPortal = builder.build();
 
         // Set confidence threshold for TFOD recognitions, at any time.
-        tfod.setMinResultConfidence(0.5f); //higher --> more strict on determining if the thing seen is the desired object. Lower --> less strict.
+        tfod.setMinResultConfidence(0.75f); //higher --> more strict on determining if the thing seen is the desired object. Lower --> less strict.
 
         // Disable or re-enable the TFOD processor at any time.
         //visionPortal.setProcessorEnabled(tfod, true);
@@ -180,11 +182,15 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
             telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
             telemetry.addData("- Position", "%.0f / %.0f", x, y); //units all in pixels.
             telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
-            telemetry.addData("- Image Size", "%.0f x %.0f", recognition.getImageWidth(), recognition.getImageHeight());
+            telemetry.addData("- Image Size", "%d x %d", recognition.getImageWidth(), recognition.getImageHeight());
+            telemetry.addData("Area", recognition.getHeight() * recognition.getWidth());
+            telemetry.addData("maybe distance", 1.0 / (recognition.getHeight() * recognition.getWidth()));
 
-            telemetry.addData("- Angle", "%.0f", recognition.estimateAngleToObject(AngleUnit.DEGREES));
-            telemetry.addData("- Distance to Object", "%.0f", recognition.getWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
-            telemetry.addData("- Distance to Object", "%.0f", recognition.getImageWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+            telemetry.addData("- Angle", recognition.estimateAngleToObject(AngleUnit.DEGREES));
+
+            telemetry.addData("- Distance to Object", recognition.getWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+            telemetry.addData("- Distance to Object", recognition.getImageWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+            telemetry.addData("Constant:", Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
 
         }   // end for() loop
 
