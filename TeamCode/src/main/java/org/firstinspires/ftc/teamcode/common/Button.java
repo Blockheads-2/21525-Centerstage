@@ -41,9 +41,8 @@ public class Button {
     public State update(boolean buttonPressed) {
         if (buttonPressed) {
             if (state == State.OFF || state == State.UP || state == State.NOT_INITIALIZED) {
-                if (System.currentTimeMillis() - lastTapped < doubleTapIntervalMs) {
-                    state = State.DOUBLE_TAP;
-                } else {
+                if (System.currentTimeMillis() - lastTapped < doubleTapIntervalMs) state = State.DOUBLE_TAP;
+                else {
                     lastTapped = System.currentTimeMillis();
                     state = State.TAP;
                 }

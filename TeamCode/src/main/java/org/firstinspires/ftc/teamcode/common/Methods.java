@@ -7,10 +7,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class Methods {
     public static class teleOp {
-        public static void robotDrive(double drivePower, HardwareDrive argRobot, Gamepad gamepad, Telemetry telemetry){
+        public static void robotBaseDriveLoop(double drivePower, HardwareDrive argRobot, Gamepad gamepad, Telemetry telemetry){
             double directionX = 0;
             double directionY = 0;
             double directionR = 0;
+            int i1 = 0;
 
             if (Math.abs(gamepad.left_stick_x) > 0.2) directionX = Math.pow(gamepad.left_stick_x, 1);
             if (Math.abs(gamepad.left_stick_y) > 0.2) directionY = -Math.pow(gamepad.left_stick_y, 1);
@@ -26,18 +27,14 @@ public class Methods {
             max = Math.max(max, Math.abs(lbPower));
             max = Math.max(max, Math.abs(rbPower));
 
-            if (max > 1.0) {
-                lfPower /= max;
-                lbPower /= max;
-                rfPower /= max;
-                rbPower /= max;
+            for (double power : args) {
+                if (max > 1.0) power /= max;
             }
 
-            int i = 0;
             for (DcMotorEx chain : List.of(argRobot.lf, argRobot.lb, argRobot.rf, argRobot.rb)) {
-                double arg = args.get(i);
+                double arg = args.get(i1);
                 chain.setPower(arg);
-                i++;
+                i1++;
             }
 
             telemetry.addData("lf power:", lfPower);
@@ -46,7 +43,5 @@ public class Methods {
             telemetry.addData("rb power:", rbPower);
             telemetry.update();
         }
-
-
     }
 }
