@@ -189,8 +189,13 @@ public class ConceptTensorFlowObjectDetection extends LinearOpMode {
             telemetry.addData("- Angle", recognition.estimateAngleToObject(AngleUnit.DEGREES));
 
             telemetry.addData("- Distance to Object", recognition.getWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
-            telemetry.addData("- Distance to Object", recognition.getImageWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+            telemetry.addData("- Distance to Object (MAYBE)", recognition.getWidth() * Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+
             telemetry.addData("Constant:", Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+
+            //todo:
+            // look into voltage spikes in intake motor (getCurrent()) to see if motor is intaking stuff
+
 
         }   // end for() loop
 
