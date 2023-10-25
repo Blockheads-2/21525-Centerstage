@@ -1,3 +1,4 @@
+/*
 package org.firstinspires.ftc.teamcode.auto.dispatch;
 
 import static android.os.SystemClock.sleep;
@@ -28,7 +29,6 @@ import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 
 import org.firstinspires.ftc.teamcode.common.pid.TurnPIDController;
-import org.firstinspires.ftc.teamcode.common.pid.VelocityPIDController;
 import org.firstinspires.ftc.teamcode.common.positioning.MathSpline;
 
 import java.util.List;
@@ -39,7 +39,8 @@ public class AutoHub {
     private final LinearOpMode linearOpMode;
 
 
-    /* Declare OpMode members. */
+ Declare OpMode members.
+
     HardwareDrive robot;   // Use a Pushbot's hardware
     HardwareMap hardwareMap;
     private ElapsedTime runtime = new ElapsedTime();
@@ -773,7 +774,6 @@ public class AutoHub {
 
     //Peripheral Movements
 
-    /*
     public void spinCarousel(double velocity){
         robot.duckWheel.setVelocity(velocity);
     }
@@ -786,7 +786,8 @@ public class AutoHub {
         sleep(spinTime);
         robot.duckWheel.setVelocity(0);
     }
-    */
+
+
 
     public void spinIntake(double power){
         robot.spin.setPower(power);
@@ -863,3 +864,4 @@ public class AutoHub {
         return checkOver || checkOver2;
     }
 }
+*/

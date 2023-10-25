@@ -107,7 +107,7 @@ public class HardwareDrive
         rb.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-    public void initCamera() throws InterruptedException{
+/*    public void initCamera() {
         if (hwMap != null && hwMap.get(WebcamName.class, "Webcam 1") != null){
             aprilTag = new AprilTagProcessor.Builder().build();
             visionPortal = new VisionPortal.Builder()
@@ -121,7 +121,7 @@ public class HardwareDrive
                 telemetry.addData("Camera", "Waiting");
                 telemetry.update();
                 while ((visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
-                    sleep(20);
+                    Methods.general.trySleep(20);
                 }
                 telemetry.addData("Camera", "Ready");
                 telemetry.update();
@@ -130,14 +130,16 @@ public class HardwareDrive
             ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
             if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
                 exposureControl.setMode(ExposureControl.Mode.Manual);
-                sleep(50);
+                Methods.general.trySleep(20);
+
             }
             exposureControl.setExposure((long) Constants.EXPOSURE_MS, TimeUnit.MILLISECONDS);
-            sleep(20);
+            Methods.general.trySleep(20);
+
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(Constants.CAMERA_GAIN);
-            sleep(20);
+            Methods.general.trySleep(20);
         }
-    }
+    }*/
 }
 
