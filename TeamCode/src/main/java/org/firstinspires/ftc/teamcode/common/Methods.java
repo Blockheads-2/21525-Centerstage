@@ -2,10 +2,14 @@ package org.firstinspires.ftc.teamcode.common;
 
 import static java.lang.Thread.sleep;
 
+import android.view.View;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
+import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.sun.tools.javac.util.List;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -21,7 +25,7 @@ public class Methods {
     }
 
     public abstract static class auto extends LinearOpMode {
-        public
+
     }
 
     public abstract static class teleOp extends OpMode {
