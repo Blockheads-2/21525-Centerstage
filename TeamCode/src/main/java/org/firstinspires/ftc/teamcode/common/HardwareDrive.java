@@ -107,7 +107,7 @@ public class HardwareDrive
         rb.setDirection(DcMotorSimple.Direction.REVERSE);
     }
 
-/*    public void initCamera() {
+    public void initCamera() {
         if (hwMap != null && hwMap.get(WebcamName.class, "Webcam 1") != null){
             aprilTag = new AprilTagProcessor.Builder().build();
             visionPortal = new VisionPortal.Builder()
@@ -140,6 +140,6 @@ public class HardwareDrive
             gainControl.setGain(Constants.CAMERA_GAIN);
             Methods.general.trySleep(20);
         }
-    }*/
+    }
 }
 

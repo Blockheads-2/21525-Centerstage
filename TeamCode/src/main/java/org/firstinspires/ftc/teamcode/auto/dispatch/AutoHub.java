@@ -1,4 +1,4 @@
-/*
+
 package org.firstinspires.ftc.teamcode.auto.dispatch;
 
 import static android.os.SystemClock.sleep;
@@ -39,7 +39,7 @@ public class AutoHub {
     private final LinearOpMode linearOpMode;
 
 
- Declare OpMode members.
+// Declare OpMode members.
 
     HardwareDrive robot;   // Use a Pushbot's hardware
     HardwareMap hardwareMap;
@@ -167,7 +167,7 @@ public class AutoHub {
             while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS) && robot.lf.isBusy() && robot.rf.isBusy()
                     && robot.lb.isBusy() && robot.rb.isBusy()) {
 
-                checkButton();
+//                checkButton();
                 robot.lf.setVelocity(speed * mathSpline.returnLPower());
                 robot.rf.setVelocity(speed * mathSpline.returnRPower());
                 robot.lb.setVelocity(speed * mathSpline.returnLPower());
@@ -253,8 +253,8 @@ public class AutoHub {
 
                 targetAngle = startingAngle + zeta * (runtime.milliseconds() + 1);
 
-                checkButton();
-                detectColor();
+//                checkButton();
+//                detectColor();
 
                 TurnPIDController pidTurn = new TurnPIDController(targetAngle, 0.01, 0, 0.003);
 
@@ -328,8 +328,8 @@ public class AutoHub {
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
-                checkButton();
-                detectColor();
+//                checkButton();
+//                detectColor();
 
                 robot.lf.setVelocity((speed * constants.MAX_VELOCITY_DT * ratioAddPose) - (speed * angleCorrection * constants.MAX_VELOCITY_DT));
                 robot.rf.setVelocity((speed * constants.MAX_VELOCITY_DT * ratioSubPose) + (speed * angleCorrection * constants.MAX_VELOCITY_DT));
@@ -410,8 +410,8 @@ public class AutoHub {
 
             while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS)) {
 
-                checkButton();
-                detectColor();
+//                checkButton();
+//                detectColor();
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
@@ -491,9 +491,9 @@ public class AutoHub {
 
             while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS) && !over) {
 
-                checkButton();
-                detectColor();
-                over = detectFloor();
+//                checkButton();
+//                detectColor();
+//                over = detectFloor();
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
@@ -567,8 +567,8 @@ public class AutoHub {
 
             while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS) && !over) {
 
-                checkButton();
-                detectColor();
+//                checkButton();
+//                detectColor();
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
@@ -619,7 +619,7 @@ public class AutoHub {
         double addPose = (ratioAddPose * COUNTS_PER_INCH * distance);
         double subtractPose = (ratioSubPose * COUNTS_PER_INCH * distance);
 
-        timeoutS = distance / (speed * constants.clicksPerInch);
+        timeoutS = distance / (speed * constants.CPI);
 
         // Ensure that the opmode is still active
         if (linearOpMode.opModeIsActive()) {
@@ -645,8 +645,8 @@ public class AutoHub {
 
             while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeOut)) {
 
-                checkButton();
-                detectColor();
+//                checkButton();
+//                detectColor();
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
@@ -680,12 +680,12 @@ public class AutoHub {
 
     //Turn
     public void resetAngle(){
-        lastAngles = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        lastAngles = robot.imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         currAngle = 0;
     }
     public double getAngle() {
         // Get current orientation
-        Orientation orientation = robot.imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation orientation = robot.imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
 
         // Change in angle = current angle - previous angle
         double deltaAngle = orientation.firstAngle - lastAngles.firstAngle;
@@ -716,8 +716,8 @@ public class AutoHub {
             robot.lb.setPower(-motorPower);
             robot.rb.setPower(motorPower);
 
-            detectColor();
-            checkButton();
+//            detectColor();
+//            checkButton();
 
             error = degrees - getAngle();
             linearOpMode.telemetry.addData("error", error);
@@ -731,7 +731,7 @@ public class AutoHub {
 
     }
     public double getAbsoluteAngle() {
-        return robot.imu.getAngularOrientation(
+        return robot.imu.getRobotOrientation(
                 AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
         ).firstAngle;
     }
@@ -753,9 +753,9 @@ public class AutoHub {
             robot.lb.setPower(-motorPower);
             robot.rb.setPower(motorPower);
 
-            detectColor();
+//            detectColor();
 
-            checkButton();
+//            checkButton();
 
             linearOpMode.telemetry.addData("Current Angle", getAbsoluteAngle());
             linearOpMode.telemetry.addData("Target Angle", targetAngle);
@@ -774,94 +774,94 @@ public class AutoHub {
 
     //Peripheral Movements
 
-    public void spinCarousel(double velocity){
-        robot.duckWheel.setVelocity(velocity);
-    }
-    public void spinCarousel(double velocity, long spinTime){
-        robot.duckWheel.setVelocity(velocity);
-        robot.lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        sleep(spinTime);
-        robot.duckWheel.setVelocity(0);
-    }
+//    public void spinCarousel(double velocity){
+//        robot.duckWheel.setVelocity(velocity);
+//    }
+//    public void spinCarousel(double velocity, long spinTime){
+//        robot.duckWheel.setVelocity(velocity);
+//        robot.lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        sleep(spinTime);
+//        robot.duckWheel.setVelocity(0);
+//    }
 
 
 
-    public void spinIntake(double power){
-        robot.spin.setPower(power);
-    }
-    public void spinIntake(double power, long spinTime){
-        robot.spin.setPower(power);
-
-        // Stop all motion;
-        robot.lf.setPower(0);
-        robot.rf.setPower(0);
-        robot.lb.setPower(0);
-        robot.rb.setPower(0);
-
-        sleep(spinTime);
-        robot.spin.setPower(0);
-    }
-    public void moveElevator(int elevatorPosition){
-        robot.lifter.setTargetPosition(elevatorPosition);
-        robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        robot.lifter.setPower(1);
-    }
+//    public void spinIntake(double power){
+//        robot.spin.setPower(power);
+//    }
+//    public void spinIntake(double power, long spinTime){
+//        robot.spin.setPower(power);
+//
+//        // Stop all motion;
+//        robot.lf.setPower(0);
+//        robot.rf.setPower(0);
+//        robot.lb.setPower(0);
+//        robot.rb.setPower(0);
+//
+//        sleep(spinTime);
+//        robot.spin.setPower(0);
+//    }
+//    public void moveElevator(int elevatorPosition){
+//        robot.lifter.setTargetPosition(elevatorPosition);
+//        robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//
+//        robot.lifter.setPower(1);
+//    }
     public void breakPoint(){
         while (!linearOpMode.gamepad1.a) {
             sleep(1);
         }
     }
 
-    public void checkButton(){
-        if (!robot.digitalTouch.getState()) {
-            //Stop
-            robot.lifter.setPower(0);
-
-            //Reset
-            robot.lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-            robot.lifter.setTargetPosition(20);
-            robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lifter.setPower(0.1);
-        }
-    }
-    public void detectColor() {
-        // Get the normalized colors from the sensor
-        NormalizedRGBA colors = robot.colorSensor.getNormalizedColors();
-
-        robot.colorSensor.setGain(3);
-
-        //In
-        if (finishedIntake && ((runtime.milliseconds() - startRunTime) > 500)){
-            spinIntake(0.05);
-        } else if ((((DistanceSensor) robot.colorSensor).getDistance(DistanceUnit.CM) <= 5.5)) {
-            spinIntake(0);
-        }
-        //Empty
-        if ((((DistanceSensor) robot.colorSensor).getDistance(DistanceUnit.CM) > 5.5)){
-            finishedIntake = false;
-        }
-
-    }
-
-
-    public boolean detectFloor() {
-        NormalizedRGBA floorColors = robot.colorFloorSensor.getNormalizedColors();
-        robot.colorFloorSensor.setGain(3);
-        robot.colorFloorSensor2.setGain(3);
-        checkOver = floorColors.alpha >= 0.25 && floorColors.red >= 0.0090 && floorColors.green >= 0.0090 && floorColors.blue >= 0.0090 ;
-
-        NormalizedRGBA floorColors2 = robot.colorFloorSensor2.getNormalizedColors();
-
-        checkOver2 = floorColors2.alpha >= 0.25 && floorColors2.red >= 0.0090 && floorColors2.green >= 0.0090 && floorColors2.blue >= 0.0090 ;
-
-
-        return checkOver || checkOver2;
-    }
+//    public void checkButton(){
+//        if (!robot.digitalTouch.getState()) {
+//            //Stop
+//            robot.lifter.setPower(0);
+//
+//            //Reset
+//            robot.lifter.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            robot.lifter.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//
+//            robot.lifter.setTargetPosition(20);
+//            robot.lifter.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.lifter.setPower(0.1);
+//        }
+//    }
+//    public void detectColor() {
+//        // Get the normalized colors from the sensor
+//        NormalizedRGBA colors = robot.colorSensor.getNormalizedColors();
+//
+//        robot.colorSensor.setGain(3);
+//
+//        //In
+//        if (finishedIntake && ((runtime.milliseconds() - startRunTime) > 500)){
+//            spinIntake(0.05);
+//        } else if ((((DistanceSensor) robot.colorSensor).getDistance(DistanceUnit.CM) <= 5.5)) {
+//            spinIntake(0);
+//        }
+//        //Empty
+//        if ((((DistanceSensor) robot.colorSensor).getDistance(DistanceUnit.CM) > 5.5)){
+//            finishedIntake = false;
+//        }
+//
+//    }
+//
+//
+//    public boolean detectFloor() {
+//        NormalizedRGBA floorColors = robot.colorFloorSensor.getNormalizedColors();
+//        robot.colorFloorSensor.setGain(3);
+//        robot.colorFloorSensor2.setGain(3);
+//        checkOver = floorColors.alpha >= 0.25 && floorColors.red >= 0.0090 && floorColors.green >= 0.0090 && floorColors.blue >= 0.0090 ;
+//
+//        NormalizedRGBA floorColors2 = robot.colorFloorSensor2.getNormalizedColors();
+//
+//        checkOver2 = floorColors2.alpha >= 0.25 && floorColors2.red >= 0.0090 && floorColors2.green >= 0.0090 && floorColors2.blue >= 0.0090 ;
+//
+//
+//        return checkOver || checkOver2;
+//    }
 }
-*/
+

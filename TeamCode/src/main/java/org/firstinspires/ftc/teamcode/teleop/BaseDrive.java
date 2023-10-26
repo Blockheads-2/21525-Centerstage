@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 import org.firstinspires.ftc.teamcode.common.Methods;
@@ -24,6 +25,8 @@ public class BaseDrive extends Methods.teleOp {
 
         runtime = new ElapsedTime();
         runtime.reset();
+
+        robot.imu.resetYaw();
 
         telemetry.addData("Say", "Hello Driver");
         runtime.reset();
@@ -47,6 +50,8 @@ public class BaseDrive extends Methods.teleOp {
         telemetry.addData("X", gamepad1.left_stick_x);
         telemetry.addData("Y", -gamepad1.left_stick_y);
         telemetry.addData("R", gamepad1.right_stick_x);
+
+        telemetry.addData("Yaw", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
         //  telemetry.addData("Touch Sensor", robot.digitalTouch.getState());
         telemetry.update();
