@@ -41,7 +41,7 @@ public class AutoHub {
 
 // Declare OpMode members.
 
-    HardwareDrive robot;   // Use a Pushbot's hardware
+    HardwareDrive robot = null;   // Use a Pushbot's hardware
     HardwareMap hardwareMap;
     private ElapsedTime runtime = new ElapsedTime();
     Constants constants = new Constants();
@@ -103,6 +103,10 @@ public class AutoHub {
         //if (robot.colorSensor instanceof SwitchableLight) {
           //  ((SwitchableLight)robot.colorSensor).enableLight(true);
         //}
+    }
+
+    public void initCamera(){
+        if (robot != null) robot.initCamera();
     }
 
     //====================================================================================
