@@ -15,10 +15,12 @@ public class A4Auto extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         dispatch = new AutoHub(this);
-        dispatch.initCamera();
 
-        while (!opModeIsActive());
         waitForStart();
+
+        telemetry.addLine("Loop started");
         telemetry.update();
+        dispatch.constantHeading(0.75, 0, 12, 0.1, 0, 0);
+
     }
 }
