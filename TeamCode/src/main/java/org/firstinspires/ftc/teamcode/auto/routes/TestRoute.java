@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.auto.dispatch;
+package org.firstinspires.ftc.teamcode.auto.routes;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 
 
@@ -15,11 +16,11 @@ public class TestRoute extends LinearOpMode {
    public void runOpMode() throws InterruptedException {
        robot = new HardwareDrive();
        dispatch = new AutoHub(this);
-       dispatch.initCamera();
+//       dispatch.initCamera();
 
        waitForStart();
 
-       dispatch.variableHeading(0.6,24,24,4);
+//       dispatch.variableHeading(0.6,24,24,4);
 
    }
 }
