@@ -51,7 +51,7 @@ public class AutoHub {
     private Orientation lastAngles = new Orientation();
     private double currAngle = 0.0;
 
-    static final double     COUNTS_PER_MOTOR_REV    = 537.7;    // eg: TETRIX Motor Encoder
+    static final double     COUNTS_PER_MOTOR_REV    = Constants.CPR;    // 537.7
     static final double     MAX_VELOCITY_DT         = 2700;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   =  (96.0/25.4);     // For figuring circumference

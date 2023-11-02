@@ -20,12 +20,12 @@ public class A2Auto extends LinearOpMode {
         while (!opModeIsActive());
         waitForStart();
 
-        dispatch.constantHeading(0.5, 0, 27, 7, 0.1, 0, 0);
+        dispatch.constantHeading(0.5, 0, 27,  0.03, 0, 0);
         dispatch.turn(90);
-        dispatch.constantHeading(0.5, 0, 108, 7, 0.1, 0, 0);
-        dispatch.constantHeading(0.5, 0, -108, 7, 0.1, 0, 0);
+        dispatch.constantHeading(0.5, 0, 108,  0.03, 0, 0);
+        dispatch.constantHeading(0.5, 0, -108, 0.03, 0, 0);
         dispatch.turn(90);
-        dispatch.constantHeading(0.5, 0, 27, 7, 0.1, 0, 0);
+        dispatch.constantHeading(0.5, 0, 27,  0.03, 0, 0);
 
         telemetry.update();
     }
