@@ -23,6 +23,10 @@ public class F4Auto extends LinearOpMode {
         dispatch.constantHeading(0.5, 0,24, 5,0.1,0,0);
         dispatch.turn(90);
         dispatch.constantHeading(0.5, 0,40, 5,0.1,0,0);
+        dispatch.turn(180);
+        dispatch.constantHeading(0.5, 0,112, 5,0.1,0,0);
+        dispatch.turn(180);
+        dispatch.constantHeading(0.5, 0,112, 5,0.1,0,0);
         telemetry.update();
     }
 }
