@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import static org.firstinspires.ftc.teamcode.common.Constants.CPI;
 import static java.lang.Thread.sleep;
 
 import android.view.View;
@@ -12,6 +13,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.sun.tools.javac.util.List;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.auto.math.MathConstHead;
 
 public class Methods {
     public static class general {
@@ -25,6 +27,40 @@ public class Methods {
     }
 
     public abstract static class auto extends LinearOpMode {
+        /**
+         * Drive to a position with a specified speed.
+         * @param drivePower value between 0 and 1. Default it to 0.5.
+         * @param finalX final x position of the robot relative to where it was before the method (inches)
+         * @param finalY final y position of the robot relative to where it was before the method (inches)
+         */
+        public void robotAutoStraightDrivePosition(
+                double drivePower,
+                double finalX,
+                double finalY,
+                HardwareDrive robot
+        ) {
+            MathConstHead heading = new MathConstHead();
+            heading.setFinalPose(finalX, finalY);
+
+            double distanceToTarget = heading.returnDistance();
+            double angleToTarget = heading.returnDistance();
+
+            double
+
+            robot.lf.setTargetPosition((int)(robot.lf.getCurrentPosition() + (CPI * heading.returnDistance())));
+            robot.lb.setTargetPosition((int)(robot.lf.getCurrentPosition() + (CPI * heading.returnDistance())));
+            robot.lf.setTargetPosition((int)(robot.lf.getCurrentPosition() + (CPI * heading.returnDistance())));
+            robot.lf.setTargetPosition((int)(robot.lf.getCurrentPosition() + (CPI * heading.returnDistance())));
+        }
+
+        public void robotAutoDriveIncrementalPosition(
+                double drivePower,
+                double finalX,
+                double finalY,
+                HardwareDrive robot
+        ) {
+
+        }
 
     }
 

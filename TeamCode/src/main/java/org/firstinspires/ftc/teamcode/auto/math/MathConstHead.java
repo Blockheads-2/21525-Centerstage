@@ -5,10 +5,8 @@ import org.firstinspires.ftc.teamcode.auto.math.AbsPose;
 import org.firstinspires.ftc.teamcode.common.Constants;
 
 public class MathConstHead {
-    double psi = 0; //final x
-    double omega = 0; //final y
-    double distance = 0;
-    double angle = 0;
+    private double finalXPositionInput = 0; // final x
+    private double finalYPositionInput = 0; // final y
 
     double psiSquared = 0;
     double omegaSquared = 0;
@@ -30,22 +28,18 @@ public class MathConstHead {
      */
 
     public void setFinalPose(double xPose, double yPose){
-        psi = xPose;
-        omega = yPose;
+        finalXPositionInput = xPose;
+        finalYPositionInput = yPose;
     }
 
     public double returnDistance(){
-        double addPoses = Math.pow(psi,2) + Math.pow(omega,2);
-
-        distance = Math.sqrt(addPoses);
-
-        return distance;
+        // using pythagorean theorem to calculate the distance between the robot and the point
+        return Math.sqrt(Math.pow(finalXPositionInput, 2) + Math.pow(finalYPositionInput, 2));
     }
 
     public double returnAngle(){
-
-        angle = Math.atan2(psi,omega);
-
-        return angle;
+        // atan2 returns mPRX in radians where P equals the target point, R equals the robot's
+        // position (0, 0) and X equals any applicable point on the x-axis
+        return Math.atan2(finalYPositionInput, finalXPositionInput);
     }
 }

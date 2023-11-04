@@ -5,22 +5,23 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
+import org.firstinspires.ftc.teamcode.common.Constants;
+import org.firstinspires.ftc.teamcode.common.HardwareDrive;
+import org.firstinspires.ftc.teamcode.common.Methods;
 
 @Autonomous(name="A4 Blue Autonomous", group="Autonomous")
-public class A4Auto extends LinearOpMode {
-    AutoHub dispatch;
+public class A4Auto extends Methods.auto {
     Button updateValueDecrease = new Button();
     Button updateValueIncrease = new Button();
+    HardwareDrive robot;
 
     @Override
     public void runOpMode() throws InterruptedException {
-        dispatch = new AutoHub(this);
-
+        robot = new HardwareDrive();
         waitForStart();
 
         telemetry.addLine("Loop started");
         telemetry.update();
-        dispatch.constantHeading(0.75, 0, 12, 0.1, 0, 0);
-
+        robotAutoStraightDriveToPosition(Constants.DEFAULT_SPEED, 12, 12, robot);
     }
 }
