@@ -22,6 +22,5 @@ public class A4Auto extends Methods.auto {
 
         telemetry.addLine("Loop started");
         telemetry.update();
-        robotAutoStraightDriveToPosition(Constants.DEFAULT_SPEED, 12, 12, robot);
     }
 }

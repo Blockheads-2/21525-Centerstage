@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -39,18 +40,36 @@ public class Methods {
                 double finalY,
                 HardwareDrive robot
         ) {
+
             MathConstHead heading = new MathConstHead();
             heading.setFinalPose(finalX, finalY);
 
             double distanceToTarget = heading.returnDistance();
             double angleToTarget = heading.returnDistance();
 
-            double
+            double positiveAngularChangePosition = Math.cos(angleToTarget) + Math.sin(angleToTarget);
+            double negativeAngularChangePosition = Math.cos(angleToTarget) - Math.sin(angleToTarget);
 
-            robot.lf.setTargetPosition((int)(robot.lf.getCurrentPosition() + (CPI * heading.returnDistance())));
-            robot.lb.setTargetPosition((int)(robot.lf.getCurrentPosition() + (CPI * heading.returnDistance())));
-            robot.lf.setTargetPosition((int)(robot.lf.getCurrentPosition() + (CPI * heading.returnDistance())));
-            robot.lf.setTargetPosition((int)(robot.lf.getCurrentPosition() + (CPI * heading.returnDistance())));
+            robot.lf.setTargetPosition((int)(robot.lf.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
+            robot.lb.setTargetPosition((int)(robot.lb.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
+            robot.rf.setTargetPosition((int)(robot.rf.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
+            robot.rb.setTargetPosition((int)(robot.rb.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
+
+            for (DcMotorEx motor : List.of(robot.lf, robot.lb, robot.rf, robot.rb)) {
+                motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+            }
+
+            while (opModeIsActive()) {
+                robot.lf.setVelocity((drivePower * 2700 * positiveAngularChangePosition));
+                robot.lb.setVelocity((drivePower * 2700 * negativeAngularChangePosition));
+                robot.rf.setVelocity((drivePower * 2700 * negativeAngularChangePosition));
+                robot.rb.setVelocity((drivePower * 2700 * positiveAngularChangePosition));
+
+                telemetry.addData("left front velocity", (drivePower * 2700 * positiveAngularChangePosition));
+                telemetry.addData("left back velocity", (drivePower * 2700 * negativeAngularChangePosition));
+                telemetry.addData("right front velocity", (drivePower * 2700 * negativeAngularChangePosition));
+                telemetry.addData("right back velocity", (drivePower * 2700 * positiveAngularChangePosition));
+            }
         }
 
         public void robotAutoDriveIncrementalPosition(

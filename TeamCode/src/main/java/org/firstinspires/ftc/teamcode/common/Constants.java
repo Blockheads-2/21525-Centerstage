@@ -50,4 +50,19 @@ public class Constants {
     public static final double MAX_AUTO_TURN  = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
     public static final double EXPOSURE_MS = 6;
     public static final int CAMERA_GAIN = 250;
+
+    public class Double {
+        protected double v;
+        public Double(double inputValue) {
+            this.v = inputValue;
+        }
+
+        protected double sin() {
+            return Math.sin(v);
+        }
+
+        protected double cos() {
+            return Math.cos(v);
+        }
+    }
 }
