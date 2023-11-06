@@ -72,6 +72,7 @@ public class HardwareDrive
     public DcMotorEx  rf;
     public DcMotorEx  rb;
     public DcMotorEx  lb;
+    public DcMotorEx intake;
     public IMU imu;
 
     private VisionPortal visionPortal;               // Used to manage the video source.
@@ -93,6 +94,7 @@ public class HardwareDrive
         lb = hwMap.get(DcMotorEx.class, "left_back");
         rf = hwMap.get(DcMotorEx.class, "right_front");
         rb = hwMap.get(DcMotorEx.class, "right_back");
+        intake = hwMap.get(DcMotorEx.class, "intake");
         imu = hwMap.get(IMU.class, "imu");
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
@@ -105,6 +107,7 @@ public class HardwareDrive
         lb.setDirection(DcMotorSimple.Direction.FORWARD);
         rf.setDirection(DcMotorSimple.Direction.REVERSE);
         rb.setDirection(DcMotorSimple.Direction.REVERSE);
+        intake.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void initCamera() {

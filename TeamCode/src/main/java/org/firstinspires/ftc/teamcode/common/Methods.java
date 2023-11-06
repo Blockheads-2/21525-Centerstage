@@ -127,5 +127,12 @@ public class Methods {
 
             return drivePower;
         }
+        public void robotBaseIntakeLoop(HardwareDrive robot) {
+            double intakeVroom;
+
+            if (gamepad1.left_bumper) {
+                robot.intake.setPower(0.25);
+            }
+        }
     }
 }
