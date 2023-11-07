@@ -30,10 +30,9 @@ public class Methods {
     public abstract static class auto extends LinearOpMode {
         /**
          * Drive to a position with a specified speed.
-         *
          * @param drivePower value between 0 and 1. Default it to 0.5.
-         * @param finalX     final x position of the robot relative to where it was before the method (inches)
-         * @param finalY     final y position of the robot relative to where it was before the method (inches)
+         * @param finalX final x position of the robot relative to where it was before the method (inches)
+         * @param finalY final y position of the robot relative to where it was before the method (inches)
          */
         public void robotAutoStraightDrivePosition(
                 double drivePower,
@@ -51,10 +50,10 @@ public class Methods {
             double positiveAngularChangePosition = Math.cos(angleToTarget) + Math.sin(angleToTarget);
             double negativeAngularChangePosition = Math.cos(angleToTarget) - Math.sin(angleToTarget);
 
-            robot.lf.setTargetPosition((int) (robot.lf.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
-            robot.lb.setTargetPosition((int) (robot.lb.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
-            robot.rf.setTargetPosition((int) (robot.rf.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
-            robot.rb.setTargetPosition((int) (robot.rb.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
+            robot.lf.setTargetPosition((int)(robot.lf.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
+            robot.lb.setTargetPosition((int)(robot.lb.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
+            robot.rf.setTargetPosition((int)(robot.rf.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
+            robot.rb.setTargetPosition((int)(robot.rb.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
 
             for (DcMotorEx motor : List.of(robot.lf, robot.lb, robot.rf, robot.rb)) {
                 motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
@@ -85,18 +84,15 @@ public class Methods {
     }
 
     public abstract static class teleOp extends OpMode {
-        public void robotBaseDriveLoop(double drivePower, HardwareDrive robot) {
+        public void robotBaseDriveLoop(double drivePower, HardwareDrive robot){
             double directionX = 0;
             double directionY = 0;
             double directionR = 0;
             int i1 = 0;
 
-            if (Math.abs(gamepad1.left_stick_x) > 0.2)
-                directionX = Math.pow(gamepad1.left_stick_x, 1);
-            if (Math.abs(gamepad1.left_stick_y) > 0.2)
-                directionY = -Math.pow(gamepad1.left_stick_y, 1);
-            if (Math.abs(gamepad1.right_stick_x) > 0.2)
-                directionR = -Math.pow(gamepad1.right_stick_x, 1);
+            if (Math.abs(gamepad1.left_stick_x) > 0.2) directionX = Math.pow(gamepad1.left_stick_x, 1);
+            if (Math.abs(gamepad1.left_stick_y) > 0.2) directionY = -Math.pow(gamepad1.left_stick_y, 1);
+            if (Math.abs(gamepad1.right_stick_x) > 0.2) directionR = -Math.pow(gamepad1.right_stick_x, 1);
 
             double lfPower = (directionX + directionY + directionR) * drivePower;
             double lbPower = (-directionX + directionY + directionR) * drivePower;
@@ -122,23 +118,21 @@ public class Methods {
             telemetry.addData("lb power:", lbPower);
             telemetry.addData("rf power:", rfPower);
             telemetry.addData("rb power:", rbPower);
-            telemetry.addData("right bumper pressed: ", gamepad1.right_bumper);
-            telemetry.addData("right trigger pressed:", gamepad1.right_trigger);
+            telemetry.update();
         }
-
-        public double driveTrainSpeed() {
+        public double driveTrainSpeed(){
             double drivePower = Constants.DEFAULT_SPEED; //0.75
             if (gamepad1.right_bumper) drivePower = 1;
-            else if (gamepad1.right_trigger >= 0.2) drivePower = 0.25;
+            else if (gamepad1.left_bumper) drivePower = 0.25;
 
             return drivePower;
         }
-
         public void robotBaseIntakeLoop(HardwareDrive robot) {
-            if (gamepad1.left_bumper) robot.intake.setPower(1);
-            else robot.intake.setPower(0);
+            double intakeVroom;
 
-            telemetry.addData("left bumper pressed:", gamepad1.left_bumper);
+            if (gamepad1.left_bumper) {
+                robot.intake.setPower(0.25);
+            }
         }
     }
 }

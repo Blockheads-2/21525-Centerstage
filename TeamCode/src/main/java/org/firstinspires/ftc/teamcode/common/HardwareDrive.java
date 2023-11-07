@@ -103,11 +103,10 @@ public class HardwareDrive
 
         imu.initialize(new IMU.Parameters(orientationOnRobot));
 
-        lf.setDirection(DcMotorSimple.Direction.FORWARD);
-        lb.setDirection(DcMotorSimple.Direction.FORWARD);
-        rf.setDirection(DcMotorSimple.Direction.REVERSE);
-        rb.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setDirection(DcMotorSimple.Direction.FORWARD);
+        lf.setDirection(DcMotorSimple.Direction.REVERSE);
+        lb.setDirection(DcMotorSimple.Direction.REVERSE);
+        rf.setDirection(DcMotorSimple.Direction.FORWARD);
+        rb.setDirection(DcMotorSimple.Direction.FORWARD);
     }
 
     public void initCamera() {
