@@ -22,7 +22,7 @@ public class F4Auto extends Methods.auto {
         robot.init(hwMap);
 
         while (!opModeIsActive());
-            waitForStart();
+        waitForStart();
             robotAutoStraightDrivePosition(0.5, 0, 29, robot);
             //The only turn we need goes here. It is 270 degrees clockwise.
             robotAutoStraightDrivePosition(0.5, 0, 32, robot);
