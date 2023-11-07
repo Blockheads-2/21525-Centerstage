@@ -65,6 +65,12 @@ public class BaseDrive extends Methods.teleOp {
         telemetry.addData("Y", -gamepad1.left_stick_y);
         telemetry.addData("R", gamepad1.right_stick_x);
 
+        telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
+        telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
+        telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
+        telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+
+
         telemetry.addData("Yaw", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
 //        packet.put("X", gamepad1.left_stick_x);

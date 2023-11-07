@@ -24,11 +24,8 @@ public class A4Auto extends Methods.auto {
     public void runOpMode() throws InterruptedException {
         robot = new HardwareDrive();
 
-        initRobot(robot);
-        initTelemetry(dashboard, packet);
-
         while (!opModeIsActive()){
-            updateTelemetry();
+            updateTelemetry(robot, packet, dashboard);
         }
 
         waitForStart();
@@ -36,7 +33,7 @@ public class A4Auto extends Methods.auto {
         telemetry.addLine("Loop started");
         telemetry.update();
 
-        robotAutoStraightDrivePosition(0.25, 12, 12);
+        robotAutoStraightDrivePosition(0.25, 12, 12, robot);
     }
 
 }
