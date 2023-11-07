@@ -5,6 +5,8 @@ import static java.lang.Thread.sleep;
 
 import android.view.View;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -34,11 +36,37 @@ public class Methods {
          * @param finalX final x position of the robot relative to where it was before the method (inches)
          * @param finalY final y position of the robot relative to where it was before the method (inches)
          */
+        FtcDashboard dashboard;
+        TelemetryPacket packet;
+        HardwareDrive robot;
+
+        public void initRobot(HardwareDrive robot){
+            this.robot = robot;
+        }
+
+        public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet){
+            this.dashboard = dashboard;
+            this.packet = packet;
+        }
+
+        public void updateTelemetry(){
+            packet.put("Top Left Power", robot.lf.getPower());
+            packet.put("Top Right Power", robot.rf.getPower());
+            packet.put("Bottom Left Power", robot.lb.getPower());
+            packet.put("Bottom Right Power", robot.rb.getPower());
+
+            packet.put("Top Left Velocity", robot.lf.getVelocity());
+            packet.put("Top Right Velocity", robot.rf.getVelocity());
+            packet.put("Bottom Left Velocity", robot.lb.getVelocity());
+            packet.put("Bottom Right Velocity", robot.rb.getVelocity());
+
+            dashboard.sendTelemetryPacket(packet);
+        }
+
         public void robotAutoStraightDrivePosition(
                 double drivePower,
                 double finalX,
-                double finalY,
-                HardwareDrive robot
+                double finalY
         ) {
 
             MathConstHead heading = new MathConstHead();
@@ -65,10 +93,13 @@ public class Methods {
                 robot.rf.setVelocity((drivePower * 2700 * negativeAngularChangePosition));
                 robot.rb.setVelocity((drivePower * 2700 * positiveAngularChangePosition));
 
+                updateTelemetry();
+
                 telemetry.addData("left front velocity", (drivePower * 2700 * positiveAngularChangePosition));
                 telemetry.addData("left back velocity", (drivePower * 2700 * negativeAngularChangePosition));
                 telemetry.addData("right front velocity", (drivePower * 2700 * negativeAngularChangePosition));
                 telemetry.addData("right back velocity", (drivePower * 2700 * positiveAngularChangePosition));
+                telemetry.update();
             }
         }
 
@@ -113,12 +144,6 @@ public class Methods {
                 chain.setPower(arg);
                 i1++;
             }
-
-            telemetry.addData("lf power:", lfPower);
-            telemetry.addData("lb power:", lbPower);
-            telemetry.addData("rf power:", rfPower);
-            telemetry.addData("rb power:", rbPower);
-            telemetry.update();
         }
         public double driveTrainSpeed(){
             double drivePower = Constants.DEFAULT_SPEED; //0.75
