@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 import org.firstinspires.ftc.teamcode.common.Methods;
@@ -45,6 +46,7 @@ public class BaseDrive extends Methods.teleOp {
     public void loop() {
         robotBaseDriveLoop(driveTrainSpeed(), robot);
         robotBaseIntakeLoop(robot);
+        telemetry.update();
     }
 
     void UpdateTelemetry(){
