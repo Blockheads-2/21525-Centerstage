@@ -17,29 +17,12 @@ import org.firstinspires.ftc.teamcode.common.Methods;
 
 @TeleOp(name="Base Drive", group="Beta")
 public class BaseDrive extends Methods.teleOp {
-    HardwareDrive robot = new HardwareDrive();
-    ElapsedTime runtime;
-    FtcDashboard dashboard;
-    TelemetryPacket packet;
+
 
     View relativeLayout;
     @Override
     public void init() {
-        robot.init(hardwareMap);
-        /*robot.initCamera();*/
-
-        runtime = new ElapsedTime();
-        runtime.reset();
-
-        robot.imu.resetYaw();
-
-        telemetry.addData("Say", "Hello Driver");
-        runtime.reset();
-
-        dashboard = FtcDashboard.getInstance();
-        packet = new TelemetryPacket();
-        dashboard.setTelemetryTransmissionInterval(25);
-
+        init_robot();
     }
 
     @Override
@@ -54,10 +37,10 @@ public class BaseDrive extends Methods.teleOp {
 
     @Override
     public void loop() {
-        robotBaseDriveLoop(driveTrainSpeed(), robot);
+        robotBaseDriveLoop(driveTrainSpeed());
+        robotBaseIntakeLoop();
+
         UpdateTelemetry();
-        robotBaseIntakeLoop(robot);
-        telemetry.update();
     }
 
     void UpdateTelemetry(){

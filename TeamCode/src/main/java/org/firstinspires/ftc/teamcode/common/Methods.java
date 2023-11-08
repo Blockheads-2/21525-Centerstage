@@ -99,7 +99,29 @@ public class Methods {
     }
 
     public abstract static class teleOp extends OpMode {
-        public void robotBaseDriveLoop(double drivePower, HardwareDrive robot){
+        protected HardwareDrive robot = new HardwareDrive();
+        ElapsedTime runtime;
+        protected FtcDashboard dashboard;
+        protected TelemetryPacket packet;
+
+        public void init_robot(){
+            robot.init(hardwareMap);
+            /*robot.initCamera();*/
+
+            runtime = new ElapsedTime();
+            runtime.reset();
+
+            robot.imu.resetYaw();
+
+            telemetry.addData("Say", "Hello Driver");
+            runtime.reset();
+
+            dashboard = FtcDashboard.getInstance();
+            packet = new TelemetryPacket();
+            dashboard.setTelemetryTransmissionInterval(25);
+
+        }
+        public void robotBaseDriveLoop(double drivePower){
             double directionX = 0;
             double directionY = 0;
             double directionR = 0;
@@ -142,12 +164,16 @@ public class Methods {
 
             return drivePower;
         }
-        public void robotBaseIntakeLoop(HardwareDrive robot) {
+        public void robotBaseIntakeLoop() {
             double intakeVroom;
-
-            if (gamepad1.left_bumper) {
-                robot.intake.setPower(0.25);
-            }
+//
+//            if (gamepad1.left_bumper) {
+//                robot.intake.setPower(0.25);
+//            }
+            robot.intake.setPower(gamepad1.left_trigger);
         }
+
+        public void dpad(){}
+
     }
 }
