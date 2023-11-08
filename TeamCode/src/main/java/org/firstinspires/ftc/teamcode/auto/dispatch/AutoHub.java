@@ -57,8 +57,7 @@ public class AutoHub {
     static final double     MAX_VELOCITY_DT         = 2700;
     static final double     DRIVE_GEAR_REDUCTION    = 1.0 ;     // This is < 1.0 if geared UP
     static final double     WHEEL_DIAMETER_INCHES   =  (96.0/25.4);     // For figuring circumference
-    static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
-            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double     COUNTS_PER_INCH         = Constants.CPI;
     public static boolean over = false;
     public static boolean finishedIntake = false;
     public static boolean checkOver = false;
@@ -402,6 +401,98 @@ public class AutoHub {
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
+
+    public void constantHeadingV2(double movePower, double x, double y, double kp, double ki, double kd){
+        mathConstHead.setFinalPose(x,y);
+
+        updateTelemetry();
+
+        double targetAngle = getAbsoluteAngle();
+
+        TurnPIDController pidTurn = new TurnPIDController(targetAngle, kp, ki, kd);
+
+        double distance = mathConstHead.returnDistance();
+
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftBackTarget;
+        int newRightBackTarget;
+        double timeoutS;
+
+        timeoutS = distance / (movePower * constants.CPI);
+
+        double rightDiagonalRatio = -mathConstHead.getRatios()[0];
+        double leftDiagonalRatio = mathConstHead.getRatios()[1];
+
+        double rightDiagonalPos = rightDiagonalRatio * Constants.CPI * distance;
+        double leftDiagonalPos = leftDiagonalRatio * Constants.CPI  * distance;
+
+        // Ensure that the opmode is still active
+        if (linearOpMode.opModeIsActive()) {
+            // Determine new target position, and pass to motor controller
+            newLeftFrontTarget = (int) (robot.lf.getCurrentPosition() + leftDiagonalPos);
+            newRightFrontTarget = (int) (robot.rf.getCurrentPosition() + rightDiagonalPos);
+            newLeftBackTarget = (int) (robot.lb.getCurrentPosition() + rightDiagonalPos);
+            newRightBackTarget = (int) (robot.rb.getCurrentPosition() + leftDiagonalPos);
+
+            robot.lf.setTargetPosition(newLeftFrontTarget);
+            robot.rf.setTargetPosition(newRightFrontTarget);
+            robot.lb.setTargetPosition(newLeftBackTarget);
+            robot.rb.setTargetPosition(newRightBackTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+
+            while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS)) {
+
+//                checkButton();
+//                detectColor();
+
+                double angleCorrection = pidTurn.update(getAbsoluteAngle());
+
+                robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+
+                // Display it for the driver.
+                linearOpMode.telemetry.addData("Time: ", timeoutS);
+                linearOpMode.telemetry.addData("lf Target Position:", robot.lf.getTargetPosition());
+                linearOpMode.telemetry.addData("rf Target Position:", robot.rf.getTargetPosition());
+                linearOpMode.telemetry.addData("lb Target Position:", robot.lb.getTargetPosition());
+                linearOpMode.telemetry.addData("rb Target Position:", robot.rb.getTargetPosition());
+                linearOpMode.telemetry.addData("Target X", mathConstHead.getFinalXPositionInput());
+                linearOpMode.telemetry.addData("Target Y", mathConstHead.getFinalYPositionInput());
+                linearOpMode.telemetry.addData("Theta", mathConstHead.returnAngle());
+                linearOpMode.telemetry.addData("Theta (toDegrees())", Math.toDegrees(mathConstHead.returnAngle()));
+                linearOpMode.telemetry.addData("Theta (toRadians())", Math.toRadians(mathConstHead.returnAngle()));
+
+//                linearOpMode.telemetry.update();
+
+                updateTelemetry();
+            }
+
+            // Stop all motion;
+            robot.lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            // Turn off RUN_TO_POSITION
+            robot.lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            updateTelemetry();
+
+        }
+    }
     public void constantHeading(double speed, double xPose, double yPose, double kP, double kI, double kD) {
         mathConstHead.setFinalPose(xPose,yPose);
 
@@ -463,6 +554,10 @@ public class AutoHub {
 
                 // Display it for the driver.
                 linearOpMode.telemetry.addData("Time: ", timeoutS);
+                linearOpMode.telemetry.addData("lf Target Position:", robot.lf.getTargetPosition());
+                linearOpMode.telemetry.addData("rf Target Position:", robot.rf.getTargetPosition());
+                linearOpMode.telemetry.addData("lb Target Position:", robot.lb.getTargetPosition());
+                linearOpMode.telemetry.addData("rb Target Position:", robot.rb.getTargetPosition());
 //                linearOpMode.telemetry.update();
 
                 updateTelemetry();

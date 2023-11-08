@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto.routes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -12,14 +15,37 @@ public class F2Auto extends LinearOpMode {
     AutoHub dispatch;
     Button updateValueDecrease = new Button();
     Button updateValueIncrease = new Button();
+    TelemetryPacket packet;
+    FtcDashboard dashboard;
+
+    @Config
+    public static class RobotConstants {
+        public static int x=0;
+        public static int y =27;
+        public static double movePower = 0.1;
+    }
 
     @Override
     public void runOpMode() throws InterruptedException {
         dispatch = new AutoHub(this);
-        dispatch.initCamera();
+//        dispatch.initCamera();
 
-        while (!opModeIsActive());
+        dashboard = FtcDashboard.getInstance();
+        packet = new TelemetryPacket();
+
+        dispatch.initTelemetry(dashboard, packet);
+        dispatch.updateTelemetry();
+
+        while (!opModeIsActive()){
+            dispatch.updateTelemetry();
+        }
         waitForStart();
-        telemetry.update();
+
+        dispatch.constantHeadingV2(RobotConstants.movePower, RobotConstants.x, RobotConstants.y,  0.03, 0, 0);
+//        dispatch.turn(90);
+//        dispatch.constantHeading(0.5, 0, 108,  0.03, 0, 0);
+//        dispatch.constantHeading(0.5, 0, -108, 0.03, 0, 0);
+//        dispatch.turn(90);
+//        dispatch.constantHeading(0.5, 0, 27,  0.03, 0, 0);
     }
 }
