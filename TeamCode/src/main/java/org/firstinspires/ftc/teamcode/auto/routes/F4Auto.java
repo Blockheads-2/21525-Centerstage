@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.common.Methods;
 public class F4Auto extends Methods.auto {
     HardwareDrive robot = new HardwareDrive();
     HardwareMap hwMap;
-    AutoHub dispatch;
     Button updateValueDecrease = new Button();
     Button updateValueIncrease = new Button();
 
