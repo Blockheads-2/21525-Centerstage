@@ -5,6 +5,8 @@ import static java.lang.Thread.sleep;
 
 import android.view.View;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -34,6 +36,19 @@ public class Methods {
          * @param finalX final x position of the robot relative to where it was before the method (inches)
          * @param finalY final y position of the robot relative to where it was before the method (inches)
          */
+        public void updateTelemetry(HardwareDrive robot, TelemetryPacket packet, FtcDashboard dashboard){
+            packet.put("Top Left Power", robot.lf.getPower());
+            packet.put("Top Right Power", robot.rf.getPower());
+            packet.put("Bottom Left Power", robot.lb.getPower());
+            packet.put("Bottom Right Power", robot.rb.getPower());
+
+            packet.put("Top Left Velocity", robot.lf.getVelocity());
+            packet.put("Top Right Velocity", robot.rf.getVelocity());
+            packet.put("Bottom Left Velocity", robot.lb.getVelocity());
+            packet.put("Bottom Right Velocity", robot.rb.getVelocity());
+
+            dashboard.sendTelemetryPacket(packet);
+        }
         public void robotAutoStraightDrivePosition(
                 double drivePower,
                 double finalX,

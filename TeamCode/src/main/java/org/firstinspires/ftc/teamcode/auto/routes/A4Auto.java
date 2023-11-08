@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto.routes;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -15,9 +17,17 @@ public class A4Auto extends Methods.auto {
     Button updateValueIncrease = new Button();
     HardwareDrive robot;
 
+    FtcDashboard dashboard = FtcDashboard.getInstance();
+    TelemetryPacket packet = new TelemetryPacket();
+
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new HardwareDrive();
+
+        while (!opModeIsActive()){
+            updateTelemetry(robot, packet, dashboard);
+        }
+
         waitForStart();
 
         telemetry.addLine("Loop started");
@@ -25,4 +35,5 @@ public class A4Auto extends Methods.auto {
 
         robotAutoStraightDrivePosition(0.25, 12, 12, robot);
     }
+
 }

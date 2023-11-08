@@ -7,6 +7,8 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -64,6 +66,9 @@ public class AutoHub {
 
     double startRunTime = 0;
 
+    TelemetryPacket packet;
+    FtcDashboard dashboard;
+
     View relativeLayout;
 
     public AutoHub(LinearOpMode plinear){
@@ -107,6 +112,36 @@ public class AutoHub {
 
     public void initCamera(){
         if (robot != null) robot.initCamera();
+    }
+
+    public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet){
+        this.dashboard = dashboard;
+        this.packet = packet;
+    }
+
+    public void updateTelemetry(){
+        packet.put("Top Left Power", robot.lf.getPower());
+        packet.put("Top Right Power", robot.rf.getPower());
+        packet.put("Bottom Left Power", robot.lb.getPower());
+        packet.put("Bottom Right Power", robot.rb.getPower());
+
+        packet.put("Top Left Velocity", robot.lf.getVelocity());
+        packet.put("Top Right Velocity", robot.rf.getVelocity());
+        packet.put("Bottom Left Velocity", robot.lb.getVelocity());
+        packet.put("Bottom Right Velocity", robot.rb.getVelocity());
+
+        packet.put("Top Left Encoder Position", robot.lf.getCurrentPosition());
+        packet.put("Top Right Encoder Position", robot.rf.getCurrentPosition());
+        packet.put("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
+        packet.put("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+
+        linearOpMode.telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
+        linearOpMode.telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
+        linearOpMode.telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
+        linearOpMode.telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+
+        linearOpMode.telemetry.update();
+        dashboard.sendTelemetryPacket(packet);
     }
 
     //====================================================================================
@@ -370,6 +405,8 @@ public class AutoHub {
     public void constantHeading(double speed, double xPose, double yPose, double kP, double kI, double kD) {
         mathConstHead.setFinalPose(xPose,yPose);
 
+        updateTelemetry();
+
         double targetAngle = getAbsoluteAngle();
         TurnPIDController pidTurn = new TurnPIDController(targetAngle, kP, kI, kD);
 
@@ -426,10 +463,10 @@ public class AutoHub {
 
                 // Display it for the driver.
                 linearOpMode.telemetry.addData("Time: ", timeoutS);
-                linearOpMode.telemetry.update();
+//                linearOpMode.telemetry.update();
+
+                updateTelemetry();
             }
-
-
 
             // Stop all motion;
             robot.lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -442,6 +479,8 @@ public class AutoHub {
             robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            updateTelemetry();
+
         }
     }
     public void constantHeading(double speed, double xPose, double yPose, boolean check, double kP, double kI, double kD) {
