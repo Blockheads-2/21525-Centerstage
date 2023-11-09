@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.robot.Robot;
 
 import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
@@ -23,6 +24,9 @@ public class F2Auto extends LinearOpMode {
         public static int x=0;
         public static int y =27;
         public static double movePower = 0.1;
+        public static double kp=0.03;
+        public static double ki=0;
+        public static double kd=1;
     }
 
     @Override
@@ -41,7 +45,7 @@ public class F2Auto extends LinearOpMode {
         }
         waitForStart();
 
-        dispatch.constantHeadingV2(RobotConstants.movePower, RobotConstants.x, RobotConstants.y,  0.03, 0, 0);
+        dispatch.constantHeadingV2(RobotConstants.movePower, RobotConstants.x, RobotConstants.y, RobotConstants.kp, RobotConstants.ki, RobotConstants.kd);
 //        dispatch.turn(90);
 //        dispatch.constantHeading(0.5, 0, 108,  0.03, 0, 0);
 //        dispatch.constantHeading(0.5, 0, -108, 0.03, 0, 0);

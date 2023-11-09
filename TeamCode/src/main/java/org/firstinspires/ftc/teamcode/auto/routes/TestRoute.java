@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.auto.routes;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -12,6 +13,12 @@ import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 public class TestRoute extends LinearOpMode {
    AutoHub dispatch;
    HardwareDrive robot;
+
+    @Config
+    public static class RobotConstants {
+        public static double theta = 90;
+    }
+
    @Override
    public void runOpMode() throws InterruptedException {
        robot = new HardwareDrive();
@@ -19,6 +26,8 @@ public class TestRoute extends LinearOpMode {
 //       dispatch.initCamera();
 
        waitForStart();
+
+       dispatch.turn(RobotConstants.theta);
 
 //       dispatch.variableHeading(0.6,24,24,4);
 

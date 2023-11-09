@@ -54,6 +54,7 @@ public class MathConstHead {
     }
 
     public double[] getRatios(){ //right diagonal ratio, left diagonal ratio
+        theta = returnAngle();
         double rightDiagonal = Math.sin(theta-(Math.PI/4));
         double leftDiagonal =  Math.cos(theta-(Math.PI/4));
 

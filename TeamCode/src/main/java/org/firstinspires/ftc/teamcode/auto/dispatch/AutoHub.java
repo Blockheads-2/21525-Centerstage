@@ -402,32 +402,6 @@ public class AutoHub {
         }
     }
 
-    public void constantHeading(double x, double y, double yaw){
-        yaw=0;
-
-        double leftFrontPower    =  x -y -yaw;
-        double rightFrontPower   =  x +y +yaw;
-        double leftBackPower     =  x +y -yaw;
-        double rightBackPower    =  x -y +yaw;
-
-        // Normalize wheel powers to be less than 1.0
-        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
-        max = Math.max(max, Math.abs(leftBackPower));
-        max = Math.max(max, Math.abs(rightBackPower));
-
-        if (max > 1.0) {
-            leftFrontPower /= max;
-            rightFrontPower /= max;
-            leftBackPower /= max;
-            rightBackPower /= max;
-        }
-
-        // Send powers to the wheels.
-        robot.lf.setPower(leftFrontPower);
-        robot.rf.setPower(rightFrontPower);
-        robot.lb.setPower(leftBackPower);
-        robot.rb.setPower(rightBackPower);
-    }
     public void constantHeadingV2(double movePower, double x, double y, double kp, double ki, double kd){
         mathConstHead.setFinalPose(x,y);
 
@@ -447,7 +421,7 @@ public class AutoHub {
 
         timeoutS = distance / (movePower * constants.CPI);
 
-        double rightDiagonalRatio = -mathConstHead.getRatios()[0];
+        double rightDiagonalRatio = mathConstHead.getRatios()[0];
         double leftDiagonalRatio = mathConstHead.getRatios()[1];
 
         double rightDiagonalPos = rightDiagonalRatio * Constants.CPI * distance;
@@ -460,6 +434,11 @@ public class AutoHub {
             newRightFrontTarget = (int) (robot.rf.getCurrentPosition() + rightDiagonalPos);
             newLeftBackTarget = (int) (robot.lb.getCurrentPosition() + rightDiagonalPos);
             newRightBackTarget = (int) (robot.rb.getCurrentPosition() + leftDiagonalPos);
+
+            packet.put("Top Left Encoder Target", newLeftFrontTarget);
+            packet.put("Top Right Encoder Target", newRightFrontTarget);
+            packet.put("Bottom Left Encoder Target", newLeftBackTarget);
+            packet.put("Bottom Right Encoder Target", newRightBackTarget);
 
             robot.lf.setTargetPosition(newLeftFrontTarget);
             robot.rf.setTargetPosition(newRightFrontTarget);
