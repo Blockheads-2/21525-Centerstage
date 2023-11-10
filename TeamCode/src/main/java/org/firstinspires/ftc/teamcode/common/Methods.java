@@ -120,8 +120,8 @@ public class Methods {
             dashboard = FtcDashboard.getInstance();
             packet = new TelemetryPacket();
             dashboard.setTelemetryTransmissionInterval(25);
-
         }
+        
         public void robotBaseDriveLoop(double drivePower){
             double directionX = 0;
             double directionY = 0;

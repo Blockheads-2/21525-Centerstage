@@ -4,7 +4,9 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
@@ -23,17 +25,14 @@ public class A4Auto extends Methods.auto {
     @Override
     public void runOpMode() throws InterruptedException {
         robot = new HardwareDrive();
-
-        while (!opModeIsActive()){
-            updateTelemetry(robot, packet, dashboard);
-        }
+        robot.init(hardwareMap);
 
         waitForStart();
+        robotAutoStraightDrivePosition(0.25, 12, 12, robot);
 
         telemetry.addLine("Loop started");
         telemetry.update();
 
-        robotAutoStraightDrivePosition(0.25, 12, 12, robot);
     }
 
 }
