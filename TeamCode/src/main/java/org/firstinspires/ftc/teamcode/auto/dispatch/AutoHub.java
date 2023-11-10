@@ -114,7 +114,7 @@ public class AutoHub {
         //}
     }
 
-    public void initCamera(){
+    public void  initCamera(){
         if (robot != null) robot.initCamera();
     }
 
@@ -412,7 +412,7 @@ public class AutoHub {
 
         updateTelemetry();
 
-        double targetAngle = getAbsoluteAngle();
+        double targetAngle = getAbsoluteAngle(); //want to keep heading constant (current angle)
 
         TurnPIDController pidTurn = new TurnPIDController(targetAngle, kp, ki, kd);
 
