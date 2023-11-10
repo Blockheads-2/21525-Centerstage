@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 import org.firstinspires.ftc.teamcode.common.Methods;
 
-@TeleOp(name="Base Drive", group="Beta")
+@TeleOp(name="Base Drive FTCLib", group="Beta")
 public class BaseDriveFTCLib extends Methods.teleOp {
 
 
