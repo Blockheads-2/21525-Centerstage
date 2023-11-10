@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.auto.routes;
 
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveKinematics;
+import com.arcrobotics.ftclib.kinematics.wpilibkinematics.MecanumDriveOdometry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -52,7 +55,6 @@ public class ExampleAuto extends LinearOpMode{
         while (!opModeIsActive()) { //checks if play hasn't been pressed (in init stage)
 
         }
-
         waitForStart();
 
         //all movement goes here

@@ -33,6 +33,9 @@ import static java.lang.Thread.sleep;
 
 import android.util.Size;
 
+import com.arcrobotics.ftclib.drivebase.DifferentialDrive;
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
@@ -72,6 +75,13 @@ public class HardwareDrive
     public DcMotorEx  rf;
     public DcMotorEx  rb;
     public DcMotorEx  lb;
+
+
+    public Motor lf_motor;
+    public Motor rf_motor;
+    public Motor rb_motor;
+    public Motor lb_motor;
+
     public DcMotorEx intake;
     public IMU imu;
 
@@ -79,6 +89,8 @@ public class HardwareDrive
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     private Telemetry telemetry = null;
+
+    public MecanumDrive m_drive;
 
     HardwareMap hwMap =  null;
     private final ElapsedTime period  =  new ElapsedTime();
@@ -96,6 +108,12 @@ public class HardwareDrive
         rb = hwMap.get(DcMotorEx.class, "right_back");
         intake = hwMap.get(DcMotorEx.class, "intake");
         imu = hwMap.get(IMU.class, "imu");
+
+        lf_motor = new Motor(ahwMap, "left_front", Constants.CPR, Constants.RPM); //playing around with ftclib
+        lb_motor = new Motor(ahwMap, "left_back", Constants.CPR, Constants.RPM); //playing around with ftclib
+        rf_motor = new Motor(ahwMap, "right_front", Constants.CPR, Constants.RPM);
+        rb_motor = new Motor(ahwMap, "right_back", Constants.CPR, Constants.RPM);
+        m_drive = new MecanumDrive(lf_motor, rf_motor, lb_motor, rb_motor);
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
         RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;

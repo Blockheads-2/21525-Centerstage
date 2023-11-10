@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 import org.firstinspires.ftc.teamcode.common.Methods;
 
 @TeleOp(name="Base Drive", group="Beta")
-public class BaseDrive extends Methods.teleOp {
+public class BaseDriveFTCLib extends Methods.teleOp {
 
 
     View relativeLayout;
@@ -37,8 +37,12 @@ public class BaseDrive extends Methods.teleOp {
 
     @Override
     public void loop() {
-        robotBaseDriveLoop(driveTrainSpeed());
-        robotBaseIntakeLoop();
+        double strafe = gamepad1.left_stick_x;
+        double forward = -gamepad1.left_stick_y;
+        double turn = gamepad1.right_stick_x;
+        double heading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+
+        robot.m_drive.driveFieldCentric(strafe, forward, turn, heading);
 
         UpdateTelemetry();
     }
@@ -52,9 +56,6 @@ public class BaseDrive extends Methods.teleOp {
         telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
         telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
         telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
-
-        telemetry.addData("Top Left Velocity", robot.lf.getVelocity());
-        telemetry.addData("Top Left Acceleration", robot.lf.getVelocity() / runtime.seconds()); //only works if holding down max power at the beginning of the opmode.
 
 
         telemetry.addData("Yaw", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
