@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.sun.tools.javac.util.List;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.auto.math.MathConstHead;
 
 public class Methods {
@@ -100,7 +101,7 @@ public class Methods {
 
     public abstract static class teleOp extends OpMode {
         protected HardwareDrive robot = new HardwareDrive();
-        ElapsedTime runtime;
+        public ElapsedTime runtime;
         protected FtcDashboard dashboard;
         protected TelemetryPacket packet;
 

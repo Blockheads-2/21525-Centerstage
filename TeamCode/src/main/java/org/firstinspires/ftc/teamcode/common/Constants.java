@@ -24,6 +24,7 @@ public class Constants {
     public static double CPI = CPR / WHEEL_C; //... clicks per inch.
 
     public static float MAX_VELOCITY_DT = 2700f; // unit is clicks/sec; not sure if this is accurate...
+    public static double MAX_VELOCITY_DT_MS = (MAX_VELOCITY_DT / CPI) * 0.0254; // unit is meters/sec
     public static float HORIZONTAL_DISTANCE_BETWEEN_WHEEL_AND_CENTER;
 
     //Distance Between swerve module and Center

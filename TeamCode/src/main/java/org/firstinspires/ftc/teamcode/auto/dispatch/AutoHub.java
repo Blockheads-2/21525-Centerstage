@@ -43,9 +43,9 @@ public class AutoHub {
 
 // Declare OpMode members.
 
-    HardwareDrive robot = null;   // Use a Pushbot's hardware
+    public HardwareDrive robot = null;   // Use a Pushbot's hardware
     HardwareMap hardwareMap;
-    private ElapsedTime runtime = new ElapsedTime();
+    public ElapsedTime runtime = new ElapsedTime();
     Constants constants = new Constants();
     MathSpline mathSpline = new MathSpline();
     MathConstHead mathConstHead = new MathConstHead();
@@ -70,6 +70,8 @@ public class AutoHub {
 
     View relativeLayout;
 
+    GPS gps;
+
     public AutoHub(LinearOpMode plinear){
 
         linearOpMode = plinear;
@@ -78,6 +80,9 @@ public class AutoHub {
         robot = new HardwareDrive();
 
         robot.init(hardwareMap);
+
+        gps = new GPS(robot);
+        runtime.reset();
 
         // Send telemetry message to signify robot waiting;
         linearOpMode.telemetry.addData("Status", "Resetting Encoders and Camera");
@@ -458,6 +463,7 @@ public class AutoHub {
 
 //                checkButton();
 //                detectColor();
+                gps.periodic(runtime.seconds());
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
@@ -468,15 +474,10 @@ public class AutoHub {
 
                 // Display it for the driver.
                 linearOpMode.telemetry.addData("Time: ", timeoutS);
-                linearOpMode.telemetry.addData("lf Target Position:", robot.lf.getTargetPosition());
-                linearOpMode.telemetry.addData("rf Target Position:", robot.rf.getTargetPosition());
-                linearOpMode.telemetry.addData("lb Target Position:", robot.lb.getTargetPosition());
-                linearOpMode.telemetry.addData("rb Target Position:", robot.rb.getTargetPosition());
-                linearOpMode.telemetry.addData("Target X", mathConstHead.getFinalXPositionInput());
-                linearOpMode.telemetry.addData("Target Y", mathConstHead.getFinalYPositionInput());
-                linearOpMode.telemetry.addData("Theta", mathConstHead.returnAngle());
-                linearOpMode.telemetry.addData("Theta (toDegrees())", Math.toDegrees(mathConstHead.returnAngle()));
-                linearOpMode.telemetry.addData("Theta (toRadians())", Math.toRadians(mathConstHead.returnAngle()));
+                linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
+                linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
+                linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
+                linearOpMode.telemetry.addData("R (IMU)", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
 //                linearOpMode.telemetry.update();
 
