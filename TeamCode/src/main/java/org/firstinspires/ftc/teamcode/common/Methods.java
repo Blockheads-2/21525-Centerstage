@@ -32,13 +32,6 @@ public class Methods {
     }
 
     public abstract static class auto extends LinearOpMode {
-        /**
-         * Drive to a position with a specified speed.
-         *
-         * @param drivePower value between 0 and 1. Default it to 0.5.
-         * @param finalX     final x position of the robot relative to where it was before the method (inches)
-         * @param finalY     final y position of the robot relative to where it was before the method (inches)
-         */
         public void updateTelemetry(HardwareDrive robot, TelemetryPacket packet, FtcDashboard dashboard) {
             packet.put("Top Left Power", robot.lf.getPower());
             packet.put("Top Right Power", robot.rf.getPower());
@@ -52,7 +45,13 @@ public class Methods {
 
             dashboard.sendTelemetryPacket(packet);
         }
-
+        /**
+         * Drive to a position with a specified speed.
+         *
+         * @param drivePower value between 0 and 1. Default it to 0.5.
+         * @param finalX     final x position of the robot relative to where it was before the method (inches)
+         * @param finalY     final y position of the robot relative to where it was before the method (inches)
+         */
         public void robotAutoStraightDrivePosition(
                 double drivePower,
                 double finalX,
@@ -90,16 +89,6 @@ public class Methods {
                 telemetry.addData("right back velocity", (drivePower * 2700 * positiveAngularChangePosition));
             }
         }
-
-        public void robotAutoDriveIncrementalPosition(
-                double drivePower,
-                double finalX,
-                double finalY,
-                HardwareDrive robot
-        ) {
-
-        }
-
     }
 
     public abstract static class teleOp extends OpMode {
@@ -179,25 +168,25 @@ public class Methods {
 
         public void robotBaseMicroAdjustLoop(double drivePower) {
             if (gamepad1.dpad_up) {
-                robot.lf.setPower(-0.4);
-                robot.lb.setPower(-0.4);
-                robot.rf.setPower(+0.4);
-                robot.rb.setPower(+0.4);
+                robot.lf.setPower(-drivePower / 2);
+                robot.lb.setPower(-drivePower / 2);
+                robot.rf.setPower(+drivePower / 2);
+                robot.rb.setPower(+drivePower / 2);
             } else if (gamepad1.dpad_down) {
-                robot.lf.setPower(+0.4);
-                robot.lb.setPower(+0.4);
-                robot.rf.setPower(-0.4);
-                robot.rb.setPower(-0.4);
+                robot.lf.setPower(+drivePower / 2);
+                robot.lb.setPower(+drivePower / 2);
+                robot.rf.setPower(-drivePower / 2);
+                robot.rb.setPower(-drivePower / 2);
             } else if (gamepad1.dpad_right) {
-                robot.lf.setPower(0.4);
-                robot.lb.setPower(0.4);
-                robot.rf.setPower(0.4);
-                robot.rb.setPower(0.4);
+                robot.lf.setPower(drivePower / 2);
+                robot.lb.setPower(drivePower / 2);
+                robot.rf.setPower(drivePower / 2);
+                robot.rb.setPower(drivePower / 2);
             } else if (gamepad1.dpad_left) {
-                robot.lf.setPower(-0.4);
-                robot.lb.setPower(-0.4);
-                robot.rf.setPower(-0.4);
-                robot.rb.setPower(-0.4);
+                robot.lf.setPower(-drivePower / 2);
+                robot.lb.setPower(-drivePower / 2);
+                robot.rf.setPower(-drivePower / 2);
+                robot.rb.setPower(-drivePower / 2);
             }
 
         }
