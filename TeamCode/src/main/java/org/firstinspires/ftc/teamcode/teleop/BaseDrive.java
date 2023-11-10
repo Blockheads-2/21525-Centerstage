@@ -38,6 +38,7 @@ public class BaseDrive extends Methods.teleOp {
     @Override
     public void loop() {
         robotBaseDriveLoop(driveTrainSpeed());
+        robotBaseMicroAdjustLoop(driveTrainSpeed());
         robotBaseIntakeLoop();
 
         UpdateTelemetry();
