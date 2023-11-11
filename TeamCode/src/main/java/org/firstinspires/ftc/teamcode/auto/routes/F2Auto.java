@@ -26,7 +26,7 @@ public class F2Auto extends LinearOpMode {
         public static double movePower = 0.1;
         public static double kp=0.03;
         public static double ki=0;
-        public static double kd=1;
+        public static double kd=0.01;
     }
 
     @Override

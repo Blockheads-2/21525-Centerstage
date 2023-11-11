@@ -477,7 +477,7 @@ public class AutoHub {
                 linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
                 linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
                 linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
-                linearOpMode.telemetry.addData("R (IMU)", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
 //                linearOpMode.telemetry.update();
 

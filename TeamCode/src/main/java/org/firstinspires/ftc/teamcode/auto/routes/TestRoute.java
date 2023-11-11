@@ -14,11 +14,6 @@ public class TestRoute extends LinearOpMode {
    AutoHub dispatch;
    HardwareDrive robot;
 
-    @Config
-    public static class RobotConstants {
-        public static double theta = 90;
-    }
-
    @Override
    public void runOpMode() throws InterruptedException {
        robot = new HardwareDrive();
@@ -27,7 +22,7 @@ public class TestRoute extends LinearOpMode {
 
        waitForStart();
 
-       dispatch.turn(RobotConstants.theta);
+//       dispatch.turn(RobotConstants.theta);
 
 //       dispatch.variableHeading(0.6,24,24,4);
 
