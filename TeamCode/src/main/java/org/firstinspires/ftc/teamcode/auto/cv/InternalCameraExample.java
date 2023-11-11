@@ -27,6 +27,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -40,7 +41,6 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * original Android camera API
  */
 
-@Disabled
 @TeleOp (name = "Internal Camera Example", group = "CV")
 public class InternalCameraExample extends LinearOpMode
 {
@@ -182,6 +182,18 @@ public class InternalCameraExample extends LinearOpMode
      * if you're doing something weird where you do need it synchronized with your OpMode thread,
      * then you will need to account for that accordingly.
      */
+
+
+    static final Rect MID_ROI = new Rect(
+            new Point(700, 300),
+            new Point(1000, 500));
+    static final Rect LEFT_ROI = new Rect(
+            new Point(140,400),
+            new Point(420,600));
+//    static final Rect RIGHT_ROI = new Rect(
+//            new Point(1200,400),
+//            new Point(1500,600));
+
     class SamplePipeline extends OpenCvPipeline
     {
         boolean viewportPaused = false;
@@ -219,6 +231,10 @@ public class InternalCameraExample extends LinearOpMode
                             input.rows()*(3f/4f)),
                     new Scalar(0, 255, 0), 4);
 
+
+            Imgproc.rectangle(input, MID_ROI, new Scalar(255,0,0), 4);
+            Imgproc.rectangle(input, LEFT_ROI, new Scalar(255,0,0), 4);
+//            Imgproc.rectangle(input, RIGHT_ROI, new Scalar(255,0,0));
             /**
              * NOTE: to see how to get data from your pipeline to your OpMode as well as how
              * to change which stage of the pipeline is rendered to the viewport when it is

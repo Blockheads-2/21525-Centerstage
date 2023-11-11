@@ -32,7 +32,9 @@ public class A4Auto extends Methods.auto {
 
         telemetry.addLine("Loop started");
         telemetry.update();
-
     }
 
 }
+
+
+
