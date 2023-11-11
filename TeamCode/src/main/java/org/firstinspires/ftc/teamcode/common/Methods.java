@@ -204,7 +204,7 @@ public class Methods {
             telemetry.addData("Top Left Acceleration", robot.lf.getVelocity() / runtime.seconds()); //only works if holding down max power at the beginning of the opmode.
 
 
-            telemetry.addData("Yaw", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.addData("Yaw", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
 //        packet.put("X", gamepad1.left_stick_x);
 //        packet.put("Y",  -gamepad1.left_stick_y);
