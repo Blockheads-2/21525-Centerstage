@@ -152,22 +152,10 @@ public class HardwareDrive
                     .setAutoStopLiveView(true) // Automatically stop LiveView (RC preview) when all vision processors are disabled.
                     .build(); // Create a VisionPortal by calling build().  The camera starts streaming.
 
-
-            if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-                telemetry.addData("Camera", "Waiting");
-                telemetry.update();
-                while ((visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
-                    Methods.general.trySleep(20);
-                }
-                telemetry.addData("Camera", "Ready");
-                telemetry.update();
-            }
-
             ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
             if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
                 exposureControl.setMode(ExposureControl.Mode.Manual);
                 Methods.general.trySleep(20);
-
             }
             exposureControl.setExposure((long) Constants.EXPOSURE_MS, TimeUnit.MILLISECONDS);
             Methods.general.trySleep(20);
@@ -175,7 +163,14 @@ public class HardwareDrive
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(Constants.CAMERA_GAIN);
             Methods.general.trySleep(20);
+
+            telemetry.addLine("VisionPortal Initiated");
+            telemetry.update();
         }
+    }
+
+    public void getTelemetry(Telemetry t){
+        telemetry=t;
     }
 
     public VisionPortal getVisionPortal(){

@@ -51,7 +51,15 @@ public class TestMotors extends OpMode {
 
     @Override
     public void loop() {
+        lf.setPower(-gamepad1.left_stick_y);
+        rf.setPower(-gamepad1.left_stick_y);
+        lb.setPower(-gamepad1.left_stick_y);
+        rb.setPower(-gamepad1.left_stick_y);
 
+        telemetry.addData("Top Left Encoder Position", lf.getCurrentPosition());
+        telemetry.addData("Top Right Encoder Position", rf.getCurrentPosition());
+        telemetry.addData("Bottom Left Encoder Position", lb.getCurrentPosition());
+        telemetry.addData("Bottom Right Encoder Position", rb.getCurrentPosition());
     }
 
     @Override

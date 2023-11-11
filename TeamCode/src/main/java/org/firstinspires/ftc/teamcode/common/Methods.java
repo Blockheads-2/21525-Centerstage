@@ -74,7 +74,7 @@ public class Methods {
                 @Override
                 public void onOpened()
                 {
-                    phoneCam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+                    phoneCam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_LEFT);
                 }
 
                 @Override
@@ -186,6 +186,21 @@ public class Methods {
          */
         public void robotAutoStraightDrivePosition(double movePower, double x, double y, double kp, double ki, double kd) {
             dispatch.constantHeadingV2(movePower, x, y, kp, ki, kd);
+        }
+
+        /**
+         * Drive to a position with a specified speed.
+         *
+         * @param movePower value between 0 and 1. Default it to 0.5.
+         * @param x     final x position of the robot relative to where it was before the method (inches)
+         * @param y     final y position of the robot relative to where it was before the method (inches)
+         * @param theta final theta position of the robot.
+         * @param kp    proportional constant for the PID loop
+         * @param ki    integral constant for the PID loop
+         * @param kd    derivative constant for the PID loop
+         */
+        public void robotAutoStraightDrivePosition(double movePower, double x, double y, double theta, double kp, double ki, double kd){
+            dispatch.constantHeadingV2(movePower, x, y, theta, kp, ki, kd);
         }
     }
 

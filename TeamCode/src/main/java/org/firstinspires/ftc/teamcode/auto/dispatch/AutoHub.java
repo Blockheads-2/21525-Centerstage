@@ -447,14 +447,16 @@ public class AutoHub {
 
             robot.lf.setTargetPosition(newLeftFrontTarget);
             robot.rf.setTargetPosition(newRightFrontTarget);
-            robot.lb.setTargetPosition(newLeftBackTarget);
-            robot.rb.setTargetPosition(newRightBackTarget);
+//            robot.lb.setTargetPosition(newLeftBackTarget);
+//            robot.rb.setTargetPosition(newRightBackTarget);
 
             // Turn On RUN_TO_POSITION
             robot.lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             // reset the timeout time and start motion.
             runtime.reset();
@@ -469,8 +471,8 @@ public class AutoHub {
 
                 robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
                 robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+//                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+//                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
 
                 // Display it for the driver.
                 linearOpMode.telemetry.addData("Time: ", timeoutS);
@@ -538,14 +540,16 @@ public class AutoHub {
 
             robot.lf.setTargetPosition(newLeftFrontTarget);
             robot.rf.setTargetPosition(newRightFrontTarget);
-            robot.lb.setTargetPosition(newLeftBackTarget);
-            robot.rb.setTargetPosition(newRightBackTarget);
+//            robot.lb.setTargetPosition(newLeftBackTarget);
+//            robot.rb.setTargetPosition(newRightBackTarget);
 
             // Turn On RUN_TO_POSITION
             robot.lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
             // reset the timeout time and start motion.
             runtime.reset();
@@ -560,8 +564,8 @@ public class AutoHub {
 
                 robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
                 robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+//                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+//                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
 
                 // Display it for the driver.
                 linearOpMode.telemetry.addData("Time: ", timeoutS);
@@ -969,6 +973,7 @@ public class AutoHub {
         return robot.imu.getRobotOrientation(
                 AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
         ).firstAngle;
+//        return -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
     public void turnPID(double degrees,double timeOut) {
         turnMath(-degrees + getAbsoluteAngle(), timeOut);

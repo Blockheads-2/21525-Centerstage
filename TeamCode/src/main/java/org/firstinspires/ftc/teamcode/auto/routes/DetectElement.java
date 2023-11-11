@@ -46,7 +46,7 @@ public class DetectElement extends Methods.auto {
         }
 
         waitForStart();
-
+        dispatch.robot.getTelemetry(telemetry);
         dispatch.initCamera();
 
         while (opModeIsActive())
