@@ -134,7 +134,6 @@ public class AutoHub {
     }
 
     public void updateTelemetry(){
-        packet.put("Bottom Left Power", robot.lb.getPower());
 //        packet.put("Top Left Power", robot.lf.getPower());
 //        packet.put("Top Right Power", robot.rf.getPower());
 //        packet.put("Bottom Left Power", robot.lb.getPower());
@@ -567,7 +566,7 @@ public class AutoHub {
 //                detectColor();
 //                gps.periodic(runtime.seconds());
 
-                double angleCorrection = pidTurn.update(getAbsoluteAngle());
+//                double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
 //                robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
 //                robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));

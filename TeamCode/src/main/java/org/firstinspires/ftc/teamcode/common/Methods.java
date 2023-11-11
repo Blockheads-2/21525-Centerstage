@@ -289,7 +289,7 @@ public class Methods {
 
         public void robotBaseIntakeLoop() {
             if (gamepad1.left_trigger != 0) robot.intake.setPower(gamepad1.left_trigger);
-            else robot.intake.setPower(gamepad1.right_trigger);
+            else robot.intake.setPower(-gamepad1.right_trigger);
         }
 
         public void robotBaseMicroAdjustLoop(double drivePower) {
