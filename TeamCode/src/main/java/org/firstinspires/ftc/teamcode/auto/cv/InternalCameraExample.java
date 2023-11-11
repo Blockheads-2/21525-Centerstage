@@ -42,9 +42,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 @TeleOp(name = "Internal Camera Example", group = "CV")
 public class InternalCameraExample extends LinearOpMode {
-    static final Rect MID_ROI = new Rect(new Point(420, 50), new Point(860, 300));
-    static final Rect LEFT_ROI = new Rect(new Point(0, 50), new Point(200, 500));
-    static final Rect RIGHT_ROI = new Rect(new Point(1280, 50), new Point(1080, 500));
+    static final Rect MID_ROI = new Rect(new Point(500, 100), new Point(750, 300)); //470-810
+    static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 300));
+    static final Rect RIGHT_ROI = new Rect(new Point(1280, 100), new Point(1080, 400));
 
     /*
      * An example image processing pipeline to be run upon receipt of each frame from the camera.
@@ -72,7 +72,7 @@ public class InternalCameraExample extends LinearOpMode {
          * the RC phone). If no camera monitor is desired, use the alternate
          * single-parameter constructor instead (commented out below)
          */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("Webcam 1", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View

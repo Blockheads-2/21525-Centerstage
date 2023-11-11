@@ -60,6 +60,12 @@ public class TestMotors extends OpMode {
         telemetry.addData("Top Right Encoder Position", rf.getCurrentPosition());
         telemetry.addData("Bottom Left Encoder Position", lb.getCurrentPosition());
         telemetry.addData("Bottom Right Encoder Position", rb.getCurrentPosition());
+
+        telemetry.addData("Top Left Motor Velocity", lf.getVelocity());
+        telemetry.addData("Top Right Motor Velocity", rf.getVelocity());
+        telemetry.addData("Bottom Left Motor Velocity", lb.getVelocity());
+        telemetry.addData("Bottom Right Motor Velocity", rb.getVelocity());
+        telemetry.update();
     }
 
     @Override

@@ -80,7 +80,7 @@ public class HardwareDrive {
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private final AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
-    private final Telemetry telemetry = null;
+    private Telemetry telemetry = null;
 
     public HardwareDrive() {
 
@@ -112,6 +112,7 @@ public class HardwareDrive {
         lb.setDirection(DcMotorSimple.Direction.REVERSE);
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         resetEncoderPos();
     }
@@ -143,29 +144,26 @@ public class HardwareDrive {
                 .setAutoStopLiveView(true) // Automatically stop LiveView (RC preview) when all vision processors are disabled.
                 .build(); // Create a VisionPortal by calling build().  The camera starts streaming.
 
-            if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
-                telemetry.addData("Camera", "Waiting");
-                telemetry.update();
-                while ((visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
-                    Methods.general.trySleep(20);
-                }
-                telemetry.addData("Camera", "Ready");
-                telemetry.update();
-            }
+//            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
+//            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+//                exposureControl.setMode(ExposureControl.Mode.Manual);
+//                Methods.general.trySleep(20);
+//
+//            }
+//            exposureControl.setExposure((long) Constants.EXPOSURE_MS, TimeUnit.MILLISECONDS);
+//            Methods.general.trySleep(20);
+//
+//            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
+//            gainControl.setGain(Constants.CAMERA_GAIN);
+//            Methods.general.trySleep(20);
 
-            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
-                exposureControl.setMode(ExposureControl.Mode.Manual);
-                Methods.general.trySleep(20);
-
-            }
-            exposureControl.setExposure((long) Constants.EXPOSURE_MS, TimeUnit.MILLISECONDS);
-            Methods.general.trySleep(20);
-
-            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-            gainControl.setGain(Constants.CAMERA_GAIN);
-            Methods.general.trySleep(20);
+            telemetry.addData("Camera ready", visionPortal.getCameraState());
+            telemetry.update();
         }
+    }
+
+    public void initTelemetry(Telemetry t){
+        telemetry = t;
     }
 
     public VisionPortal getVisionPortal() {

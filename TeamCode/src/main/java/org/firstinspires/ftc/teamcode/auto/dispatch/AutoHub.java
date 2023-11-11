@@ -83,7 +83,7 @@ public class AutoHub {
 
         robot.init(hardwareMap);
 
-        gps = new GPS(robot);
+//        gps = new GPS(robot);
         runtime.reset();
 
         // Send telemetry message to signify robot waiting;
@@ -134,10 +134,17 @@ public class AutoHub {
     }
 
     public void updateTelemetry(){
-        packet.put("Top Left Velocity", robot.lf.getVelocity());
-        packet.put("Top Right Velocity", robot.rf.getVelocity());
-        packet.put("Bottom Left Velocity", robot.lb.getVelocity());
-        packet.put("Bottom Right Velocity", robot.rb.getVelocity());
+        packet.put("Top Left Power", robot.lf.getPower());
+        packet.put("Top Right Power", robot.rf.getPower());
+        packet.put("Bottom Left Power", robot.lb.getPower());
+        packet.put("Bottom Right Power", robot.rb.getPower());
+
+        packet.put("Top Left Encoder Position", robot.lf.getCurrentPosition());
+        packet.put("Top Right Encoder Position", robot.rf.getCurrentPosition());
+        packet.put("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
+        packet.put("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+        packet.put("Yaw", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+        packet.put("Yaw (Absolute Angle)", getAbsoluteAngle());
 
         linearOpMode.telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
         linearOpMode.telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
@@ -385,7 +392,7 @@ public class AutoHub {
                 linearOpMode.telemetry.addData("Left Fromt Velocity: ", robot.lf.getVelocity());
                 linearOpMode.telemetry.addData("Right Front Velocity: ", robot.rf.getVelocity());
 
-                linearOpMode.telemetry.addData("Left Bck Velocity: ", robot.lb.getVelocity());
+                linearOpMode.telemetry.addData("Left Back Velocity: ", robot.lb.getVelocity());
                 linearOpMode.telemetry.addData("Right Back Velocity: ", robot.rb.getVelocity());
                 linearOpMode.telemetry.addData("sub pose", subtractPose);
                 linearOpMode.telemetry.addData("add pose", addPose);
@@ -447,16 +454,15 @@ public class AutoHub {
 
             robot.lf.setTargetPosition(newLeftFrontTarget);
             robot.rf.setTargetPosition(newRightFrontTarget);
-//            robot.lb.setTargetPosition(newLeftBackTarget);
-//            robot.rb.setTargetPosition(newRightBackTarget);
+            robot.lb.setTargetPosition(newLeftBackTarget);
+            robot.rb.setTargetPosition(newRightBackTarget);
 
             // Turn On RUN_TO_POSITION
             robot.lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
             // reset the timeout time and start motion.
             runtime.reset();
@@ -465,21 +471,22 @@ public class AutoHub {
 
 //                checkButton();
 //                detectColor();
-                gps.periodic(runtime.seconds());
+//                gps.periodic(runtime.seconds());
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
                 robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
                 robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-//                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-//                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+
 
                 // Display it for the driver.
-                linearOpMode.telemetry.addData("Time: ", timeoutS);
-                linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
-                linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
-                linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
-                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+//                linearOpMode.telemetry.addData("Time: ", timeoutS);
+//                linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
+//                linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
+//                linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
+//                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
 //                linearOpMode.telemetry.update();
 
@@ -540,16 +547,15 @@ public class AutoHub {
 
             robot.lf.setTargetPosition(newLeftFrontTarget);
             robot.rf.setTargetPosition(newRightFrontTarget);
-//            robot.lb.setTargetPosition(newLeftBackTarget);
-//            robot.rb.setTargetPosition(newRightBackTarget);
+            robot.lb.setTargetPosition(newLeftBackTarget);
+            robot.rb.setTargetPosition(newRightBackTarget);
 
             // Turn On RUN_TO_POSITION
             robot.lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             robot.rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
 
             // reset the timeout time and start motion.
             runtime.reset();
@@ -558,21 +564,21 @@ public class AutoHub {
 
 //                checkButton();
 //                detectColor();
-                gps.periodic(runtime.seconds());
+//                gps.periodic(runtime.seconds());
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
                 robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
                 robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-//                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-//                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
 
                 // Display it for the driver.
-                linearOpMode.telemetry.addData("Time: ", timeoutS);
-                linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
-                linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
-                linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
-                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+//                linearOpMode.telemetry.addData("Time: ", timeoutS);
+//                linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
+//                linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
+//                linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
+//                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
 
 //                linearOpMode.telemetry.update();
 
@@ -969,12 +975,48 @@ public class AutoHub {
         robot.rb.setPower(0);
 
     }
+
+    public void absoluteTurn(double theta){
+        double currAngle = -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+
+        double error = deltaAngle(theta, currAngle);
+
+        while (linearOpMode.opModeIsActive() && Math.abs(error) > 2) {
+            double motorPower = (error < 0 ? -0.3 : 0.3);
+            robot.lf.setPower(-motorPower);
+            robot.rf.setPower(motorPower);
+            robot.lb.setPower(-motorPower);
+            robot.rb.setPower(motorPower);
+
+//            detectColor();
+//            checkButton();
+
+            error = deltaAngle(theta, currAngle);
+            linearOpMode.telemetry.addData("error", error);
+            linearOpMode.telemetry.update();
+        }
+
+        robot.lf.setPower(0);
+        robot.rf.setPower(0);
+        robot.lb.setPower(0);
+        robot.rb.setPower(0);
+    }
+
     public double getAbsoluteAngle() {
         return robot.imu.getRobotOrientation(
                 AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
         ).firstAngle;
 //        return -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
+
+    public static double deltaAngle(double target, double current){
+        double target2 = (target < 0 ? target + 360 : target);
+        double current2 = (current < 0 ? current + 360 : current);
+        double turnAmount1 = target - current;
+        double turnAmount2 = target2 - current2;
+        return (Math.abs(turnAmount1) < Math.abs(turnAmount2) ? turnAmount1 : turnAmount2);
+    }
+
     public void turnPID(double degrees,double timeOut) {
         turnMath(-degrees + getAbsoluteAngle(), timeOut);
     }
@@ -1013,6 +1055,16 @@ public class AutoHub {
     }
 
     //Peripheral Movements
+
+    public void spinIntake(double power, double timeout){
+        runtime.reset();
+
+        while (linearOpMode.opModeIsActive() && runtime.seconds() <= timeout){
+            robot.intake.setPower(power);
+        }
+        robot.intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        robot.intake.setPower(0);
+    }
 
 //    public void spinCarousel(double velocity){
 //        robot.duckWheel.setVelocity(velocity);

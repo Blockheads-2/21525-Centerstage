@@ -26,15 +26,9 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
     }
     private Location location;
 
-    static final Rect MID_ROI = new Rect(
-            new Point(700, 300),
-            new Point(1000, 500));
-    static final Rect LEFT_ROI = new Rect(
-            new Point(140,400),
-            new Point(420,600));
-    static final Rect RIGHT_ROI = new Rect(
-            new Point(1200,400),
-            new Point(1500,600));
+    static final Rect MID_ROI = new Rect(new Point(500, 100), new Point(750, 300)); //470-810
+    static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 300));
+    static final Rect RIGHT_ROI = new Rect(new Point(1280, 100), new Point(1080, 400));
 
 
     static double PERCENT_COLOR_THRESHOLD = 0.4;
@@ -62,6 +56,9 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
         double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area() / 255;
         double midValue = Core.sumElems(mid).val[0] / MID_ROI.area() / 255;
 
+        telemetry.addData("Left Value", leftValue);
+        telemetry.addData("Mid Value", midValue);
+
         left.release();
         mid.release();
 
@@ -85,11 +82,13 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
         telemetry.addData("Hue High", getHighHue());
         telemetry.addData("Block Seen", isSeen());
 
+        telemetry.update();
+
         Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
 
-        Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0));
-        Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0));
-        Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0));
+        Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0), 4);
+        Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0), 4);
+        Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0), 4);
 
         return mat;
     }

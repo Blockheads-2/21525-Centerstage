@@ -46,17 +46,19 @@ public class DetectElement extends Methods.auto {
         }
 
         waitForStart();
-        dispatch.robot.getTelemetry(telemetry);
-        dispatch.initCamera();
+
+//        phoneCam.stopStreaming();
+//        dispatch.robot.initTelemetry(telemetry);
+//        initVisionPortal();
 
         while (opModeIsActive())
         {
-            streamVisionPortal();
-
-
+//            streamVisionPortal();
 
             updateTelemetry();
             sleep(20);
         }
+
+        phoneCam.stopStreaming();
     }
 }

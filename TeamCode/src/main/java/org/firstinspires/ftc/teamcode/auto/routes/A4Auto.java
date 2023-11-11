@@ -15,23 +15,36 @@ import org.firstinspires.ftc.teamcode.common.Methods;
 
 @Autonomous(name="A4 Blue Autonomous", group="Autonomous")
 public class A4Auto extends Methods.auto {
-    Button updateValueDecrease = new Button();
-    Button updateValueIncrease = new Button();
-    HardwareDrive robot;
-
-    FtcDashboard dashboard = FtcDashboard.getInstance();
-    TelemetryPacket packet = new TelemetryPacket();
 
     @Override
     public void runOpMode() throws InterruptedException {
-        robot = new HardwareDrive();
-        robot.init(hardwareMap);
+        initRobot();
+
+        streamOpenCV();
 
         waitForStart();
-//        robotAutoStraightDrivePosition(0.25, 12, 12, robot);
 
-        telemetry.addLine("Loop started");
-        telemetry.update();
+        if (opModeIsActive()){
+            switch(detector.getLocation()){
+                case LEFT:
+                    constantHeading(0.25, 0, 12, 0.03, 0, 0.01);
+                    spinIntake(-0.7, 4);
+                    break;
+
+                case MID:
+                    constantHeading(0.25, 0, 12, 0.03, 0, 0.01);
+                    spinIntake(-0.7, 4);
+                    break;
+
+                case RIGHT:
+                    constantHeading(0.25, 0, 12, 0.03, 0, 0.01);
+                    spinIntake(-0.7, 4);
+                    break;
+            }
+        }
+        absoluteTurn(-90);
+        constantHeading(0.25, 12, 0, 0.03, 0, 0.01);
+        spinIntake(-0.7, 4);
     }
 
 }
