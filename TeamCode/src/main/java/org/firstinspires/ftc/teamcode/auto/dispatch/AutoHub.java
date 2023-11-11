@@ -134,17 +134,18 @@ public class AutoHub {
     }
 
     public void updateTelemetry(){
-        packet.put("Top Left Power", robot.lf.getPower());
-        packet.put("Top Right Power", robot.rf.getPower());
         packet.put("Bottom Left Power", robot.lb.getPower());
-        packet.put("Bottom Right Power", robot.rb.getPower());
-
-        packet.put("Top Left Encoder Position", robot.lf.getCurrentPosition());
-        packet.put("Top Right Encoder Position", robot.rf.getCurrentPosition());
-        packet.put("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
-        packet.put("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
-        packet.put("Yaw", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-        packet.put("Yaw (Absolute Angle)", getAbsoluteAngle());
+//        packet.put("Top Left Power", robot.lf.getPower());
+//        packet.put("Top Right Power", robot.rf.getPower());
+//        packet.put("Bottom Left Power", robot.lb.getPower());
+//        packet.put("Bottom Right Power", robot.rb.getPower());
+//
+//        packet.put("Top Left Encoder Position", robot.lf.getCurrentPosition());
+//        packet.put("Top Right Encoder Position", robot.rf.getCurrentPosition());
+//        packet.put("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
+//        packet.put("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+//        packet.put("Yaw", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+//        packet.put("Yaw (Absolute Angle)", getAbsoluteAngle());
 
         linearOpMode.telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
         linearOpMode.telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
@@ -152,7 +153,7 @@ public class AutoHub {
         linearOpMode.telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
 
         linearOpMode.telemetry.update();
-        dashboard.sendTelemetryPacket(packet);
+//        dashboard.sendTelemetryPacket(packet);
     }
 
     //====================================================================================
@@ -540,10 +541,10 @@ public class AutoHub {
             newLeftBackTarget = (int) (robot.lb.getCurrentPosition() + rightDiagonalPos);
             newRightBackTarget = (int) (robot.rb.getCurrentPosition() + leftDiagonalPos);
 
-            packet.put("Top Left Encoder Target", newLeftFrontTarget);
-            packet.put("Top Right Encoder Target", newRightFrontTarget);
-            packet.put("Bottom Left Encoder Target", newLeftBackTarget);
-            packet.put("Bottom Right Encoder Target", newRightBackTarget);
+//            packet.put("Top Left Encoder Target", newLeftFrontTarget);
+//            packet.put("Top Right Encoder Target", newRightFrontTarget);
+//            packet.put("Bottom Left Encoder Target", newLeftBackTarget);
+//            packet.put("Bottom Right Encoder Target", newRightBackTarget);
 
             robot.lf.setTargetPosition(newLeftFrontTarget);
             robot.rf.setTargetPosition(newRightFrontTarget);
@@ -568,10 +569,14 @@ public class AutoHub {
 
                 double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
-                robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-                robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
-                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+//                robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+//                robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+//                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+//                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio));
+                robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio));
+                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio));
+                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio));
 
                 // Display it for the driver.
 //                linearOpMode.telemetry.addData("Time: ", timeoutS);
@@ -1003,10 +1008,10 @@ public class AutoHub {
     }
 
     public double getAbsoluteAngle() {
-        return robot.imu.getRobotOrientation(
-                AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
-        ).firstAngle;
-//        return -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
+//        return robot.imu.getRobotOrientation(
+//                AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
+//        ).firstAngle;
+        return -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
     }
 
     public static double deltaAngle(double target, double current){

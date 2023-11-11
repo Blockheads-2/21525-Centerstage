@@ -115,6 +115,7 @@ public class HardwareDrive {
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
 
         resetEncoderPos();
+        imu.resetYaw();
     }
 
     public void resetEncoderPos() {

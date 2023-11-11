@@ -30,15 +30,17 @@ public class F2Auto extends Methods.auto {
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        while (!opModeIsActive()){
-            dispatch.updateTelemetry();
-        }
+        while (!opModeIsActive()) dispatch.updateTelemetry();
+
 
         waitForStart();
 
         constantHeading(RobotConstants.movePower, RobotConstants.x, RobotConstants.y, RobotConstants.kp, RobotConstants.ki, RobotConstants.kd);
+        spinIntake(-0.6, 4);
 //        turn(RobotConstants.theta);
-        absoluteTurn(-90);
+//        absoluteTurn(-90);
+//        dispatch.turnPID(90, 6);
+//        dispatch.turnAbsPID(90, 6)
         //        dispatch.turn(90);
 //        dispatch.constantHeading(0.5, 0, 108,  0.03, 0, 0);
 //        dispatch.constantHeading(0.5, 0, -108, 0.03, 0, 0);

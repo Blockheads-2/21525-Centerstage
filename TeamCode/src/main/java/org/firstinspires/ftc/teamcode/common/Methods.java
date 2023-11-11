@@ -212,10 +212,10 @@ public class Methods {
         }
 
         public void turn(double theta){ //turning relative to its initial point
-            dispatch.turn(theta);
+            dispatch.turnPID(theta, 6);
         }
         public void absoluteTurn(double theta){ //turning relative to field
-            dispatch.absoluteTurn(theta);
+            dispatch.turnAbsPID(theta, 6);
         }
 
         public void spinIntake(double power, double timeout){
