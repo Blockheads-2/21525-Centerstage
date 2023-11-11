@@ -29,18 +29,11 @@
 
 package org.firstinspires.ftc.teamcode.common;
 
-import static java.lang.Thread.sleep;
-
 import android.util.Size;
 
-import com.arcrobotics.ftclib.drivebase.DifferentialDrive;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.hardware.bosch.BHI260IMU;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -49,7 +42,6 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
@@ -62,40 +54,33 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * This is NOT an opmode.
- *
+ * <p>
  * This class can be used to define all the specific hardware for a single robot.
  * In this case that robot is a Pushbot.
  * See PushbotTeleopTank_Iterative and others classes starting with "Pushbot" for usage examples.
- *
+ * <p>
  * This hardware class assumes the following device names have been configured on the robot:
  * Note:  All names are lower case and some have single spaces between words.
  */
-public class HardwareDrive
-{
+public class HardwareDrive {
 
-    public DcMotorEx  lf;
-    public DcMotorEx  rf;
-    public DcMotorEx  rb;
-    public DcMotorEx  lb;
-
-
+    private final ElapsedTime period = new ElapsedTime();
+    public DcMotorEx lf;
+    public DcMotorEx rf;
+    public DcMotorEx rb;
+    public DcMotorEx lb;
     public Motor lf_motor;
     public Motor rf_motor;
     public Motor rb_motor;
     public Motor lb_motor;
-
     public DcMotorEx intake;
     public IMU imu;
-
+    public MecanumDrive m_drive;
+    HardwareMap hwMap = null;
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
-    private AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
-    private Telemetry telemetry = null;
-
-    public MecanumDrive m_drive;
-
-    HardwareMap hwMap =  null;
-    private final ElapsedTime period  =  new ElapsedTime();
+    private final AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
+    private final Telemetry telemetry = null;
 
     public HardwareDrive() {
 
@@ -118,7 +103,7 @@ public class HardwareDrive
         m_drive = new MecanumDrive(lf_motor, rf_motor, lb_motor, rb_motor);
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
         imu.initialize(new IMU.Parameters(orientationOnRobot));
@@ -131,31 +116,48 @@ public class HardwareDrive
         resetEncoderPos();
     }
 
-    public void initCamera() {
-        if (hwMap != null && hwMap.get(WebcamName.class, "Webcam 1") != null){;
-            aprilTag = new AprilTagProcessor.Builder() // Create a new AprilTag Processor Builder object.
-                    .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()) //sets the AprilTagLibrary to the current season. You can add your own custom AprilTags as well (refer to AprilTag Library under the FIRST FTC Docs)
-                    .setLensIntrinsics(Constants.fx, Constants.fy, Constants.cx, Constants.cy) //Since C270 1280x720 webcam is not among the resolutions the SDK knows of, we need to provide it w/ the calibration info.
-                    .setDrawTagID(true) // Default: true, for all detections.
-                    .setDrawTagOutline(true) // Default: true, when tag size was provided (thus eligible for pose estimation).
-                    .setDrawAxes(true) // Default: false.
-                    .setDrawCubeProjection(true) // Default: false.
-                    .build(); // Create an AprilTagProcessor by calling build()
+    public void resetEncoderPos() {
+        for (DcMotorEx motor : List.of(lf, lb, rf, rb)) {
+            motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        }
+    }
 
+    public void initCamera() {
+        if (hwMap != null && hwMap.get(WebcamName.class, "Webcam 1") != null) {
+            aprilTag = new AprilTagProcessor.Builder() // Create a new AprilTag Processor Builder object.
+                .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()) //sets the AprilTagLibrary to the current season. You can add your own custom AprilTags as well (refer to AprilTag Library under the FIRST FTC Docs)
+                .setLensIntrinsics(Constants.fx, Constants.fy, Constants.cx, Constants.cy) //Since C270 1280x720 webcam is not among the resolutions the SDK knows of, we need to provide it w/ the calibration info.
+                .setDrawTagID(true) // Default: true, for all detections.
+                .setDrawTagOutline(true) // Default: true, when tag size was provided (thus eligible for pose estimation).
+                .setDrawAxes(true) // Default: false.
+                .setDrawCubeProjection(true) // Default: false.
+                .build(); // Create an AprilTagProcessor by calling build()
 
             visionPortal = new VisionPortal.Builder() // Create a new VisionPortal Builder object.
-                    .setCamera(hwMap.get(WebcamName.class, "Webcam 1")) // Specify the camera to be used for this VisionPortal.
-                    .addProcessors(aprilTag) // Add the AprilTag Processor to the VisionPortal Builder.
-                    .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
-                    .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG format uses less bandwidth than the default YUY2.
-                    .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.
-                    .setAutoStopLiveView(true) // Automatically stop LiveView (RC preview) when all vision processors are disabled.
-                    .build(); // Create a VisionPortal by calling build().  The camera starts streaming.
+                .setCamera(hwMap.get(WebcamName.class, "Webcam 1")) // Specify the camera to be used for this VisionPortal.
+                .addProcessors(aprilTag) // Add the AprilTag Processor to the VisionPortal Builder.
+                .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG format uses less bandwidth than the default YUY2.
+                .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.
+                .setAutoStopLiveView(true) // Automatically stop LiveView (RC preview) when all vision processors are disabled.
+                .build(); // Create a VisionPortal by calling build().  The camera starts streaming.
+
+            if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
+                telemetry.addData("Camera", "Waiting");
+                telemetry.update();
+                while ((visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING)) {
+                    Methods.general.trySleep(20);
+                }
+                telemetry.addData("Camera", "Ready");
+                telemetry.update();
+            }
 
             ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
             if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
                 exposureControl.setMode(ExposureControl.Mode.Manual);
                 Methods.general.trySleep(20);
+
             }
             exposureControl.setExposure((long) Constants.EXPOSURE_MS, TimeUnit.MILLISECONDS);
             Methods.general.trySleep(20);
@@ -163,37 +165,23 @@ public class HardwareDrive
             GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
             gainControl.setGain(Constants.CAMERA_GAIN);
             Methods.general.trySleep(20);
-
-            telemetry.addLine("VisionPortal Initiated");
-            telemetry.update();
         }
     }
 
-    public void getTelemetry(Telemetry t){
-        telemetry=t;
-    }
-
-    public VisionPortal getVisionPortal(){
+    public VisionPortal getVisionPortal() {
         return visionPortal;
     }
 
-    public AprilTagProcessor getAprilTagProcessor(){
+    public AprilTagProcessor getAprilTagProcessor() {
         return aprilTag;
     }
 
-    public void pauseStream(){
+    public void pauseStream() {
         visionPortal.stopLiveView(); //temporarily sops the live view (RC preview). This should be fine as we don't use an RC phone.
     }
 
-    public void resumeStream(){
+    public void resumeStream() {
         visionPortal.resumeLiveView();
-    }
-
-    public void resetEncoderPos(){
-        for (DcMotorEx motor : List.of(lf, lb, rf, rb)) {
-            motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-            motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        }
     }
 }
 

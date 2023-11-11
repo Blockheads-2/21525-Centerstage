@@ -21,7 +21,6 @@
 
 package org.firstinspires.ftc.teamcode.auto.cv;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -41,14 +40,30 @@ import org.openftc.easyopencv.OpenCvPipeline;
  * original Android camera API
  */
 
-@TeleOp (name = "Internal Camera Example", group = "CV")
-public class InternalCameraExample extends LinearOpMode
-{
-    OpenCvCamera phoneCam;
+@TeleOp(name = "Internal Camera Example", group = "CV")
+public class InternalCameraExample extends LinearOpMode {
+    static final Rect MID_ROI = new Rect(new Point(420, 50), new Point(860, 300));
+    static final Rect LEFT_ROI = new Rect(new Point(0, 50), new Point(200, 500));
+    static final Rect RIGHT_ROI = new Rect(new Point(1280, 50), new Point(1080, 500));
+
+    /*
+     * An example image processing pipeline to be run upon receipt of each frame from the camera.
+     * Note that the processFrame() method is called serially from the frame worker thread -
+     * that is, a new camera frame will not come in while you're still processing a previous one.
+     * In other words, the processFrame() method will never be called multiple times simultaneously.
+     *
+     * However, the rendering of your processed image to the viewport is done in parallel to the
+     * frame worker thread. That is, the amount of time it takes to render the image to the
+     * viewport does NOT impact the amount of frames per second that your pipeline can process.
+     *
+     * IMPORTANT NOTE: this pipeline is NOT invoked on your OpMode thread. It is invoked on the
+     * frame worker thread. This should not be a problem in the vast majority of cases. However,
+     * if you're doing something weird where you do need it synchronized with your OpMode thread,
+     * then you will need to account for that accordingly.
+     */ OpenCvCamera phoneCam;
 
     @Override
-    public void runOpMode()
-    {
+    public void runOpMode() {
         /*
          * Instantiate an OpenCvCamera object for the camera we'll be using.
          * In this sample, we're using the phone's internal camera. We pass it a
@@ -79,11 +94,9 @@ public class InternalCameraExample extends LinearOpMode
          *
          * If you really want to open synchronously, the old method is still available.
          */
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-        {
+        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
-            public void onOpened()
-            {
+            public void onOpened() {
                 /*
                  * Tell the camera to start streaming images to us! Note that you must make sure
                  * the resolution you specify is supported by the camera. If it is not, an exception
@@ -99,8 +112,7 @@ public class InternalCameraExample extends LinearOpMode
             }
 
             @Override
-            public void onError(int errorCode)
-            {
+            public void onError(int errorCode) {
                 /*
                  * This will be called if the camera could not be opened
                  */
@@ -117,8 +129,7 @@ public class InternalCameraExample extends LinearOpMode
          */
         waitForStart();
 
-        while (opModeIsActive())
-        {
+        while (opModeIsActive()) {
             /*
              * Send some stats to the telemetry
              */
@@ -135,8 +146,7 @@ public class InternalCameraExample extends LinearOpMode
              * when it will be automatically stopped for you) *IS* supported. The "if" statement
              * below will stop streaming from the camera when the "A" button on gamepad 1 is pressed.
              */
-            if(gamepad1.a)
-            {
+            if (gamepad1.a) {
                 /*
                  * IMPORTANT NOTE: calling stopStreaming() will indeed stop the stream of images
                  * from the camera (and, by extension, stop calling your vision pipeline). HOWEVER,
@@ -169,35 +179,7 @@ public class InternalCameraExample extends LinearOpMode
         }
     }
 
-    /*
-     * An example image processing pipeline to be run upon receipt of each frame from the camera.
-     * Note that the processFrame() method is called serially from the frame worker thread -
-     * that is, a new camera frame will not come in while you're still processing a previous one.
-     * In other words, the processFrame() method will never be called multiple times simultaneously.
-     *
-     * However, the rendering of your processed image to the viewport is done in parallel to the
-     * frame worker thread. That is, the amount of time it takes to render the image to the
-     * viewport does NOT impact the amount of frames per second that your pipeline can process.
-     *
-     * IMPORTANT NOTE: this pipeline is NOT invoked on your OpMode thread. It is invoked on the
-     * frame worker thread. This should not be a problem in the vast majority of cases. However,
-     * if you're doing something weird where you do need it synchronized with your OpMode thread,
-     * then you will need to account for that accordingly.
-     */
-
-
-    static final Rect MID_ROI = new Rect(
-            new Point(700, 300),
-            new Point(1000, 500));
-    static final Rect LEFT_ROI = new Rect(
-            new Point(140,400),
-            new Point(420,600));
-//    static final Rect RIGHT_ROI = new Rect(
-//            new Point(1200,400),
-//            new Point(1500,600));
-
-    class SamplePipeline extends OpenCvPipeline
-    {
+    class SamplePipeline extends OpenCvPipeline {
         boolean viewportPaused = false;
 
         /*
@@ -210,8 +192,7 @@ public class InternalCameraExample extends LinearOpMode
          */
 
         @Override
-        public Mat processFrame(Mat input)
-        {
+        public Mat processFrame(Mat input) {
             /*
              * IMPORTANT NOTE: the input Mat that is passed in as a parameter to this method
              * will only dereference to the same image for the duration of this particular
@@ -223,20 +204,19 @@ public class InternalCameraExample extends LinearOpMode
             /*
              * Draw a simple box around the middle 1/2 of the entire frame
              */
-//            Imgproc.rectangle(
-//                     input,
-//                    new Point(
-//                            input.cols()/4,
-//                            input.rows()/4),
-//                    new Point(
-//                            input.cols()*(3f/4f),
-//                            input.rows()*(3f/4f)),
-//                    new Scalar(0, 255, 0), 4);
+            //            Imgproc.rectangle(
+            //                     input,
+            //                    new Point(
+            //                            input.cols()/4,
+            //                            input.rows()/4),
+            //                    new Point(
+            //                            input.cols()*(3f/4f),
+            //                            input.rows()*(3f/4f)),
+            //                    new Scalar(0, 255, 0), 4);
 
-
-            Imgproc.rectangle(input, MID_ROI, new Scalar(255,0,0), 4);
-            Imgproc.rectangle(input, LEFT_ROI, new Scalar(255,0,0), 4);
-//            Imgproc.rectangle(input, RIGHT_ROI, new Scalar(255,0,0));
+            Imgproc.rectangle(input, MID_ROI, new Scalar(255, 0, 0), 4);
+            Imgproc.rectangle(input, LEFT_ROI, new Scalar(255, 0, 0), 4);
+            Imgproc.rectangle(input, RIGHT_ROI, new Scalar(255, 0, 0), 4);
             /**
              * NOTE: to see how to get data from your pipeline to your OpMode as well as how
              * to change which stage of the pipeline is rendered to the viewport when it is
@@ -247,8 +227,7 @@ public class InternalCameraExample extends LinearOpMode
         }
 
         @Override
-        public void onViewportTapped()
-        {
+        public void onViewportTapped() {
             /*
              * The viewport (if one was specified in the constructor) can also be dynamically "paused"
              * and "resumed". The primary use case of this is to reduce CPU, memory, and power load
@@ -263,12 +242,9 @@ public class InternalCameraExample extends LinearOpMode
 
             viewportPaused = !viewportPaused;
 
-            if(viewportPaused)
-            {
+            if (viewportPaused) {
                 phoneCam.pauseViewport();
-            }
-            else
-            {
+            } else {
                 phoneCam.resumeViewport();
             }
         }
