@@ -73,9 +73,8 @@ public class Methods {
             robot.rf.setTargetPosition((int) (robot.rf.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
             robot.rb.setTargetPosition((int) (robot.rb.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
 
-            for (DcMotorEx motor : List.of(robot.lf, robot.lb, robot.rf, robot.rb)) {
-                motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-            }
+            for (DcMotorEx motor : List.of(robot.lf, robot.lb, robot.rf, robot.rb)) motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+
 
             while (opModeIsActive()) {
                 robot.lf.setVelocity((drivePower * 2700 * positiveAngularChangePosition));
@@ -162,24 +161,24 @@ public class Methods {
 
         public void robotBaseMicroAdjustLoop(double drivePower) {
             if (gamepad1.dpad_up) {
-                robot.lf.setPower(-drivePower / 2);
-                robot.lb.setPower(-drivePower / 2);
-                robot.rf.setPower(+drivePower / 2);
-                robot.rb.setPower(+drivePower / 2);
-            } else if (gamepad1.dpad_down) {
-                robot.lf.setPower(+drivePower / 2);
-                robot.lb.setPower(+drivePower / 2);
-                robot.rf.setPower(-drivePower / 2);
-                robot.rb.setPower(-drivePower / 2);
-            } else if (gamepad1.dpad_right) {
                 robot.lf.setPower(drivePower / 2);
                 robot.lb.setPower(drivePower / 2);
                 robot.rf.setPower(drivePower / 2);
                 robot.rb.setPower(drivePower / 2);
-            } else if (gamepad1.dpad_left) {
+            } else if (gamepad1.dpad_down) {
                 robot.lf.setPower(-drivePower / 2);
                 robot.lb.setPower(-drivePower / 2);
                 robot.rf.setPower(-drivePower / 2);
+                robot.rb.setPower(-drivePower / 2);
+            } else if (gamepad1.dpad_right) {
+                robot.lf.setPower(-drivePower / 2);
+                robot.lb.setPower(drivePower / 2);
+                robot.rf.setPower(-drivePower / 2);
+                robot.rb.setPower(drivePower / 2);
+            } else if (gamepad1.dpad_left) {
+                robot.lf.setPower(drivePower / 2);
+                robot.lb.setPower(-drivePower / 2);
+                robot.rf.setPower(drivePower / 2);
                 robot.rb.setPower(-drivePower / 2);
             }
 

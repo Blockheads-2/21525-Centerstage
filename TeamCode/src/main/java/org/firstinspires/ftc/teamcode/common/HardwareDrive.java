@@ -46,6 +46,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
@@ -125,6 +126,8 @@ public class HardwareDrive
         lb.setDirection(DcMotorSimple.Direction.REVERSE);
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        resetEncoderPos();
     }
 
     public void initCamera() {
@@ -160,6 +163,10 @@ public class HardwareDrive
             gainControl.setGain(Constants.CAMERA_GAIN);
             Methods.general.trySleep(20);
         }
+    }
+
+    public void resetEncoderPos(){
+        for (DcMotorEx motor : List.of(lf, lb, rf, rb)) motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
     }
 }
 
