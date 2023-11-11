@@ -125,7 +125,7 @@ public class Methods {
             if (Math.abs(gamepad1.left_stick_y) > 0.2)
                 directionY = -Math.pow(gamepad1.left_stick_y, 1);
             if (Math.abs(gamepad1.right_stick_x) > 0.2)
-                directionR = -Math.pow(gamepad1.right_stick_x, 1);
+                directionR = Math.pow(gamepad1.right_stick_x, 1);
 
             double lfPower = (directionX + directionY + directionR) * drivePower;
             double lbPower = (-directionX + directionY + directionR) * drivePower;
@@ -146,12 +146,6 @@ public class Methods {
                 chain.setPower(arg);
                 i1++;
             }
-
-            telemetry.addData("lf power:", lfPower);
-            telemetry.addData("lb power:", lbPower);
-            telemetry.addData("rf power:", rfPower);
-            telemetry.addData("rb power:", rbPower);
-            telemetry.update();
         }
 
         public double driveTrainSpeed() {
@@ -191,5 +185,46 @@ public class Methods {
 
         }
 
+        protected void UpdateTelemetry(){
+            telemetry.addData("X", gamepad1.left_stick_x);
+            telemetry.addData("Y", -gamepad1.left_stick_y);
+            telemetry.addData("R", gamepad1.right_stick_x);
+
+            telemetry.addData("DPAD Up", gamepad1.dpad_up);
+            telemetry.addData("DPAD Down", gamepad1.dpad_down);
+            telemetry.addData("DPAD Left", gamepad1.dpad_left);
+            telemetry.addData("DPAD Right", gamepad1.dpad_right);
+
+            telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
+            telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
+            telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
+            telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+
+            telemetry.addData("Top Left Velocity", robot.lf.getVelocity());
+            telemetry.addData("Top Left Acceleration", robot.lf.getVelocity() / runtime.seconds()); //only works if holding down max power at the beginning of the opmode.
+
+
+            telemetry.addData("Yaw", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+//        packet.put("X", gamepad1.left_stick_x);
+//        packet.put("Y",  -gamepad1.left_stick_y);
+//        packet.put("R", gamepad1.right_stick_x);
+
+            packet.put("Top Left Power", robot.lf.getPower());
+            packet.put("Top Right Power", robot.rf.getPower());
+            packet.put("Bottom Left Power", robot.lb.getPower());
+            packet.put("Bottom Right Power", robot.rb.getPower());
+
+            packet.put("Top Left Velocity", robot.lf.getVelocity());
+            packet.put("Top Right Velocity", robot.rf.getVelocity());
+            packet.put("Bottom Left Velocity", robot.lb.getVelocity());
+            packet.put("Bottom Right Velocity", robot.rb.getVelocity());
+
+
+            dashboard.sendTelemetryPacket(packet);
+
+            //  telemetry.addData("Touch Sensor", robot.digitalTouch.getState());
+            telemetry.update();
+        }
     }
 }
