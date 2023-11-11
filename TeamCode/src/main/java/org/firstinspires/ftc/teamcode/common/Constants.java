@@ -37,6 +37,12 @@ public class Constants {
     public static float HEIGHT = 720.0f;
     public static double CAMERA_ERROR = 2.0f; //typically off by ~2 inches in the y-direction.  Not sure about the x-direction.
 
+    public static double HSV_HUE_LOW_BLUE = 70;
+    public static double HSV_HUE_HIGH_BLUE = 120;
+    public static double HSV_SATURATION_LOW_BLUE = 75;
+    public static double HSV_SATURATION_HIGH_BLUE = 255;
+    public static double HSV_VALUE_LOW_BLUE = 0;
+    public static double HSV_VALUE_HIGH_BLUE = 255;
     public static double PIXEL_WIDTH_MM = 84.25;
     public static double PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA = 640.0 / (Math.tan(Math.toRadians(68.0)) * (PIXEL_WIDTH_MM/2.0)); //pixels to mm; assumes resolution is 640x480
 

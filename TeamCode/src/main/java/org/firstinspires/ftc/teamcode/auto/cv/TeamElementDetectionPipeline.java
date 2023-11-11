@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.auto.cv;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.common.Constants;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
 
@@ -13,6 +15,7 @@ import org.openftc.easyopencv.OpenCvPipeline;
 public class TeamElementDetectionPipeline extends OpenCvPipeline {
     Telemetry telemetry;
     Mat mat = new Mat();
+    Mat blurOutput = new Mat();
     int lowHue = 120;
     int highHue = 180;
     public enum Location {
@@ -35,16 +38,23 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
 
 
     static double PERCENT_COLOR_THRESHOLD = 0.4;
+    double[] hsvThresholdHue = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
+    double[] hsvThresholdSaturation = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
+    double[] hsvThresholdValue = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
 
     public TeamElementDetectionPipeline(Telemetry t) { telemetry = t; }
 
     @Override
     public Mat processFrame(Mat input) {
-        Imgproc.cvtColor(input, mat, Imgproc.COLOR_RGB2HSV);
-        Scalar lowHSV = new Scalar(lowHue, 30, 0); //hue = 40
-        Scalar highHSV = new Scalar(highHue, 255, 180); //hue = 50
+        // Step Blur0:
+        Mat blurInput = input;
+        BlurType blurType = BlurType.get("Box Blur");
+        double blurRadius = 5.5;
+        blur(blurInput, blurType, blurRadius, blurOutput);
 
-        Core.inRange(mat, lowHSV, highHSV, mat);
+        // Step HSV_Threshold0:
+        Mat hsvThresholdInput = blurOutput;
+        hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, mat); //mat is the output
 
         Mat left = mat.submat(LEFT_ROI);
         Mat mid = mat.submat(MID_ROI);
@@ -55,14 +65,14 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
         left.release();
         mid.release();
 
-        boolean stoneLeft = leftValue > PERCENT_COLOR_THRESHOLD;
-        boolean stoneMid = midValue > PERCENT_COLOR_THRESHOLD;
+        boolean elementLeft = leftValue > PERCENT_COLOR_THRESHOLD;
+        boolean elementMid = midValue > PERCENT_COLOR_THRESHOLD;
 
-        if (stoneMid) {
+        if (elementMid) {
             location = Location.MID;
             telemetry.addData("Team Element Location", "mid");
         }
-        else if (stoneLeft) {
+        else if (elementLeft) {
             location = Location.LEFT;
             telemetry.addData("Team Element Location", "left");
         }
@@ -108,6 +118,83 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
             return true;
         }
         return false;
+    }
+
+    enum BlurType{
+        BOX("Box Blur"), GAUSSIAN("Gaussian Blur"), MEDIAN("Median Filter"),
+        BILATERAL("Bilateral Filter");
+
+        private final String label;
+
+        BlurType(String label) {
+            this.label = label;
+        }
+
+        public static BlurType get(String type) {
+            if (BILATERAL.label.equals(type)) {
+                return BILATERAL;
+            }
+            else if (GAUSSIAN.label.equals(type)) {
+                return GAUSSIAN;
+            }
+            else if (MEDIAN.label.equals(type)) {
+                return MEDIAN;
+            }
+            else {
+                return BOX;
+            }
+        }
+
+        @Override
+        public String toString() {
+            return this.label;
+        }
+    }
+
+    /**
+     * Softens an image using one of several filters.
+     * @param input The image on which to perform the blur.
+     * @param type The blurType to perform.
+     * @param doubleRadius The radius for the blur.
+     * @param output The image in which to store the output.
+     */
+    private void blur(Mat input, BlurType type, double doubleRadius,
+                      Mat output) {
+        int radius = (int)(doubleRadius + 0.5);
+        int kernelSize;
+        switch(type){
+            case BOX:
+                kernelSize = 2 * radius + 1;
+                Imgproc.blur(input, output, new Size(kernelSize, kernelSize));
+                break;
+            case GAUSSIAN:
+                kernelSize = 6 * radius + 1;
+                Imgproc.GaussianBlur(input,output, new Size(kernelSize, kernelSize), radius);
+                break;
+            case MEDIAN:
+                kernelSize = 2 * radius + 1;
+                Imgproc.medianBlur(input, output, kernelSize);
+                break;
+            case BILATERAL:
+                Imgproc.bilateralFilter(input, output, -1, radius, radius);
+                break;
+        }
+    }
+
+    /**
+     * Segment an image based on hue, saturation, and value ranges.
+     *
+     * @param input The image on which to perform the HSL threshold.
+     * @param hue The min and max hue
+     * @param sat The min and max saturation
+     * @param val The min and max value
+     * @param out The image in which to store the output.
+     */
+    private void hsvThreshold(Mat input, double[] hue, double[] sat, double[] val,
+                              Mat out) {
+        Imgproc.cvtColor(input, out, Imgproc.COLOR_RGB2HSV);
+        Core.inRange(out, new Scalar(hue[0], sat[0], val[0]),
+                new Scalar(hue[1], sat[1], val[1]), out);
     }
 }
 
