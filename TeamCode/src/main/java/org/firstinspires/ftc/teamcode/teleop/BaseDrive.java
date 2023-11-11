@@ -22,7 +22,7 @@ public class BaseDrive extends Methods.teleOp {
     View relativeLayout;
     @Override
     public void init() {
-        init_robot();
+        initRobot();
     }
 
     @Override

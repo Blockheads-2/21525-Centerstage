@@ -32,6 +32,8 @@ import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 
 import org.firstinspires.ftc.teamcode.common.pid.TurnPIDController;
 import org.firstinspires.ftc.teamcode.common.positioning.MathSpline;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
 
@@ -118,26 +120,24 @@ public class AutoHub {
         if (robot != null) robot.initCamera();
     }
 
+    public VisionPortal getVisionPortal(){
+        return robot.getVisionPortal();
+    }
+
+    public AprilTagProcessor getAprilTagProcessor(){
+        return robot.getAprilTagProcessor();
+    }
+
     public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet){
         this.dashboard = dashboard;
         this.packet = packet;
     }
 
     public void updateTelemetry(){
-        packet.put("Top Left Power", robot.lf.getPower());
-        packet.put("Top Right Power", robot.rf.getPower());
-        packet.put("Bottom Left Power", robot.lb.getPower());
-        packet.put("Bottom Right Power", robot.rb.getPower());
-
         packet.put("Top Left Velocity", robot.lf.getVelocity());
         packet.put("Top Right Velocity", robot.rf.getVelocity());
         packet.put("Bottom Left Velocity", robot.lb.getVelocity());
         packet.put("Bottom Right Velocity", robot.rb.getVelocity());
-
-        packet.put("Top Left Encoder Position", robot.lf.getCurrentPosition());
-        packet.put("Top Right Encoder Position", robot.rf.getCurrentPosition());
-        packet.put("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
-        packet.put("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
 
         linearOpMode.telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
         linearOpMode.telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
@@ -407,6 +407,97 @@ public class AutoHub {
         }
     }
 
+    public void constantHeadingV2(double movePower, double x, double y, double theta, double kp, double ki, double kd){
+        mathConstHead.setFinalPose(x,y);
+
+        updateTelemetry();
+
+        double targetAngle = theta; //want to keep heading constant (current angle)
+
+        TurnPIDController pidTurn = new TurnPIDController(targetAngle, kp, ki, kd);
+
+        double distance = mathConstHead.returnDistance();
+
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+        int newLeftBackTarget;
+        int newRightBackTarget;
+        double timeoutS;
+
+        timeoutS = distance / (movePower * constants.CPI);
+
+        double rightDiagonalRatio = mathConstHead.getRatios()[0];
+        double leftDiagonalRatio = mathConstHead.getRatios()[1];
+
+        double rightDiagonalPos = rightDiagonalRatio * Constants.CPI * distance;
+        double leftDiagonalPos = leftDiagonalRatio * Constants.CPI  * distance;
+
+        // Ensure that the opmode is still active
+        if (linearOpMode.opModeIsActive()) {
+            // Determine new target position, and pass to motor controller
+            newLeftFrontTarget = (int) (robot.lf.getCurrentPosition() + leftDiagonalPos);
+            newRightFrontTarget = (int) (robot.rf.getCurrentPosition() + rightDiagonalPos);
+            newLeftBackTarget = (int) (robot.lb.getCurrentPosition() + rightDiagonalPos);
+            newRightBackTarget = (int) (robot.rb.getCurrentPosition() + leftDiagonalPos);
+
+            packet.put("Top Left Encoder Target", newLeftFrontTarget);
+            packet.put("Top Right Encoder Target", newRightFrontTarget);
+            packet.put("Bottom Left Encoder Target", newLeftBackTarget);
+            packet.put("Bottom Right Encoder Target", newRightBackTarget);
+
+            robot.lf.setTargetPosition(newLeftFrontTarget);
+            robot.rf.setTargetPosition(newRightFrontTarget);
+            robot.lb.setTargetPosition(newLeftBackTarget);
+            robot.rb.setTargetPosition(newRightBackTarget);
+
+            // Turn On RUN_TO_POSITION
+            robot.lf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rf.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.lb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            robot.rb.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+
+            while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS)) {
+
+//                checkButton();
+//                detectColor();
+                gps.periodic(runtime.seconds());
+
+                double angleCorrection = pidTurn.update(getAbsoluteAngle());
+
+                robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+                robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
+
+                // Display it for the driver.
+                linearOpMode.telemetry.addData("Time: ", timeoutS);
+                linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
+                linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
+                linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
+                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+
+//                linearOpMode.telemetry.update();
+
+                updateTelemetry();
+            }
+
+            // Stop all motion;
+            robot.lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            robot.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+            // Turn off RUN_TO_POSITION
+            robot.lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            updateTelemetry();
+        }
+    }
     public void constantHeadingV2(double movePower, double x, double y, double kp, double ki, double kd){
         mathConstHead.setFinalPose(x,y);
 

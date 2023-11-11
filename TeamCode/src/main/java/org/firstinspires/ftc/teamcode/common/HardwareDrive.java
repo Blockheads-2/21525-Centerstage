@@ -55,6 +55,7 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.Exposur
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.concurrent.TimeUnit;
@@ -131,14 +132,26 @@ public class HardwareDrive
     }
 
     public void initCamera() {
-        if (hwMap != null && hwMap.get(WebcamName.class, "Webcam 1") != null){
-            aprilTag = new AprilTagProcessor.Builder().build();
-            visionPortal = new VisionPortal.Builder()
-                    .setCamera(hwMap.get(WebcamName.class, "Webcam 1"))
+        if (hwMap != null && hwMap.get(WebcamName.class, "Webcam 1") != null){;
+            aprilTag = new AprilTagProcessor.Builder() // Create a new AprilTag Processor Builder object.
+                    .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()) //sets the AprilTagLibrary to the current season. You can add your own custom AprilTags as well (refer to AprilTag Library under the FIRST FTC Docs)
+                    .setLensIntrinsics(Constants.fx, Constants.fy, Constants.cx, Constants.cy) //Since C270 1280x720 webcam is not among the resolutions the SDK knows of, we need to provide it w/ the calibration info.
+                    .setDrawTagID(true) // Default: true, for all detections.
+                    .setDrawTagOutline(true) // Default: true, when tag size was provided (thus eligible for pose estimation).
+                    .setDrawAxes(true) // Default: false.
+                    .setDrawCubeProjection(true) // Default: false.
+                    .build(); // Create an AprilTagProcessor by calling build()
+
+
+            visionPortal = new VisionPortal.Builder() // Create a new VisionPortal Builder object.
+                    .setCamera(hwMap.get(WebcamName.class, "Webcam 1")) // Specify the camera to be used for this VisionPortal.
+                    .addProcessors(aprilTag) // Add the AprilTag Processor to the VisionPortal Builder.
                     .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
                     .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG format uses less bandwidth than the default YUY2.
-                    .addProcessor(aprilTag)
-                    .build();
+                    .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.
+                    .setAutoStopLiveView(true) // Automatically stop LiveView (RC preview) when all vision processors are disabled.
+                    .build(); // Create a VisionPortal by calling build().  The camera starts streaming.
+
 
             if (visionPortal.getCameraState() != VisionPortal.CameraState.STREAMING) {
                 telemetry.addData("Camera", "Waiting");
@@ -165,8 +178,27 @@ public class HardwareDrive
         }
     }
 
+    public VisionPortal getVisionPortal(){
+        return visionPortal;
+    }
+
+    public AprilTagProcessor getAprilTagProcessor(){
+        return aprilTag;
+    }
+
+    public void pauseStream(){
+        visionPortal.stopLiveView(); //temporarily sops the live view (RC preview). This should be fine as we don't use an RC phone.
+    }
+
+    public void resumeStream(){
+        visionPortal.resumeLiveView();
+    }
+
     public void resetEncoderPos(){
-        for (DcMotorEx motor : List.of(lf, lb, rf, rb)) motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        for (DcMotorEx motor : List.of(lf, lb, rf, rb)) {
+            motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+            motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        }
     }
 }
 

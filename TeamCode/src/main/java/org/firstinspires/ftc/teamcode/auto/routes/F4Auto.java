@@ -22,13 +22,13 @@ public class F4Auto extends Methods.auto {
 
         while (!opModeIsActive());
         waitForStart();
-            robotAutoStraightDrivePosition(0.5, 0, 29, robot);
-            //The only turn we need goes here. It is 270 degrees clockwise.
-            robotAutoStraightDrivePosition(0.5, 0, 32, robot);
-            robotAutoStraightDrivePosition(0.5, 0, -128, robot);
-            robotAutoStraightDrivePosition(0.5, 0, 128, robot);
-            robotAutoStraightDrivePosition(0.5, 0, -128, robot);
-            robotAutoStraightDrivePosition(0.5, 0, 128, robot);
+//            robotAutoStraightDrivePosition(0.5, 0, 29, robot);
+//            //The only turn we need goes here. It is 270 degrees clockwise.
+//            robotAutoStraightDrivePosition(0.5, 0, 32, robot);
+//            robotAutoStraightDrivePosition(0.5, 0, -128, robot);
+//            robotAutoStraightDrivePosition(0.5, 0, 128, robot);
+//            robotAutoStraightDrivePosition(0.5, 0, -128, robot);
+//            robotAutoStraightDrivePosition(0.5, 0, 128, robot);
 
             telemetry.update();
     }

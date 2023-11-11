@@ -18,7 +18,14 @@ import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.auto.cv.TeamElementDetectionPipeline;
+import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.auto.math.MathConstHead;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
 
 public class Methods {
     public static class general {
@@ -32,61 +39,153 @@ public class Methods {
     }
 
     public abstract static class auto extends LinearOpMode {
-        public void updateTelemetry(HardwareDrive robot, TelemetryPacket packet, FtcDashboard dashboard) {
-            packet.put("Top Left Power", robot.lf.getPower());
-            packet.put("Top Right Power", robot.rf.getPower());
-            packet.put("Bottom Left Power", robot.lb.getPower());
-            packet.put("Bottom Right Power", robot.rb.getPower());
+        protected AutoHub dispatch;
+        protected FtcDashboard dashboard;
+        protected TelemetryPacket packet;
 
-            packet.put("Top Left Velocity", robot.lf.getVelocity());
-            packet.put("Top Right Velocity", robot.rf.getVelocity());
-            packet.put("Bottom Left Velocity", robot.lb.getVelocity());
-            packet.put("Bottom Right Velocity", robot.rb.getVelocity());
+        protected OpenCvCamera phoneCam;
+        private int numFramesWithoutDetection=0;
+        final float DECIMATION_HIGH = 3;
+        final float DECIMATION_LOW = 2;
+        final float THRESHOLD_HIGH_DECIMATION_RANGE_METERS = 1.0f;
+        final int THRESHOLD_NUM_FRAMES_NO_DETECTION_BEFORE_LOW_DECIMATION = 4;
+        protected TeamElementDetectionPipeline detector;
+        protected TeamElementDetectionPipeline.Location location = TeamElementDetectionPipeline.Location.NOT_FOUND;
 
+        public void initRobot(){
+            dispatch = new AutoHub(this);
+
+            dashboard = FtcDashboard.getInstance();
+            packet = new TelemetryPacket();
+            telemetry.setMsTransmissionInterval(50);
+
+            dispatch.initTelemetry(dashboard, packet);
+            dispatch.updateTelemetry();
+        }
+
+        public void streamOpenCV(){
+            int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id", hardwareMap.appContext.getPackageName());
+            phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+            detector = new TeamElementDetectionPipeline(telemetry);
+            phoneCam.setPipeline(detector);
+
+            phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
+            {
+                @Override
+                public void onOpened()
+                {
+                    phoneCam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+                }
+
+                @Override
+                public void onError(int errorCode)
+                {
+                    telemetry.addLine("Error Opening Camera");
+                    telemetry.update();
+                }
+            });
+
+            location = detector.getLocation();
+        }
+
+        public void streamVisionPortal(){
+            // Calling getDetectionsUpdate() will only return an object if there was a new frame
+            // processed since the last time we called it. Otherwise, it will return null. This
+            // enables us to only run logic when there has been a new frame, as opposed to the
+            // getLatestDetections() method which will always return an object.
+//            ArrayList<AprilTagDetection> detections = aprilTagDetectionPipeline.getDetectionsUpdate();
+
+            java.util.List<AprilTagDetection> myAprilTagDetections;  // list of all detections
+            int myAprilTagIdCode;                           // ID code of current detection, in for() loop
+
+// Get a list of AprilTag detections.
+            myAprilTagDetections = dispatch.getAprilTagProcessor().getDetections();
+
+            // If there's been a new frame...
+            if(myAprilTagDetections != null)
+            {
+                telemetry.addData("FPS", dispatch.getVisionPortal().getFps());
+//                telemetry.addData("Overhead ms", camera.getOverheadTimeMs());
+//                telemetry.addData("Pipeline ms", camera.getPipelineTimeMs());
+
+                // If we don't see any tags
+                if(myAprilTagDetections.size() == 0)
+                {
+                    numFramesWithoutDetection++;
+
+                    // If we haven't seen a tag for a few frames, lower the decimation
+                    // so we can hopefully pick one up if we're e.g. far back
+                    if(numFramesWithoutDetection >= THRESHOLD_NUM_FRAMES_NO_DETECTION_BEFORE_LOW_DECIMATION)
+                    {
+                        dispatch.getAprilTagProcessor().setDecimation(DECIMATION_LOW);
+//                        telemetry.addLine("Must lower decimation on the VisionPortal pipeline");
+                    }
+
+                }
+                // We do see tags!
+                else
+                {
+                    numFramesWithoutDetection = 0;
+
+                    // If the target is within 1 meter, turn on high decimation to
+                    // increase the frame rate
+                    if(myAprilTagDetections.get(0).ftcPose.z < THRESHOLD_HIGH_DECIMATION_RANGE_METERS)
+                    {
+                        dispatch.getAprilTagProcessor().setDecimation(DECIMATION_HIGH);
+                    }
+
+                    for(AprilTagDetection detection : myAprilTagDetections)
+                    {
+//                        if (detection.metadata != null) {  // This check for non-null Metadata is not needed for reading only ID code.
+//                            myAprilTagIdCode = detection.id;
+//
+//                            // Now take action based on this tag's ID code, or store info for later action.
+//
+//                        }
+                        //Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
+                        telemetry.addData("Camera Streaming?", dispatch.getVisionPortal().getCameraState());
+                        telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+                        telemetry.addLine(String.format("Translation X: %.2f inches", detection.ftcPose.x));
+                        telemetry.addLine(String.format("Translation Y: %.2f inches", detection.ftcPose.y));
+                        telemetry.addLine(String.format("Translation Y: %.2f inches", detection.ftcPose.y-9));
+                        telemetry.addLine(String.format("Translation Z: %.2f inches", detection.ftcPose.z));
+                        telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", detection.ftcPose.yaw));
+                        telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", detection.ftcPose.pitch));
+                        telemetry.addLine(String.format("Rotation Roll: %.2f degrees", detection.ftcPose.roll));
+                        telemetry.addLine(String.format("Range (distance to tag center): %.2f inches", detection.ftcPose.range));
+                        telemetry.addLine(String.format("Bearing (delta yaw from apriltag center): %.2f degrees", detection.ftcPose.bearing));
+                        telemetry.addLine(String.format("Elevation (delta pitch from apriltag center): %.2f degrees", detection.ftcPose.elevation));
+                    }
+                }
+            }
+        }
+
+        public void updateTelemetry() {
+            packet.put("Top Left Power", dispatch.robot.lf.getPower());
+            packet.put("Top Right Power", dispatch.robot.rf.getPower());
+            packet.put("Bottom Left Power", dispatch.robot.lb.getPower());
+            packet.put("Bottom Right Power", dispatch.robot.rb.getPower());
+
+            packet.put("Top Left Velocity", dispatch.robot.lf.getVelocity());
+            packet.put("Top Right Velocity", dispatch.robot.rf.getVelocity());
+            packet.put("Bottom Left Velocity", dispatch.robot.lb.getVelocity());
+            packet.put("Bottom Right Velocity", dispatch.robot.rb.getVelocity());
+
+            telemetry.update();
             dashboard.sendTelemetryPacket(packet);
         }
         /**
          * Drive to a position with a specified speed.
          *
-         * @param drivePower value between 0 and 1. Default it to 0.5.
-         * @param finalX     final x position of the robot relative to where it was before the method (inches)
-         * @param finalY     final y position of the robot relative to where it was before the method (inches)
+         * @param movePower value between 0 and 1. Default it to 0.5.
+         * @param x     final x position of the robot relative to where it was before the method (inches)
+         * @param y     final y position of the robot relative to where it was before the method (inches)
+         * @param kp    proportional constant for the PID loop
+         * @param ki    integral constant for the PID loop
+         * @param kd    derivative constant for the PID loop
          */
-        public void robotAutoStraightDrivePosition(
-                double drivePower,
-                double finalX,
-                double finalY,
-                HardwareDrive robot
-        ) {
-
-            MathConstHead heading = new MathConstHead();
-            heading.setFinalPose(finalX, finalY);
-
-            double distanceToTarget = heading.returnDistance();
-            double angleToTarget = heading.returnDistance();
-
-            double positiveAngularChangePosition = Math.cos(angleToTarget) + Math.sin(angleToTarget);
-            double negativeAngularChangePosition = Math.cos(angleToTarget) - Math.sin(angleToTarget);
-
-            robot.lf.setTargetPosition((int) (robot.lf.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
-            robot.lb.setTargetPosition((int) (robot.lb.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
-            robot.rf.setTargetPosition((int) (robot.rf.getCurrentPosition() + (negativeAngularChangePosition * CPI * distanceToTarget)));
-            robot.rb.setTargetPosition((int) (robot.rb.getCurrentPosition() + (positiveAngularChangePosition * CPI * distanceToTarget)));
-
-            for (DcMotorEx motor : List.of(robot.lf, robot.lb, robot.rf, robot.rb)) motor.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
-
-
-            while (opModeIsActive()) {
-                robot.lf.setVelocity((drivePower * 2700 * positiveAngularChangePosition));
-                robot.lb.setVelocity((drivePower * 2700 * negativeAngularChangePosition));
-                robot.rf.setVelocity((drivePower * 2700 * negativeAngularChangePosition));
-                robot.rb.setVelocity((drivePower * 2700 * positiveAngularChangePosition));
-
-                telemetry.addData("left front velocity", (drivePower * 2700 * positiveAngularChangePosition));
-                telemetry.addData("left back velocity", (drivePower * 2700 * negativeAngularChangePosition));
-                telemetry.addData("right front velocity", (drivePower * 2700 * negativeAngularChangePosition));
-                telemetry.addData("right back velocity", (drivePower * 2700 * positiveAngularChangePosition));
-            }
+        public void robotAutoStraightDrivePosition(double movePower, double x, double y, double kp, double ki, double kd) {
+            dispatch.constantHeadingV2(movePower, x, y, kp, ki, kd);
         }
     }
 
@@ -96,7 +195,7 @@ public class Methods {
         protected FtcDashboard dashboard;
         protected TelemetryPacket packet;
 
-        public void init_robot() {
+        public void initRobot() {
             robot.init(hardwareMap);
             /*robot.initCamera();*/
 
