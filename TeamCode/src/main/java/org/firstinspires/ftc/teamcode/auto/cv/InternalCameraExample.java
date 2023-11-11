@@ -57,8 +57,8 @@ public class InternalCameraExample extends LinearOpMode
          * the RC phone). If no camera monitor is desired, use the alternate
          * single-parameter constructor instead (commented out below)
          */
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("Webcam 1", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.FRONT, cameraMonitorViewId);
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
         // OR...  Do Not Activate the Camera Monitor View
         //phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK);
@@ -95,7 +95,7 @@ public class InternalCameraExample extends LinearOpMode
                  * For a rear facing camera or a webcam, rotation is defined assuming the camera is facing
                  * away from the user.
                  */
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                phoneCam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_LEFT);
             }
 
             @Override
@@ -104,6 +104,8 @@ public class InternalCameraExample extends LinearOpMode
                 /*
                  * This will be called if the camera could not be opened
                  */
+                telemetry.addLine("Error opening camera");
+                telemetry.update();
             }
         });
 
@@ -221,15 +223,15 @@ public class InternalCameraExample extends LinearOpMode
             /*
              * Draw a simple box around the middle 1/2 of the entire frame
              */
-            Imgproc.rectangle(
-                    input,
-                    new Point(
-                            input.cols()/4,
-                            input.rows()/4),
-                    new Point(
-                            input.cols()*(3f/4f),
-                            input.rows()*(3f/4f)),
-                    new Scalar(0, 255, 0), 4);
+//            Imgproc.rectangle(
+//                     input,
+//                    new Point(
+//                            input.cols()/4,
+//                            input.rows()/4),
+//                    new Point(
+//                            input.cols()*(3f/4f),
+//                            input.rows()*(3f/4f)),
+//                    new Scalar(0, 255, 0), 4);
 
 
             Imgproc.rectangle(input, MID_ROI, new Scalar(255,0,0), 4);
