@@ -205,6 +205,7 @@ public class Methods {
 
 
             telemetry.addData("Yaw", robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            telemetry.addData("-Yaw", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
 
 //        packet.put("X", gamepad1.left_stick_x);
 //        packet.put("Y",  -gamepad1.left_stick_y);
