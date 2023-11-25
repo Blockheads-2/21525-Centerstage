@@ -33,7 +33,7 @@ public class FTCLibAutoTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         dispatch = new AutoHub(this);
 
-        dispatch.initCamera();
+        dispatch.initCamera(telemetry);
 
         Translation2d frontLeftWheelMeters = new Translation2d(0, 0);
         Translation2d frontRightWheelMeters = new Translation2d(0, 0);

@@ -21,6 +21,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
@@ -116,8 +117,8 @@ public class AutoHub {
         //}
     }
 
-    public void  initCamera(){
-        if (robot != null) robot.initCamera();
+    public void  initCamera(Telemetry t){
+        if (robot != null) robot.initCamera(t);
     }
 
     public VisionPortal getVisionPortal(){

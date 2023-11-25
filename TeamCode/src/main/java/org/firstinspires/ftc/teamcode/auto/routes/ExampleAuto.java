@@ -28,7 +28,7 @@ public class ExampleAuto extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
         dispatch = new AutoHub(this);
 
-        dispatch.initCamera();
+        dispatch.initCamera(telemetry);
 
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id", hardwareMap.appContext.getPackageName());
 //        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);

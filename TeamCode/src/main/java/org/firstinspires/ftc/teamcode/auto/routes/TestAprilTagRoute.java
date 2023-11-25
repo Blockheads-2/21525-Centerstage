@@ -200,8 +200,7 @@ public class TestAprilTagRoute extends LinearOpMode
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-            } else {
-
+            } else
                 // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
                 drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
                 strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
@@ -214,7 +213,6 @@ public class TestAprilTagRoute extends LinearOpMode
             moveRobot(drive, strafe, turn);
             sleep(10);
         }
-    }
 
     /**
      * Move robot according to desired axes motions

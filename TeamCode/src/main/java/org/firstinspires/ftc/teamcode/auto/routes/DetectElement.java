@@ -26,7 +26,10 @@ public class DetectElement extends Methods.auto {
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        streamOpenCV();
+//        streamOpenCV();
+        initVisionPortal();
+
+        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), false);
 
         while (!opModeIsActive()){
             updateValueDecrease.update(gamepad1.a);
@@ -50,10 +53,12 @@ public class DetectElement extends Methods.auto {
 //        phoneCam.stopStreaming();
 //        dispatch.robot.initTelemetry(telemetry);
 //        initVisionPortal();
+        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), true);
+        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getOpenCVProcessor(), false);
 
         while (opModeIsActive())
         {
-//            streamVisionPortal();
+            streamAprilTag();
 
             updateTelemetry();
             sleep(20);

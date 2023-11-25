@@ -29,7 +29,7 @@ public class DetectElementGRIP extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         dispatch = new AutoHub(this);
-        dispatch.initCamera();
+        dispatch.initCamera(telemetry);
 
         dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();

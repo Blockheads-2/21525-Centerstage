@@ -45,6 +45,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
+import org.firstinspires.ftc.teamcode.auto.cv.RawDataProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
@@ -79,6 +80,7 @@ public class HardwareDrive {
     HardwareMap hwMap = null;
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
+    private RawDataProcessor openCV;                 // Used for managing the OpenCV detection process.
     private final AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     private Telemetry telemetry = null;
 
@@ -125,7 +127,9 @@ public class HardwareDrive {
         }
     }
 
-    public void initCamera() {
+    public void initCamera(Telemetry t) {
+        initTelemetry(t);
+
         if (hwMap != null && hwMap.get(WebcamName.class, "Webcam 1") != null) {
             aprilTag = new AprilTagProcessor.Builder() // Create a new AprilTag Processor Builder object.
                 .setTagLibrary(AprilTagGameDatabase.getCurrentGameTagLibrary()) //sets the AprilTagLibrary to the current season. You can add your own custom AprilTags as well (refer to AprilTag Library under the FIRST FTC Docs)
@@ -136,9 +140,12 @@ public class HardwareDrive {
                 .setDrawCubeProjection(true) // Default: false.
                 .build(); // Create an AprilTagProcessor by calling build()
 
+            openCV = new RawDataProcessor.Builder()
+                    .build(telemetry);
+
             visionPortal = new VisionPortal.Builder() // Create a new VisionPortal Builder object.
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1")) // Specify the camera to be used for this VisionPortal.
-                .addProcessors(aprilTag) // Add the AprilTag Processor to the VisionPortal Builder.
+                .addProcessors(aprilTag, openCV) // Add the AprilTag Processor to the VisionPortal Builder.
                 .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG format uses less bandwidth than the default YUY2.
                 .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.
@@ -174,6 +181,8 @@ public class HardwareDrive {
     public AprilTagProcessor getAprilTagProcessor() {
         return aprilTag;
     }
+
+    public RawDataProcessor getOpenCVProcessor() {return openCV;}
 
     public void pauseStream() {
         visionPortal.stopLiveView(); //temporarily sops the live view (RC preview). This should be fine as we don't use an RC phone.
