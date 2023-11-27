@@ -162,7 +162,6 @@ public class Methods {
                 }
             }
         }
-
         public void updateTelemetry() {
             packet.put("Top Left Power", dispatch.robot.lf.getPower());
             packet.put("Top Right Power", dispatch.robot.rf.getPower());
@@ -218,7 +217,7 @@ public class Methods {
             dispatch.turnAbsPID(theta, 6);
         }
 
-        public void spinIntake(double power, double timeout){
+        public void runIntake(double power, double timeout){
             dispatch.spinIntake(power, timeout);
         }
     }

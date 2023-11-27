@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.teleop;
 
 import android.view.View;
-
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.common.Methods;
 
-@TeleOp(name = "Base Drive", group = "Beta")
+@TeleOp(name = "Base Drive", group = "Meet 0")
 public class BaseDrive extends Methods.teleOp {
 
     View relativeLayout;
@@ -17,14 +15,10 @@ public class BaseDrive extends Methods.teleOp {
     }
 
     @Override
-    public void init_loop() {
-
-    }
+    public void init_loop() {}
 
     @Override
-    public void start() {
-
-    }
+    public void start() {}
 
     @Override
     public void loop() {
@@ -36,7 +30,5 @@ public class BaseDrive extends Methods.teleOp {
     }
 
     @Override
-    public void stop() {
-
-    }
+    public void stop() {}
 }

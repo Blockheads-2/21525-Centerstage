@@ -31,24 +31,9 @@ public class A4Auto extends Methods.auto {
         initRobot();
 
         while (!opModeIsActive()) dispatch.updateTelemetry();
-
-
         waitForStart();
 
-//        constantHeading(RobotConstants.movePower, RobotConstants.x, RobotConstants.y, RobotConstants.kp, RobotConstants.ki, RobotConstants.kd);
-        constantHeading(0.2, 0, 7, 0, 0, 0);
-
-        constantHeading(0.2, -90, 0, 0, 0, 0);
-
-        spinIntake(-0.6, 4);
-//        turn(RobotConstants.theta);
-//        absoluteTurn(-90);
-//        dispatch.turnPID(90, 6);
-//        dispatch.turnAbsPID(90, 6)
-        //        dispatch.turn(90);
-//        dispatch.constantHeading(0.5, 0, 108,  0.03, 0, 0);
-//        dispatch.constantHeading(0.5, 0, -108, 0.03, 0, 0);
-//        dispatch.turn(90);
-//        dispatch.constantHeading(0.5, 0, 27,  0.03, 0, 0);
+        constantHeading(0.2, -55, 5, 0, 0, 0);
+        runIntake(-0.6, 4);
     }
 }

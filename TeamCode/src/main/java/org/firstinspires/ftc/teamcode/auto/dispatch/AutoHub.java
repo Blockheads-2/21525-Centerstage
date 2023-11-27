@@ -628,7 +628,7 @@ public class AutoHub {
         double addPose = (ratioAddPose * COUNTS_PER_INCH * distance);
         double subtractPose = (ratioSubPose * COUNTS_PER_INCH * distance);
 
-        timeoutS = distance / (speed * constants.CPI);
+        timeoutS = distance / (speed * Constants.CPI);
 
         // Ensure that the opmode is still active
         if (linearOpMode.opModeIsActive()) {
