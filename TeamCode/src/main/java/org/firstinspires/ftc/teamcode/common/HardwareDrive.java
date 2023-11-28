@@ -70,11 +70,13 @@ public class HardwareDrive {
     public DcMotorEx rf;
     public DcMotorEx rb;
     public DcMotorEx lb;
+    public DcMotorEx intake;
+    public DcMotorEx outtake;
+
     public Motor lf_motor;
     public Motor rf_motor;
     public Motor rb_motor;
     public Motor lb_motor;
-    public DcMotorEx intake;
     public IMU imu;
     public MecanumDrive m_drive;
     HardwareMap hwMap = null;
@@ -96,6 +98,7 @@ public class HardwareDrive {
         rf = hwMap.get(DcMotorEx.class, "right_front");
         rb = hwMap.get(DcMotorEx.class, "right_back");
         intake = hwMap.get(DcMotorEx.class, "intake");
+        outtake = hwMap.get(DcMotorEx.class, "outtake");
         imu = hwMap.get(IMU.class, "imu");
 
         lf_motor = new Motor(ahwMap, "left_front", Constants.CPR, Constants.RPM); //playing around with ftclib
@@ -115,6 +118,7 @@ public class HardwareDrive {
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
         intake.setDirection(DcMotorSimple.Direction.REVERSE);
+        outtake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         resetEncoderPos();
         imu.resetYaw();
