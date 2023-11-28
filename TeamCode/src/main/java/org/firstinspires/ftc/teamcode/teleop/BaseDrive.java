@@ -25,7 +25,7 @@ public class BaseDrive extends Methods.teleOp {
         robotBaseDriveLoop(driveTrainSpeed());
         robotBaseMicroAdjustLoop(driveTrainSpeed());
         robotBaseIntakeLoop();
-
+        robotBaseOuttakeLoop();
 //        UpdateButton();
         UpdateTelemetry();
     }

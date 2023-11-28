@@ -99,8 +99,8 @@ public class HardwareDrive {
         lb = hwMap.get(DcMotorEx.class, "left_back");
         rf = hwMap.get(DcMotorEx.class, "right_front");
         rb = hwMap.get(DcMotorEx.class, "right_back");
-        intake = hwMap.get(DcMotorEx.class, "intake");
-        outtake = hwMap.get(DcMotorEx.class, "outtake");
+//        intake = hwMap.get(DcMotorEx.class, "intake");
+//        outtake = hwMap.get(DcMotorEx.class, "outtake");
         imu = hwMap.get(IMU.class, "imu");
 
         lf_motor = new Motor(ahwMap, "left_front", Constants.CPR, Constants.RPM); //playing around with ftclib
@@ -119,8 +119,8 @@ public class HardwareDrive {
         lb.setDirection(DcMotorSimple.Direction.REVERSE);
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
-        outtake.setDirection(DcMotorSimple.Direction.FORWARD);
+//        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+//        outtake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         resetEncoderPos();
         imu.resetYaw();
