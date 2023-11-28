@@ -30,6 +30,7 @@ public class DetectElement extends Methods.auto {
         initVisionPortal();
 
         dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), false);
+        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), false);
 
         while (!opModeIsActive()){
             updateValueDecrease.update(gamepad1.a);
@@ -56,6 +57,10 @@ public class DetectElement extends Methods.auto {
         dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), true);
         dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getOpenCVProcessor(), false);
 
+
+        //
+        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), true);
+
         while (opModeIsActive())
         {
             streamAprilTag();
@@ -64,6 +69,7 @@ public class DetectElement extends Methods.auto {
             sleep(20);
         }
 
+        dispatch.robot.getVisionPortal().close();
         phoneCam.stopStreaming();
     }
 }

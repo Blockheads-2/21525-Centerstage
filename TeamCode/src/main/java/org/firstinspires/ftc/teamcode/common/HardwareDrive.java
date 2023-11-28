@@ -50,6 +50,7 @@ import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -81,6 +82,7 @@ public class HardwareDrive {
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
     private RawDataProcessor openCV;                 // Used for managing the OpenCV detection process.
+    private TfodProcessor tfod;
     private final AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     private Telemetry telemetry = null;
 
@@ -143,9 +145,16 @@ public class HardwareDrive {
             openCV = new RawDataProcessor.Builder()
                     .build(telemetry);
 
+            tfod = new TfodProcessor.Builder() // Create a new TFOD Processor Builder object.
+                    .setMaxNumRecognitions(10) // Max. number of recognitions the network will return
+                    .setUseObjectTracker(true) // Whether to use the object tracker
+                    .setTrackerMaxOverlap((float) 0.2) // Max. % of box overlapped by another box at recognition time
+                    .setTrackerMinSize(16) // Min. size of object that the object tracker will track
+                    .build(); // Create a TFOD Processor by calling build()
+
             visionPortal = new VisionPortal.Builder() // Create a new VisionPortal Builder object.
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1")) // Specify the camera to be used for this VisionPortal.
-                .addProcessors(aprilTag, openCV) // Add the AprilTag Processor to the VisionPortal Builder.
+                .addProcessors(aprilTag, openCV, tfod) // Add the AprilTag Processor to the VisionPortal Builder.
                 .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG format uses less bandwidth than the default YUY2.
                 .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.
@@ -183,6 +192,10 @@ public class HardwareDrive {
     }
 
     public RawDataProcessor getOpenCVProcessor() {return openCV;}
+
+    public TfodProcessor getTfodProcessor(){
+        return tfod;
+    }
 
     public void pauseStream() {
         visionPortal.stopLiveView(); //temporarily sops the live view (RC preview). This should be fine as we don't use an RC phone.
