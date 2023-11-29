@@ -34,7 +34,7 @@ public class DetectElementGRIP extends LinearOpMode {
         packet = new TelemetryPacket();
 
         dispatch.initTelemetry(dashboard, packet);
-        dispatch.updateTelemetry();
+//        dispatch.updateTelemetry();
 
 //        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id", hardwareMap.appContext.getPackageName());
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("Webcam 1","id", hardwareMap.appContext.getPackageName());
@@ -48,7 +48,7 @@ public class DetectElementGRIP extends LinearOpMode {
             @Override
             public void onOpened()
             {
-                phoneCam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+                phoneCam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_LEFT);
             }
 
             @Override
@@ -63,7 +63,7 @@ public class DetectElementGRIP extends LinearOpMode {
             updateValueDecrease.update(gamepad1.a);
             updateValueIncrease.update(gamepad1.b);
 
-            dispatch.updateTelemetry();
+//            dispatch.updateTelemetry();
         }
         waitForStart();
     }
