@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.auto.cv;
 
 import android.graphics.Canvas;
+import android.util.Pair;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.tfod.CanvasAnnotator;
@@ -14,9 +15,12 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-public class RawDataProcessorImpl extends RawDataProcessor{
+import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
+
+public class OpenCvProcessorImpl extends OpenCvProcessor {
     Telemetry telemetry;
-    Mat mat = new Mat();
+    Mat hsvOutput = new Mat();
     Mat blurOutput = new Mat();
     int lowHue = 120;
     int highHue = 180;
@@ -32,12 +36,14 @@ public class RawDataProcessorImpl extends RawDataProcessor{
     static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 300));
     static final Rect RIGHT_ROI = new Rect(new Point(1280, 100), new Point(1080, 400));
 
+    private final AtomicReference<Pair<Mat, Date>> cameraFrame =  new AtomicReference<>(); //we can store camera frames here (assuming that processFrame is called in some other thread)
+    //AtomicReference is a faster way (than synchronized / volatile var, which makes an OS system call) to share data between threads because it uses only a single CPU instruction.
 
     static double PERCENT_COLOR_THRESHOLD = 0.4;
     double[] hsvThresholdHue = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
     double[] hsvThresholdSaturation = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
     double[] hsvThresholdValue = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
-    public RawDataProcessorImpl(Telemetry telemetry){
+    public OpenCvProcessorImpl(Telemetry telemetry){
         this.telemetry = telemetry;
     }
 
@@ -56,10 +62,10 @@ public class RawDataProcessorImpl extends RawDataProcessor{
 
         // Step HSV_Threshold0:
         Mat hsvThresholdInput = blurOutput;
-        hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, mat); //mat is the output
+        hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvOutput); //mat is the output
 
-        Mat left = mat.submat(LEFT_ROI);
-        Mat mid = mat.submat(MID_ROI);
+        Mat left = hsvOutput.submat(LEFT_ROI);
+        Mat mid = hsvOutput.submat(MID_ROI);
 
         double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area() / 255;
         double midValue = Core.sumElems(mid).val[0] / MID_ROI.area() / 255;
@@ -93,13 +99,15 @@ public class RawDataProcessorImpl extends RawDataProcessor{
             telemetry.update();
         }
 
-        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
+//        Imgproc.cvtColor(mat, output, Imgproc.COLOR_GRAY2RGB);
 
-        Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0), 4);
-        Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0), 4);
-        Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0), 4);
+        Imgproc.rectangle(hsvOutput, MID_ROI, new Scalar(255,0,0), 4);
+        Imgproc.rectangle(hsvOutput, LEFT_ROI, new Scalar(255,0,0), 4);
+        Imgproc.rectangle(hsvOutput, RIGHT_ROI, new Scalar(255,0,0), 4);
 
-        return mat;
+        cameraFrame.set(Pair.create(hsvOutput, new Date()));
+
+        return hsvOutput;
     }
 
     enum BlurType{
@@ -204,5 +212,10 @@ public class RawDataProcessorImpl extends RawDataProcessor{
         {
             ((CanvasAnnotator) userContext).draw(canvas, onscreenWidth, onscreenHeight, scaleBmpPxToCanvasPx, scaleCanvasDensity);
         }
+    }
+
+    @Override
+    public Pair<Mat, Date> getCameraFrame(){
+        return cameraFrame.getAndSet(null);
     }
 }
