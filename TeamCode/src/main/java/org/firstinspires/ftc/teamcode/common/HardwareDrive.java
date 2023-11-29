@@ -141,10 +141,10 @@ public class HardwareDrive {
                 .setDrawAxes(true) // Default: false.
                 .setDrawCubeProjection(true) // Default: false.
                 .build(); // Create an AprilTagProcessor by calling build()
-
-            openCV = new OpenCvProcessor.Builder()
-                    .build();
-            openCV.setTelemetry(telemetry);
+//
+//            openCV = new OpenCvProcessor.Builder()
+//                    .build();
+//            openCV.setTelemetry(telemetry);
 
             tfod = new TfodProcessor.Builder() // Create a new TFOD Processor Builder object.
                     .setMaxNumRecognitions(10) // Max. number of recognitions the network will return
@@ -155,7 +155,8 @@ public class HardwareDrive {
 
             visionPortal = new VisionPortal.Builder() // Create a new VisionPortal Builder object.
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1")) // Specify the camera to be used for this VisionPortal.
-                .addProcessors(aprilTag, openCV, tfod) // Add the AprilTag Processor to the VisionPortal Builder.
+//                .addProcessors(aprilTag, openCV, tfod) // Add the AprilTag Processor to the VisionPortal Builder.
+                .addProcessors(aprilTag, tfod) // Add the AprilTag Processor to the VisionPortal Builder.
                 .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG format uses less bandwidth than the default YUY2.
                 .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.

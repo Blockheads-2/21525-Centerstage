@@ -66,5 +66,7 @@ public class DetectElementGRIP extends LinearOpMode {
 //            dispatch.updateTelemetry();
         }
         waitForStart();
+
+        dispatch.initCamera(telemetry);
     }
 }
