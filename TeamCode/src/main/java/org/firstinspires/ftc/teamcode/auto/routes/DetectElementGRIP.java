@@ -39,7 +39,8 @@ public class DetectElementGRIP extends LinearOpMode {
 
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        GRIPDetectionPipeline detector = new GRIPDetectionPipeline(telemetry);
+//        GRIPDetectionPipeline detector = new GRIPDetectionPipeline(telemetry);
+        TeamElementDetectionPipeline detector = new TeamElementDetectionPipeline(telemetry);
         phoneCam.setPipeline(detector);
 
         phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
