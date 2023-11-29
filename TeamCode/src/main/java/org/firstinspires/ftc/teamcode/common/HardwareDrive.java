@@ -143,7 +143,8 @@ public class HardwareDrive {
                 .build(); // Create an AprilTagProcessor by calling build()
 
             openCV = new OpenCvProcessor.Builder()
-                    .build(telemetry);
+                    .build();
+            openCV.setTelemetry(telemetry);
 
             tfod = new TfodProcessor.Builder() // Create a new TFOD Processor Builder object.
                     .setMaxNumRecognitions(10) // Max. number of recognitions the network will return
