@@ -29,7 +29,6 @@ public class DetectElementGRIP extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         dispatch = new AutoHub(this);
-        dispatch.initCamera(telemetry);
 
         dashboard = FtcDashboard.getInstance();
         packet = new TelemetryPacket();
@@ -37,7 +36,8 @@ public class DetectElementGRIP extends LinearOpMode {
         dispatch.initTelemetry(dashboard, packet);
         dispatch.updateTelemetry();
 
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id", hardwareMap.appContext.getPackageName());
+//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id", hardwareMap.appContext.getPackageName());
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("Webcam 1","id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 //        GRIPDetectionPipeline detector = new GRIPDetectionPipeline(telemetry);
         TeamElementDetectionPipeline detector = new TeamElementDetectionPipeline(telemetry);
