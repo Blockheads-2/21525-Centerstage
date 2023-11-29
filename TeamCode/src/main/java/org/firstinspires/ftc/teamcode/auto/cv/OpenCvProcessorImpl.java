@@ -34,12 +34,12 @@ public class OpenCvProcessorImpl extends OpenCvProcessor {
     }
 
     @Override
-    public Object processFrame(Mat input, long captureTimeNanos){
+    public Object processFrame(Mat input, long captureTimeNanos){ //ERROR: Cannot return a Mat to FIRST's internal function (related to Tfod Canvas Annotator) that expects something else; look into this more later (I took a picture).
 
         Imgproc.cvtColor(input, hsvOutput, Imgproc.COLOR_RGB2HSV);
         cameraFrame.set(Pair.create(hsvOutput, new Date()));
 
-        return hsvOutput;
+        return input;
     }
 
     @Override

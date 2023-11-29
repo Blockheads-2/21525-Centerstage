@@ -47,8 +47,7 @@ public abstract class OpenCvProcessor implements VisionProcessor {
 
     public abstract Pair<Mat, Date> getCameraFrame();
 
-    private void processFrameHSV(Mat input){
-
+    public void processFrameHSV(Mat input){
         // Step Blur0:
         Mat blurInput = input;
         BlurType blurType = BlurType.get("Box Blur");

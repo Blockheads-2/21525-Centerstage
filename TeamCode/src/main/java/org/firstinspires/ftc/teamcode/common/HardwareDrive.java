@@ -157,7 +157,8 @@ public class HardwareDrive {
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1")) // Specify the camera to be used for this VisionPortal.
 //                .addProcessors(aprilTag, openCV, tfod) // Add the AprilTag Processor to the VisionPortal Builder.
                 .addProcessors(aprilTag, tfod) // Add the AprilTag Processor to the VisionPortal Builder.
-                .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
+//                .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
+                .setCameraResolution(new Size(1280, 720)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG format uses less bandwidth than the default YUY2.
                 .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.
                 .setAutoStopLiveView(true) // Automatically stop LiveView (RC preview) when all vision processors are disabled.

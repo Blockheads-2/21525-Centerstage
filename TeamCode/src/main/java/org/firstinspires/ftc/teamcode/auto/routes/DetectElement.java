@@ -33,6 +33,8 @@ public class DetectElement extends Methods.auto {
         dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), false);
 
         while (!opModeIsActive()){
+//            dispatch.robot.getOpenCVProcessor().processFrameHSV(dispatch.robot.getOpenCVProcessor().getCameraFrame().first);
+
             updateValueDecrease.update(gamepad1.a);
             updateValueIncrease.update(gamepad1.b);
 
@@ -64,6 +66,7 @@ public class DetectElement extends Methods.auto {
         while (opModeIsActive())
         {
             streamAprilTag();
+            streamTfod();
 
             updateTelemetry();
             sleep(20);

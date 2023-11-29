@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
-import org.firstinspires.ftc.teamcode.auto.cv.GRIPDetectionPipeline;
 import org.firstinspires.ftc.teamcode.auto.cv.TeamElementDetectionPipeline;
 import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
@@ -19,8 +18,8 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 import java.util.List;
 
-@Autonomous(name="Detect Element GRIP", group="Autonomous")
-public class DetectElementGRIP extends LinearOpMode {
+@Autonomous(name="Detect Element Staggered", group="Autonomous")
+public class DetectElementStaggered extends LinearOpMode {
     AutoHub dispatch;
 
     FtcDashboard dashboard;
@@ -64,15 +63,19 @@ public class DetectElementGRIP extends LinearOpMode {
             }
         });
 
-        while (!opModeIsActive()){
+        boolean detectTeamElement = true;
+        while (!opModeIsActive() && detectTeamElement){
             updateValueDecrease.update(gamepad1.a);
             updateValueIncrease.update(gamepad1.b);
 
+            if (detector.isSeen()) detectTeamElement = false;
 //            dispatch.updateTelemetry();
         }
-        waitForStart();
 
+        phoneCam.stopStreaming();
         dispatch.initCamera(telemetry);
+
+        waitForStart();
 
         while (opModeIsActive()){
             telemetryTfod();
@@ -107,8 +110,8 @@ public class DetectElementGRIP extends LinearOpMode {
             //todo:
             // look into voltage spikes in intake motor (getCurrent()) to see if motor is intaking stuff
 
-
         }   // end for() loop
 
+        telemetry.update();
     }   // end method telemetryTfod()
 }
