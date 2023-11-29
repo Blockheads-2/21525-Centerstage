@@ -5,14 +5,19 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.auto.cv.GRIPDetectionPipeline;
 import org.firstinspires.ftc.teamcode.auto.cv.TeamElementDetectionPipeline;
 import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
+import org.firstinspires.ftc.teamcode.common.Constants;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
+
+import java.util.List;
 
 @Autonomous(name="Detect Element GRIP", group="Autonomous")
 public class DetectElementGRIP extends LinearOpMode {
@@ -68,5 +73,42 @@ public class DetectElementGRIP extends LinearOpMode {
         waitForStart();
 
         dispatch.initCamera(telemetry);
+
+        while (opModeIsActive()){
+            telemetryTfod();
+        }
     }
+
+    private void telemetryTfod() {
+
+        List<Recognition> currentRecognitions = dispatch.robot.getTfodProcessor().getRecognitions();
+        telemetry.addData("# Objects Detected", currentRecognitions.size());
+
+        // Step through the list of recognitions and display info for each one.
+        for (Recognition recognition : currentRecognitions) {
+            double x = (recognition.getLeft() + recognition.getRight()) / 2 ;
+            double y = (recognition.getTop()  + recognition.getBottom()) / 2 ;
+
+            telemetry.addData(""," ");
+            telemetry.addData("Image", "%s (%.0f %% Conf.)", recognition.getLabel(), recognition.getConfidence() * 100);
+            telemetry.addData("- Position", "%.0f / %.0f", x, y); //units all in pixels.
+            telemetry.addData("- Size", "%.0f x %.0f", recognition.getWidth(), recognition.getHeight());
+            telemetry.addData("- Image Size", "%d x %d", recognition.getImageWidth(), recognition.getImageHeight());
+            telemetry.addData("Area", recognition.getHeight() * recognition.getWidth());
+            telemetry.addData("maybe distance", 1.0 / (recognition.getHeight() * recognition.getWidth()));
+
+            telemetry.addData("- Angle", recognition.estimateAngleToObject(AngleUnit.DEGREES));
+
+            telemetry.addData("- Distance to Object", recognition.getWidth() / Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+            telemetry.addData("- Distance to Object (MAYBE)", recognition.getWidth() * Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+
+            telemetry.addData("Constant:", Constants.PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA);
+
+            //todo:
+            // look into voltage spikes in intake motor (getCurrent()) to see if motor is intaking stuff
+
+
+        }   // end for() loop
+
+    }   // end method telemetryTfod()
 }
