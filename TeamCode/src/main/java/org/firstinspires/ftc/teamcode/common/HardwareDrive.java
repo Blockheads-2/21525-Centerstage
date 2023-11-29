@@ -43,16 +43,12 @@ import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
-import org.firstinspires.ftc.teamcode.auto.cv.RawDataProcessor;
+import org.firstinspires.ftc.teamcode.auto.cv.OpenCvProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 import org.firstinspires.ftc.vision.tfod.TfodProcessor;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * This is NOT an opmode.
@@ -83,7 +79,7 @@ public class HardwareDrive {
     HardwareMap hwMap = null;
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
-    private RawDataProcessor openCV;                 // Used for managing the OpenCV detection process.
+    private OpenCvProcessor openCV;                 // Used for managing the OpenCV detection process.
     private TfodProcessor tfod;
     private final AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     private Telemetry telemetry = null;
@@ -146,7 +142,7 @@ public class HardwareDrive {
                 .setDrawCubeProjection(true) // Default: false.
                 .build(); // Create an AprilTagProcessor by calling build()
 
-            openCV = new RawDataProcessor.Builder()
+            openCV = new OpenCvProcessor.Builder()
                     .build(telemetry);
 
             tfod = new TfodProcessor.Builder() // Create a new TFOD Processor Builder object.
@@ -195,7 +191,7 @@ public class HardwareDrive {
         return aprilTag;
     }
 
-    public RawDataProcessor getOpenCVProcessor() {return openCV;}
+    public OpenCvProcessor getOpenCVProcessor() {return openCV;}
 
     public TfodProcessor getTfodProcessor(){
         return tfod;
