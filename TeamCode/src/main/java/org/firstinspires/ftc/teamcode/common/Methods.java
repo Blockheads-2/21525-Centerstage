@@ -87,6 +87,10 @@ public class Methods {
             location = detector.getLocation();
         }
 
+        public void stopOpenCV(){
+            phoneCam.stopStreaming();
+        }
+
         public void streamAprilTag(){
             // Calling getDetectionsUpdate() will only return an object if there was a new frame
             // processed since the last time we called it. Otherwise, it will return null. This

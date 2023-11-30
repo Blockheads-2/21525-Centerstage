@@ -65,7 +65,7 @@ public class DetectElement extends Methods.auto {
 
         while (opModeIsActive())
         {
-            streamAprilTag();
+            streamAprilTag(); //concern: AprilTag expects 640x480, I believe
             streamTfod();
 
             updateTelemetry();
