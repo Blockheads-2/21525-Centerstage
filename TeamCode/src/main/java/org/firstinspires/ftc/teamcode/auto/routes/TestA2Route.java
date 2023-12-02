@@ -20,17 +20,18 @@ public class TestA2Route extends Methods.auto{
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        streamOpenCV();
+        streamOpenCV(true);
 
         boolean detectTeamElement = true;
 
 
         TeamElementDetectionPipeline.Location elementLocation;
         while (!opModeIsActive() && detectTeamElement){
-            if (detector.isSeen()) {
-                detectTeamElement = false;
-            }
+//            if (detector.isSeen()) {
+//                detectTeamElement = false;
+//            }
 //            dispatch.updateTelemetry();
+            elementLocation = detector.getLocation();
         }
 
         elementLocation = detector.getLocation();
@@ -42,8 +43,8 @@ public class TestA2Route extends Methods.auto{
         boolean aprilTagProcessor = false;
         boolean tfodProcessor = false;
 
-        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
-        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
+//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
+//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
 
         while (!opModeIsActive()){
             telemetry.addData("Team Element Position:", detector.getLocation());
@@ -51,11 +52,11 @@ public class TestA2Route extends Methods.auto{
             telemetry.addData("April Tag Processor On?", aprilTagProcessor);
             telemetry.addData("TFOD Processor On?", tfodProcessor);
 
-            if (aprilTagProcessor){
-                streamAprilTag();
-            } else if (tfodProcessor){
-                streamTfod();
-            }
+//            if (aprilTagProcessor){
+//                streamAprilTag();
+//            } else if (tfodProcessor){
+//                streamTfod();
+//            }
         }
 
         waitForStart();
@@ -63,21 +64,21 @@ public class TestA2Route extends Methods.auto{
         switch (elementLocation) {
             case LEFT:
                 //...
-                constantHeading(0.2, -7, 20, 0, 0, 0,0);
-                constantHeading(0.2, 0, -3, 0, 0, 0);
+                constantHeading(0.2, -7, 37, 0, 0, 0,0);
+                constantHeading(0.2, 0, -5, 0, 0, 0);
                 break;
 
             case RIGHT:
                 //...
-                constantHeading(0.2, 7, 20, 0, 0, 0);
-                constantHeading(0.2, 0, -3, 0, 0, 0);
-
+                constantHeading(0.2, 7, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.2, -7, 0, 0, 0, 0);
                 break;
 
             case MID:
                 //...
-                constantHeading(0.2, 0, 20, 0, 0, 0);
-                constantHeading(0.2, 0, -3, 0, 0, 0);
+                constantHeading(0.2, 0, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -5, 0, 0, 0);
                 break;
         }
 

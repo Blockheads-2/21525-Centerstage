@@ -988,7 +988,7 @@ public class AutoHub {
 
         double error = deltaAngle(theta, currAngle);
 
-        while (linearOpMode.opModeIsActive() && Math.abs(error) > 2) {
+        while (linearOpMode.opModeIsActive() && Math.abs(error) > 0.5) {
             double motorPower = (error < 0 ? -power : power);
             robot.lf.setPower(-motorPower);
             robot.rf.setPower(motorPower);
@@ -998,6 +998,7 @@ public class AutoHub {
 //            detectColor();
 //            checkButton();
 
+            currAngle = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
             error = deltaAngle(theta, currAngle);
             linearOpMode.telemetry.addData("error", error);
             linearOpMode.telemetry.addData("currAngle", getAbsoluteAngle());
@@ -1049,7 +1050,7 @@ public class AutoHub {
         linearOpMode.telemetry.setMsTransmissionInterval(50);
         // Checking lastSlope to make sure that it's not oscillating when it quits
         runtime.reset();
-        while ((runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) > 0.25 || pid.getLastSlope() > 0.15)) {
+        while ((runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) > 5 || pid.getLastSlope() > 0.15)) {
             double motorPower = pid.update(getAbsoluteAngle());
             robot.lf.setPower(-motorPower);
             robot.rf.setPower(motorPower);

@@ -42,9 +42,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 @TeleOp(name = "Internal Camera Example", group = "CV")
 public class InternalCameraExample extends LinearOpMode {
-    static final Rect MID_ROI = new Rect(new Point(500, 100), new Point(750, 300)); //470-810
-    static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 300));
-    static final Rect RIGHT_ROI = new Rect(new Point(1280, 100), new Point(1080, 400));
+    static final Rect MID_ROI = new Rect(new Point(400, 100), new Point(650, 300)); //470-810
+    static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 350));
+    static final Rect RIGHT_ROI = new Rect(new Point(1250, 100), new Point(980, 450));
 
     /*
      * An example image processing pipeline to be run upon receipt of each frame from the camera.

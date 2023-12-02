@@ -31,49 +31,50 @@ public class DetectElementStaggered extends Methods.auto {
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        streamOpenCV();
+        streamOpenCV(true);
 
         boolean detectTeamElement = true;
 
 
-        while (!opModeIsActive() && detectTeamElement){
+        while (!opModeIsActive()){
             UpdateButton();
-
-            if (detector.isSeen()) detectTeamElement = false;
+//            telemetry.addData("Team Element Position:", detector.getLocation());
+//            telemetry.update();
+//            if (detector.isSeen()) detectTeamElement = false;
 //            dispatch.updateTelemetry();
         }
 
         stopOpenCV();
 
-        dispatch.initCamera(telemetry);
-
-        boolean aprilTagProcessor = false;
-        boolean tfodProcessor = true;
-
-        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
-        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
+//        dispatch.initCamera(telemetry);
+//
+//        boolean aprilTagProcessor = false;
+//        boolean tfodProcessor = true;
+//
+//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
+//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
 
         waitForStart();
 
         while (opModeIsActive()){
             UpdateButton();
             telemetry.addData("Team Element Position:", detector.getLocation());
-            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
-            telemetry.addData("TFOD Processor On?", tfodProcessor);
+//            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
+//            telemetry.addData("TFOD Processor On?", tfodProcessor);
 
-            if (updateValueDecrease.is(Button.State.TAP)) {
-                aprilTagProcessor = !aprilTagProcessor;
-                dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
-            } else if (updateValueDecrease.is(Button.State.TAP)){
-                tfodProcessor = !tfodProcessor;
-                dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
-            }
-
-            if (aprilTagProcessor){
-                streamAprilTag();
-            } else if (tfodProcessor){
-                streamTfod();
-            }
+//            if (updateValueDecrease.is(Button.State.TAP)) {
+//                aprilTagProcessor = !aprilTagProcessor;
+//                dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
+//            } else if (updateValueDecrease.is(Button.State.TAP)){
+//                tfodProcessor = !tfodProcessor;
+//                dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
+//            }
+//
+//            if (aprilTagProcessor){
+//                streamAprilTag();
+//            } else if (tfodProcessor){
+//                streamTfod();
+//            }
         }
     }
 

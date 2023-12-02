@@ -7,24 +7,86 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.robot.Robot;
 
+import org.firstinspires.ftc.teamcode.auto.cv.TeamElementDetectionPipeline;
 import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.Methods;
 
-@Autonomous(name="A2 Blue Autonomous", group="Autonomous")
-public class A2Auto extends Methods.auto {
+@Autonomous(name="A2 Auto (Blue Far)", group="Autonomous")
+public class A2Auto extends Methods.auto{
 
     @Override
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        while (!opModeIsActive()) dispatch.updateTelemetry();
+        streamOpenCV(true);
+
+        boolean detectTeamElement = true;
+
+
+        TeamElementDetectionPipeline.Location elementLocation;
+        while (!opModeIsActive() && detectTeamElement){
+//            if (detector.isSeen()) {
+//                detectTeamElement = false;
+//            }
+//            dispatch.updateTelemetry();
+            elementLocation = detector.getLocation();
+        }
+
+        elementLocation = detector.getLocation();
+
+        stopOpenCV();
+
+//        dispatch.initCamera(telemetry);
+
+        boolean aprilTagProcessor = false;
+        boolean tfodProcessor = false;
+
+//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
+//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
+
+        while (!opModeIsActive()){
+            telemetry.addData("Team Element Position:", detector.getLocation());
+            telemetry.addData("Team Element Position va:", elementLocation);
+            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
+            telemetry.addData("TFOD Processor On?", tfodProcessor);
+
+//            if (aprilTagProcessor){
+//                streamAprilTag();
+//            } else if (tfodProcessor){
+//                streamTfod();
+//            }
+        }
 
         waitForStart();
 
-        constantHeading(0.2, 0, 7, 0, 0, 0);
+        switch (elementLocation) {
+            case LEFT:
+                //...
+                constantHeading(0.2, -7, 37, 0, 0, 0,0);
+                constantHeading(0.2, 0, -5, 0, 0, 0);
+                break;
+
+            case RIGHT:
+                //...
+                constantHeading(0.2, 7, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.2, -7, 0, 0, 0, 0);
+
+                break;
+
+            case MID:
+                //...
+                constantHeading(0.2, 0, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.2, -5, 0, 0, 0, 0);
+
+                break;
+        }
+
+//        constantHeading(0.2, 0, 7, 0, 0, 0);
         constantHeading(0.2, -90, 0, 0, 0, 0);
-        runIntake(-0.6, 4);
+//        runIntake(-0.6, 4);
     }
 }

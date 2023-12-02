@@ -63,10 +63,11 @@ public class Methods {
             dispatch.initCamera(telemetry);
         }
 
-        public void streamOpenCV(){
+        public void streamOpenCV(boolean blue){
             int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("Webcam 1","id", hardwareMap.appContext.getPackageName());
             phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
             detector = new TeamElementDetectionPipeline(telemetry);
+            detector.blueOrRed(blue);
             phoneCam.setPipeline(detector);
 
             phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
@@ -254,8 +255,8 @@ public class Methods {
         public void turn(double theta){ //turning relative to its initial point
             dispatch.turnPID(theta, 6);
         }
-        public void absoluteTurn(double theta){ //turning relative to field
-            dispatch.absoluteTurn(theta, 0.4);
+        public void absoluteTurn(double theta, double power){ //turning relative to field
+            dispatch.absoluteTurn(theta, power);
         }
 
         public void runIntake(double power, double timeout){
@@ -295,8 +296,8 @@ public class Methods {
             packet = new TelemetryPacket();
             dashboard.setTelemetryTransmissionInterval(25);
 
-            robot.outtake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//            robot.outtake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         public void robotBaseDriveLoop(double drivePower) {
