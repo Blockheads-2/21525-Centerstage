@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -254,7 +255,7 @@ public class Methods {
             dispatch.turnPID(theta, 6);
         }
         public void absoluteTurn(double theta){ //turning relative to field
-            dispatch.turnAbsPID(theta, 6);
+            dispatch.absoluteTurn(theta, 0.4);
         }
 
         public void runIntake(double power, double timeout){
@@ -275,8 +276,6 @@ public class Methods {
         }
         protected possibleLiftStates liftState = possibleLiftStates.BOTTOM;
 
-        Button outake = new Button();
-
         public void initRobot() {
             robot.init(hardwareMap);
 
@@ -291,6 +290,9 @@ public class Methods {
             dashboard = FtcDashboard.getInstance();
             packet = new TelemetryPacket();
             dashboard.setTelemetryTransmissionInterval(25);
+
+            robot.outtake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
         public void robotBaseDriveLoop(double drivePower) {
@@ -364,35 +366,41 @@ public class Methods {
 
         }
 
+        int MAX_OUTTAKE_CLICKS = 1000;
+        int MIN_OUTTAKE_CLICKS = 0;
         public void robotBaseOuttakeLoop() {
-            if (gamepad2.left_stick_y >= 0.2) {
-                switch (liftState) {
-                    case BOTTOM:
-                        liftState = possibleLiftStates.MIDDLE;
-                        robot.outtake.setTargetPosition(100);
-                        outtakePositioner.setTargets(100, 0.1, 0.1, 0.1);
-                        robot.outtake.setPower(outtakePositioner.update(robot.outtake.getCurrentPosition()));
-                        robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        break;
-                    case MIDDLE:
-                        liftState = possibleLiftStates.TOP;
-                        robot.outtake.setTargetPosition(200);
-                        outtakePositioner.setTargets(200, 0.1, 0.1, 0.1);
-                        robot.outtake.setPower(outtakePositioner.update(robot.outtake.getCurrentPosition()));
-                        robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        break;
-                }
-            }
-            if (gamepad2.left_stick_y <= -0.2) {
-                switch (liftState) {
-                    case TOP:
-                        liftState = possibleLiftStates.MIDDLE;
-                        break;
-                    case MIDDLE:
-                        liftState = possibleLiftStates.BOTTOM;
-                        break;
-                }
-            }
+            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() + (int)(-gamepad2.left_stick_y * 70), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+            robot.outtake.setTargetPosition(clickTarget);
+            robot.outtake.setPower(-gamepad2.left_stick_y);
+
+//            if (gamepad2.left_stick_y >= 0.2) {
+//                switch (liftState) {
+//                    case BOTTOM:
+//                        liftState = possibleLiftStates.MIDDLE;
+//                        robot.outtake.setTargetPosition(100);
+//                        outtakePositioner.setTargets(100, 0.01, 0, 0.01);
+//                        robot.outtake.setPower(outtakePositioner.update(robot.outtake.getCurrentPosition()));
+//                        robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        break;
+//                    case MIDDLE:
+//                        liftState = possibleLiftStates.TOP;
+//                        robot.outtake.setTargetPosition(200);
+//                        outtakePositioner.setTargets(200, 0.01, 0, 0.01);
+//                        robot.outtake.setPower(outtakePositioner.update(robot.outtake.getCurrentPosition()));
+//                        robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//                        break;
+//                }
+//            }
+//            if (gamepad2.left_stick_y <= -0.2) {
+//                switch (liftState) {
+//                    case TOP:
+//                        liftState = possibleLiftStates.MIDDLE;
+//                        break;
+//                    case MIDDLE:
+//                        liftState = possibleLiftStates.BOTTOM;
+//                        break;
+//                }
+//            }
         }
 
         protected void UpdateTelemetry(){
@@ -440,8 +448,8 @@ public class Methods {
             telemetry.update();
         }
 
-//        public void UpdateButton(){
-//            outake.update(gamepad2.right_bumper);
-//        }
+        public void UpdateButton(){
+
+        }
     }
 }

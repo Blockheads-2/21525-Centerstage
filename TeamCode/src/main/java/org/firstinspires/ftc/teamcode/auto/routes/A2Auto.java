@@ -21,9 +21,7 @@ public class A2Auto extends Methods.auto {
 
         while (!opModeIsActive()) dispatch.updateTelemetry();
 
-
         waitForStart();
-
 
         constantHeading(0.2, 0, 7, 0, 0, 0);
         constantHeading(0.2, -90, 0, 0, 0, 0);

@@ -981,13 +981,15 @@ public class AutoHub {
 
     }
 
-    public void absoluteTurn(double theta){
+    public void absoluteTurn(double theta, double power){
+        resetAngle();
+
         double currAngle = -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
 
         double error = deltaAngle(theta, currAngle);
 
         while (linearOpMode.opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
+            double motorPower = (error < 0 ? -power : power);
             robot.lf.setPower(-motorPower);
             robot.rf.setPower(motorPower);
             robot.lb.setPower(-motorPower);
@@ -998,6 +1000,8 @@ public class AutoHub {
 
             error = deltaAngle(theta, currAngle);
             linearOpMode.telemetry.addData("error", error);
+            linearOpMode.telemetry.addData("currAngle", getAbsoluteAngle());
+            linearOpMode.telemetry.addData("currAngle", getAngle());
             linearOpMode.telemetry.update();
         }
 
@@ -1020,6 +1024,18 @@ public class AutoHub {
         double turnAmount1 = target - current;
         double turnAmount2 = target2 - current2;
         return (Math.abs(turnAmount1) < Math.abs(turnAmount2) ? turnAmount1 : turnAmount2);
+    }
+
+    public static double clamp(double degrees){
+        if (Math.abs(degrees) >= 360) degrees %= 360;
+        if (degrees == -180) degrees = 180;
+
+        if (degrees < -180){
+            degrees = 180 - (Math.abs(degrees) - 180);
+        } else if (degrees > 180){
+            degrees = -180 + (Math.abs(degrees) - 180);
+        }
+        return degrees;
     }
 
     public void turnPID(double degrees,double timeOut) {
