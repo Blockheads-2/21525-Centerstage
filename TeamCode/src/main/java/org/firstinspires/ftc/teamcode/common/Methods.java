@@ -274,6 +274,10 @@ public class Methods {
             MIDDLE,
             TOP
         }
+
+        Button bottomOuttake = new Button();
+        Button midOuttake = new Button();
+        Button highOuttake = new Button();
         protected possibleLiftStates liftState = possibleLiftStates.BOTTOM;
 
         public void initRobot() {
@@ -368,8 +372,15 @@ public class Methods {
 
         int MAX_OUTTAKE_CLICKS = 1000;
         int MIN_OUTTAKE_CLICKS = 0;
+        int LOW_OUTTAKE = 0;
+        int MID_OUTTAKE = 500;
+        int HIGH_OUTTAKE = 1000;
         public void robotBaseOuttakeLoop() {
             int clickTarget = Range.clip(robot.outtake.getCurrentPosition() + (int)(-gamepad2.left_stick_y * 70), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+            if (bottomOuttake.is(Button.State.TAP)) clickTarget = LOW_OUTTAKE;
+            else if (midOuttake.is(Button.State.TAP)) clickTarget = MID_OUTTAKE;
+            else if (highOuttake.is(Button.State.TAP)) clickTarget = HIGH_OUTTAKE;
+
             robot.outtake.setTargetPosition(clickTarget);
             robot.outtake.setPower(-gamepad2.left_stick_y);
 
@@ -449,7 +460,9 @@ public class Methods {
         }
 
         public void UpdateButton(){
-
+            bottomOuttake.update(gamepad2.a);
+            midOuttake.update(gamepad2.b);
+            highOuttake.update(gamepad2.y);
         }
     }
 }
