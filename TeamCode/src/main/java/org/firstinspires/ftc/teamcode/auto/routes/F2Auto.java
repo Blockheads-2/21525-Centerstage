@@ -46,18 +46,18 @@ public class F2Auto extends Methods.auto{
 //        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
 //        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
 
-        while (!opModeIsActive()){
-            telemetry.addData("Team Element Position:", detector.getLocation());
-            telemetry.addData("Team Element Position va:", elementLocation);
-            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
-            telemetry.addData("TFOD Processor On?", tfodProcessor);
-
-//            if (aprilTagProcessor){
-//                streamAprilTag();
-//            } else if (tfodProcessor){
-//                streamTfod();
-//            }
-        }
+//        while (!opModeIsActive()){
+//            telemetry.addData("Team Element Position:", detector.getLocation());
+//            telemetry.addData("Team Element Position va:", elementLocation);
+//            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
+//            telemetry.addData("TFOD Processor On?", tfodProcessor);
+//
+////            if (aprilTagProcessor){
+////                streamAprilTag();
+////            } else if (tfodProcessor){
+////                streamTfod();
+////            }
+//        }
 
         waitForStart();
 
@@ -66,13 +66,13 @@ public class F2Auto extends Methods.auto{
                 //...
                 constantHeading(0.2, -7, 37, 0, 0, 0,0);
                 constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.2, 7, 0, 0, 0, 0);
                 break;
 
             case RIGHT:
                 //...
                 constantHeading(0.2, 7, 37, 0, 0, 0);
                 constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, 7, 0, 0, 0, 0);
 
                 break;
 

@@ -46,18 +46,18 @@ public class A4Auto extends Methods.auto{
 //        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
 //        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
 
-        while (!opModeIsActive()){
-            telemetry.addData("Team Element Position:", detector.getLocation());
-            telemetry.addData("Team Element Position va:", elementLocation);
-            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
-            telemetry.addData("TFOD Processor On?", tfodProcessor);
-
-//            if (aprilTagProcessor){
-//                streamAprilTag();
-//            } else if (tfodProcessor){
-//                streamTfod();
-//            }
-        }
+//        while (!opModeIsActive()){
+//            telemetry.addData("Team Element Position:", detector.getLocation());
+//            telemetry.addData("Team Element Position va:", elementLocation);
+//            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
+//            telemetry.addData("TFOD Processor On?", tfodProcessor);
+//
+////            if (aprilTagProcessor){
+////                streamAprilTag();
+////            } else if (tfodProcessor){
+////                streamTfod();
+////            }
+//        }
 
         waitForStart();
 
