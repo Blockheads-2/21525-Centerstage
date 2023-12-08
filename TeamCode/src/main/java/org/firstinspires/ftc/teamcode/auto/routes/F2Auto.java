@@ -20,7 +20,7 @@ public class F2Auto extends Methods.auto{
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        streamOpenCV(false);
+        streamOpenCV(true);
 
         boolean detectTeamElement = true;
 
@@ -65,28 +65,31 @@ public class F2Auto extends Methods.auto{
             case LEFT:
                 //...
                 constantHeading(0.2, -7, 37, 0, 0, 0,0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, 7, 0, 0, 0, 0);
+                constantHeading(0.2, 0, -10, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.2, 0, 7, 0, 0, 0);
                 break;
 
             case RIGHT:
                 //...
                 constantHeading(0.2, 7, 37, 0, 0, 0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
-
+                constantHeading(0.2, 0, -10, 0, 0, 0);
+                turnAbsPID(90);
                 break;
 
             case MID:
                 //...
                 constantHeading(0.2, 0, 37, 0, 0, 0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, 5, 0, 0, 0, 0);
+                constantHeading(0.2, 0, -10, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.2, 0, 7, 0, 0, 0);
 
                 break;
         }
 
 //        constantHeading(0.2, 0, 7, 0, 0, 0);
-        constantHeading(0.2, 90, 0, 0, 0, 0);
+        constantHeading(0.2, 0, 90, 0, 0, 0);
+
 //        runIntake(-0.6, 4);
     }
 }

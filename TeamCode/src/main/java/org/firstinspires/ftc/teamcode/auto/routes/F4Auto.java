@@ -20,7 +20,7 @@ public class F4Auto extends Methods.auto{
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        streamOpenCV(false);
+        streamOpenCV(true);
 
         boolean detectTeamElement = true;
 

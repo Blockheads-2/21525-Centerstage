@@ -13,8 +13,11 @@ import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.Methods;
 
-@Autonomous(name="Test A2 Blue Autonomous", group="Autonomous")
-public class TestA2Route extends Methods.auto{
+@Autonomous(name="More Complex Test Routes", group="Autonomous")
+public class MoreComplexTestRoutes extends Methods.auto{ //currently oriented for F2 route
+//    Runnable runnable = new CameraThread();
+    boolean aprilTagProcessor = false;
+    boolean tfodProcessor = true;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -38,7 +41,7 @@ public class TestA2Route extends Methods.auto{
 
         stopOpenCV();
 
-        dispatch.initCamera(telemetry);
+//        dispatch.initCamera(telemetry);
 
         boolean aprilTagProcessor = false;
         boolean tfodProcessor = false;
@@ -46,18 +49,18 @@ public class TestA2Route extends Methods.auto{
 //        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
 //        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
 
-        while (!opModeIsActive()){
-            telemetry.addData("Team Element Position:", detector.getLocation());
-            telemetry.addData("Team Element Position va:", elementLocation);
-            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
-            telemetry.addData("TFOD Processor On?", tfodProcessor);
-
-//            if (aprilTagProcessor){
-//                streamAprilTag();
-//            } else if (tfodProcessor){
-//                streamTfod();
-//            }
-        }
+//        while (!opModeIsActive()){
+//            telemetry.addData("Team Element Position:", detector.getLocation());
+//            telemetry.addData("Team Element Position va:", elementLocation);
+//            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
+//            telemetry.addData("TFOD Processor On?", tfodProcessor);
+//
+////            if (aprilTagProcessor){
+////                streamAprilTag();
+////            } else if (tfodProcessor){
+////                streamTfod();
+////            }
+//        }
 
         waitForStart();
 
@@ -66,24 +69,52 @@ public class TestA2Route extends Methods.auto{
                 //...
                 constantHeading(0.2, -7, 37, 0, 0, 0,0);
                 constantHeading(0.2, 0, -5, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.2, 0, 7, 0, 0, 0);
                 break;
 
             case RIGHT:
                 //...
                 constantHeading(0.2, 7, 37, 0, 0, 0);
                 constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, -7, 0, 0, 0, 0);
+                turnAbsPID(90);
                 break;
 
             case MID:
                 //...
                 constantHeading(0.2, 0, 37, 0, 0, 0);
                 constantHeading(0.2, 0, -5, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.2, 0, 7, 0, 0, 0);
+
                 break;
         }
 
 //        constantHeading(0.2, 0, 7, 0, 0, 0);
-        constantHeading(0.2, -90, 0, 0, 0, 0);
+        constantHeading(0.2, 0, 50, 0, 0, 0);
+
+//        AprilTagMove();
 //        runIntake(-0.6, 4);
+    }
+
+    public AutoHub getDispatch(){
+        return dispatch;
+    }
+
+    public class CameraThread implements Runnable{
+
+        public CameraThread(){
+
+        }
+        public void run(){
+            stopOpenCV();
+
+            getDispatch().initCamera(telemetry);
+
+            telemetry.addLine("Vision Portal Initiated!");
+
+            getDispatch().robot.getVisionPortal().setProcessorEnabled(getDispatch().robot.getAprilTagProcessor(), aprilTagProcessor);
+            getDispatch().robot.getVisionPortal().setProcessorEnabled(getDispatch().robot.getTfodProcessor(), tfodProcessor);
+        }
     }
 }

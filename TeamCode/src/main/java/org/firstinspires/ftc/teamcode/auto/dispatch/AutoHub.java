@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -34,6 +35,8 @@ import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 import org.firstinspires.ftc.teamcode.common.pid.TurnPIDController;
 import org.firstinspires.ftc.teamcode.common.positioning.MathSpline;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
 import java.util.List;
@@ -605,6 +608,50 @@ public class AutoHub {
 
         }
     }
+
+
+    public boolean AprilTagMove(AprilTagDetection tag) { //return true if must move; return false otherwise
+        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+        double  rangeError      = (tag.ftcPose.range - Constants.DESIRED_DISTANCE);
+        double  headingError    = tag.ftcPose.bearing;
+        double  yawError        = tag.ftcPose.yaw;
+
+        if (Math.abs(rangeError) <= 2 && Math.abs(headingError) <= 4){
+            return false;
+        }
+
+        // Use the speed and turn "gains" to calculate how we want the robot to move.
+        double drive  = Range.clip(rangeError * Constants.SPEED_GAIN, -Constants.MAX_AUTO_SPEED, Constants.MAX_AUTO_SPEED);
+        double turn   = Range.clip(headingError * Constants.TURN_GAIN, -Constants.MAX_AUTO_TURN, Constants.MAX_AUTO_TURN) ;
+        double strafe = Range.clip(-yawError * Constants.STRAFE_GAIN, -Constants.MAX_AUTO_STRAFE, Constants.MAX_AUTO_STRAFE);
+
+        // Calculate wheel powers.
+        double leftFrontPower    =  drive - strafe - turn;
+        double rightFrontPower   =  drive + strafe + turn;
+        double leftBackPower     =  drive + strafe - turn;
+        double rightBackPower    =  drive - strafe + turn;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
+
+        if (max > 1.0) {
+            leftFrontPower /= max;
+            rightFrontPower /= max;
+            leftBackPower /= max;
+            rightBackPower /= max;
+        }
+
+        // Send powers to the wheels.
+        robot.lf.setPower(leftFrontPower);
+        robot.rf.setPower(rightFrontPower);
+        robot.lb.setPower(leftBackPower);
+        robot.rb.setPower(rightBackPower);
+
+        return true;
+    }
+
     public void constantHeading(double speed, double xPose, double yPose, double kP, double kI, double kD) {
         mathConstHead.setFinalPose(xPose,yPose);
 
@@ -926,8 +973,6 @@ public class AutoHub {
         }
     }
 
-
-
     //Turn
     public void resetAngle(){
         lastAngles = robot.imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -954,64 +999,6 @@ public class AutoHub {
         linearOpMode.telemetry.addData("gyro", orientation.firstAngle);
         return currAngle;
     }
-    public void turn(double degrees){
-        resetAngle();
-
-        double error = degrees;
-
-        while (linearOpMode.opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            robot.lf.setPower(-motorPower);
-            robot.rf.setPower(motorPower);
-            robot.lb.setPower(-motorPower);
-            robot.rb.setPower(motorPower);
-
-//            detectColor();
-//            checkButton();
-
-            error = degrees - getAngle();
-            linearOpMode.telemetry.addData("error", error);
-            linearOpMode.telemetry.update();
-        }
-
-        robot.lf.setPower(0);
-        robot.rf.setPower(0);
-        robot.lb.setPower(0);
-        robot.rb.setPower(0);
-
-    }
-
-    public void absoluteTurn(double theta, double power){
-        resetAngle();
-
-        double currAngle = -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
-        double error = deltaAngle(theta, currAngle);
-
-        while (linearOpMode.opModeIsActive() && Math.abs(error) > 0.5) {
-            double motorPower = (error < 0 ? -power : power);
-            robot.lf.setPower(-motorPower);
-            robot.rf.setPower(motorPower);
-            robot.lb.setPower(-motorPower);
-            robot.rb.setPower(motorPower);
-
-//            detectColor();
-//            checkButton();
-
-            currAngle = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-            error = deltaAngle(theta, currAngle);
-            linearOpMode.telemetry.addData("error", error);
-            linearOpMode.telemetry.addData("currAngle", getAbsoluteAngle());
-            linearOpMode.telemetry.addData("currAngle", getAngle());
-            linearOpMode.telemetry.update();
-        }
-
-        robot.lf.setPower(0);
-        robot.rf.setPower(0);
-        robot.lb.setPower(0);
-        robot.rb.setPower(0);
-    }
-
     public double getAbsoluteAngle() {
 //        return robot.imu.getRobotOrientation(
 //                AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
@@ -1039,23 +1026,20 @@ public class AutoHub {
         return degrees;
     }
 
-    public void turnPID(double degrees,double timeOut) {
-        turnMath(-degrees + getAbsoluteAngle(), timeOut);
-    }
     public void turnAbsPID(double absDegrees, double timeOut){
-        turnMath(-absDegrees, timeOut);
+        turnMath(absDegrees, timeOut);
     }
     void turnMath(double targetAngle, double timeoutS) {
-        TurnPIDController pid = new TurnPIDController(targetAngle, 0.01, 0, 0.003);
+        TurnPIDController pid = new TurnPIDController(targetAngle, 0.03, 0, 0.01);
         linearOpMode.telemetry.setMsTransmissionInterval(50);
         // Checking lastSlope to make sure that it's not oscillating when it quits
         runtime.reset();
         while ((runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) > 5 || pid.getLastSlope() > 0.15)) {
             double motorPower = pid.update(getAbsoluteAngle());
-            robot.lf.setPower(-motorPower);
-            robot.rf.setPower(motorPower);
-            robot.lb.setPower(-motorPower);
-            robot.rb.setPower(motorPower);
+            robot.lf.setPower(motorPower);
+            robot.rf.setPower(-motorPower);
+            robot.lb.setPower(motorPower);
+            robot.rb.setPower(-motorPower);
 
 //            detectColor();
 

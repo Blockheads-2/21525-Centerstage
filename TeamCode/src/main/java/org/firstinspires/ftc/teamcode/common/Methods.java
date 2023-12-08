@@ -204,22 +204,17 @@ public class Methods {
 
         }
 
-        public void updateTelemetry() {
-            packet.put("Top Left Power", dispatch.robot.lf.getPower());
-            packet.put("Top Right Power", dispatch.robot.rf.getPower());
-            packet.put("Bottom Left Power", dispatch.robot.lb.getPower());
-            packet.put("Bottom Right Power", dispatch.robot.rb.getPower());
-
-            packet.put("Top Left Velocity", dispatch.robot.lf.getVelocity());
-            packet.put("Top Right Velocity", dispatch.robot.rf.getVelocity());
-            packet.put("Bottom Left Velocity", dispatch.robot.lb.getVelocity());
-            packet.put("Bottom Right Velocity", dispatch.robot.rb.getVelocity());
+        public void updateTelemetry() { //always use this method to update telemetry
+//            packet.put("Top Left Power", dispatch.robot.lf.getPower());
+//            packet.put("Top Right Power", dispatch.robot.rf.getPower());
+//            packet.put("Bottom Left Power", dispatch.robot.lb.getPower());
+//            packet.put("Bottom Right Power", dispatch.robot.rb.getPower());
+//
+//            packet.put("Top Left Velocity", dispatch.robot.lf.getVelocity());
+//            packet.put("Top Right Velocity", dispatch.robot.rf.getVelocity());
+//            packet.put("Bottom Left Velocity", dispatch.robot.lb.getVelocity());
+//            packet.put("Bottom Right Velocity", dispatch.robot.rb.getVelocity());
             
-            packet.put("Yaw", -dispatch.robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-            packet.put("Absolute Angle", dispatch.getAbsoluteAngle());
-            packet.put("Get Angle", dispatch.getAngle());
-
-
             telemetry.update();
             dashboard.sendTelemetryPacket(packet);
         }
@@ -252,11 +247,12 @@ public class Methods {
             dispatch.constantHeadingV2(movePower, x, y, theta, kp, ki, kd);
         }
 
-        public void turn(double theta){ //turning relative to its initial point
-            dispatch.turnPID(theta, 6);
+        public void AprilTagMove(AprilTagDetection tag){
+            dispatch.AprilTagMove(tag);
         }
-        public void absoluteTurn(double theta, double power){ //turning relative to field
-            dispatch.absoluteTurn(theta, power);
+
+        public void turnAbsPID(double theta){ //turning relative to its initial point
+            dispatch.turnAbsPID(theta, 6);
         }
 
         public void runIntake(double power, double timeout){

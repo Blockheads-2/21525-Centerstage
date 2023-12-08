@@ -25,7 +25,10 @@ public class DetectElementStaggered extends Methods.auto {
     Button updateValueDecrease = new Button();
     Button updateValueIncrease = new Button();
 
-    OpenCvCamera phoneCam;
+    Runnable runnable = new CameraThread();
+
+    boolean aprilTagProcessor = true;
+    boolean tfodProcessor = false;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -35,47 +38,49 @@ public class DetectElementStaggered extends Methods.auto {
 
         boolean detectTeamElement = true;
 
-
         while (!opModeIsActive()){
-            UpdateButton();
-//            telemetry.addData("Team Element Position:", detector.getLocation());
-//            telemetry.update();
-//            if (detector.isSeen()) detectTeamElement = false;
-//            dispatch.updateTelemetry();
+            telemetry.addData("Team Element Position:", detector.getLocation());
+            if (detector.isSeen()) detectTeamElement = false;
+            updateTelemetry();
         }
 
-        stopOpenCV();
-
-//        dispatch.initCamera(telemetry);
-//
-//        boolean aprilTagProcessor = false;
-//        boolean tfodProcessor = true;
-//
-//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
-//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
+//        stopOpenCV();
 
         waitForStart();
 
-        while (opModeIsActive()){
-            UpdateButton();
-            telemetry.addData("Team Element Position:", detector.getLocation());
-//            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
-//            telemetry.addData("TFOD Processor On?", tfodProcessor);
+        Thread cameraThread = new Thread(runnable);
+        cameraThread.start(); //initializes thread.
 
-//            if (updateValueDecrease.is(Button.State.TAP)) {
-//                aprilTagProcessor = !aprilTagProcessor;
-//                dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
-//            } else if (updateValueDecrease.is(Button.State.TAP)){
-//                tfodProcessor = !tfodProcessor;
-//                dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
-//            }
-//
-//            if (aprilTagProcessor){
-//                streamAprilTag();
-//            } else if (tfodProcessor){
-//                streamTfod();
-//            }
+        Thread.sleep(1000); //guestimate of how long it takes for cameraThread to fully complete
+        //the most band-aid solution in the history of histories, but yeah it works now :)
+
+        while (opModeIsActive()){
+            telemetry.addData("Team Element Position:", detector.getLocation());
+            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
+            telemetry.addData("TFOD Processor On?", tfodProcessor);
+
+            if (updateValueDecrease.is(Button.State.TAP)) {
+                aprilTagProcessor = !aprilTagProcessor;
+                dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
+            } else if (updateValueDecrease.is(Button.State.TAP)){
+                tfodProcessor = !tfodProcessor;
+                dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
+            }
+
+            //error: can't read getVisionPortal() (thinks its null); some threading crossover issue, I believe
+            if (aprilTagProcessor && dispatch.robot.getVisionPortal().getProcessorEnabled(dispatch.robot.getAprilTagProcessor())){
+                streamAprilTag();
+            } else if (dispatch.robot.getVisionPortal().getProcessorEnabled(dispatch.robot.getTfodProcessor())){
+                streamTfod();
+            }
+            UpdateButton();
+            updateTelemetry();
         }
+        cameraThread.join();
+    }
+
+    public AutoHub getDispatch(){
+        return dispatch;
     }
 
     public void UpdateButton(){
@@ -83,55 +88,31 @@ public class DetectElementStaggered extends Methods.auto {
         updateValueIncrease.update(gamepad1.b);
     }
 
-//    @Override
-//    public void runOpMode() throws InterruptedException {
-//        dispatch = new AutoHub(this);
-//
-//        dashboard = FtcDashboard.getInstance();
-//        packet = new TelemetryPacket();
-//
-//        dispatch.initTelemetry(dashboard, packet);
-////        dispatch.updateTelemetry();
-//
-////        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId","id", hardwareMap.appContext.getPackageName());
-//        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("Webcam 1","id", hardwareMap.appContext.getPackageName());
-//        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-////        GRIPDetectionPipeline detector = new GRIPDetectionPipeline(telemetry);
-//        TeamElementDetectionPipeline detector = new TeamElementDetectionPipeline(telemetry);
-//        phoneCam.setPipeline(detector);
-//
-//        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener()
-//        {
-//            @Override
-//            public void onOpened()
-//            {
-//                phoneCam.startStreaming(1280, 720, OpenCvCameraRotation.SIDEWAYS_LEFT);
+    public class CameraThread implements Runnable{
+
+        public CameraThread(){
+
+        }
+        public void run(){
+            stopOpenCV(); //for future reference, check if opencv is running before stopping it.
+
+            initVisionPortal();
+
+            telemetry.addLine("Vision Portal Initiated!");
+            telemetry.update();
+
+            dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
+            dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
+
+//            while (true){
+//                if (aprilTagProcessor){
+//                    streamAprilTag();
+//                } else if (tfodProcessor){
+//                    streamTfod();
+//                }
 //            }
-//
-//            @Override
-//            public void onError(int errorCode)
-//            {
-//                telemetry.addLine("Error Opening Camera");
-//                telemetry.update();
-//            }
-//        });
-//
-//        boolean detectTeamElement = true;
-//        while (!opModeIsActive() && detectTeamElement){
-//            updateValueDecrease.update(gamepad1.a);
-//            updateValueIncrease.update(gamepad1.b);
-//
-//            if (detector.isSeen()) detectTeamElement = false;
-////            dispatch.updateTelemetry();
-//        }
-//
-//        phoneCam.stopStreaming();
-//        dispatch.initCamera(telemetry);
-//
-//        waitForStart();
-//
-//        while (opModeIsActive()){
-//            telemetryTfod();
-//        }
-//    }
+
+        }
+    }
+
 }
