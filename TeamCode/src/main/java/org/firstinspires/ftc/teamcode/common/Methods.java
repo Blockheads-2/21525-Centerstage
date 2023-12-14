@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.util.Range;
 import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.auto.cv.TeamElementDetectionPipeline;
 import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
@@ -302,11 +303,11 @@ public class Methods {
             double directionR = 0;
             int i1 = 0;
 
-            if (Math.abs(gamepad1.left_stick_x) > 0.2)
+            if (Math.abs(gamepad1.left_stick_x) > 0.35)
                 directionX = Math.pow(gamepad1.left_stick_x, 1);
-            if (Math.abs(gamepad1.left_stick_y) > 0.2)
+            if (Math.abs(gamepad1.left_stick_y) > 0.35)
                 directionY = -Math.pow(gamepad1.left_stick_y, 1);
-            if (Math.abs(gamepad1.right_stick_x) > 0.2)
+            if (Math.abs(gamepad1.right_stick_x) > 0.35)
                 directionR = Math.pow(gamepad1.right_stick_x, 1);
 
             double lfPower = (directionX + directionY + directionR) * drivePower;
@@ -440,9 +441,14 @@ public class Methods {
 //        packet.put("R", gamepad1.right_stick_x);
 
             packet.put("Top Left Power", robot.lf.getPower());
-            packet.put("Top Right Power", robot.rf.getPower());
             packet.put("Bottom Left Power", robot.lb.getPower());
+            packet.put("Top Right Power", robot.rf.getPower());
             packet.put("Bottom Right Power", robot.rb.getPower());
+
+            packet.put("Top Left Current", robot.lf.getCurrent(CurrentUnit.AMPS));
+            packet.put("Bottom Left Current", robot.lb.getCurrent(CurrentUnit.AMPS));
+            packet.put("Top Right Current", robot.rf.getCurrent(CurrentUnit.AMPS));
+            packet.put("Bottom Right Current", robot.rb.getCurrent(CurrentUnit.AMPS));
 
             packet.put("Top Left Velocity", robot.lf.getVelocity());
             packet.put("Top Right Velocity", robot.rf.getVelocity());
