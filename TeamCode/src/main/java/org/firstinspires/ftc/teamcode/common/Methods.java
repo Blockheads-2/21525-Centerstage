@@ -49,6 +49,10 @@ public class Methods {
         protected TeamElementDetectionPipeline detector;
         protected TeamElementDetectionPipeline.Location location = TeamElementDetectionPipeline.Location.NOT_FOUND;
 
+        public interface TelemetryFunc{
+            void update();
+        }
+
         public void initRobot(){
             dispatch = new AutoHub(this);
 
@@ -56,8 +60,13 @@ public class Methods {
             packet = new TelemetryPacket();
             telemetry.setMsTransmissionInterval(50);
 
-            dispatch.initTelemetry(dashboard, packet);
-            dispatch.updateTelemetry();
+            TelemetryFunc updateTele = () -> {
+                UpdateTelemetry();
+            };
+
+            dispatch.initTelemetry(dashboard, packet, updateTele);
+
+            UpdateTelemetry();
         }
 
         public void initVisionPortal(){
@@ -142,12 +151,6 @@ public class Methods {
 
                     for(AprilTagDetection detection : myAprilTagDetections)
                     {
-//                        if (detection.metadata != null) {  // This check for non-null Metadata is not needed for reading only ID code.
-//                            myAprilTagIdCode = detection.id;
-//
-//                            // Now take action based on this tag's ID code, or store info for later action.
-//
-//                        }
                         //Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
                         telemetry.addData("Camera Streaming?", dispatch.getVisionPortal().getCameraState());
                         telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
@@ -172,6 +175,83 @@ public class Methods {
                 }
             }
         }
+        public AprilTagDetection streamAprilTag(int desiredTagId){
+            // Calling getDetectionsUpdate() will only return an object if there was a new frame
+            // processed since the last time we called it. Otherwise, it will return null. This
+            // enables us to only run logic when there has been a new frame, as opposed to the
+            // getLatestDetections() method which will always return an object.
+//            ArrayList<AprilTagDetection> detections = aprilTagDetectionPipeline.getDetectionsUpdate();
+
+            java.util.List<AprilTagDetection> myAprilTagDetections;  // list of all detections
+
+// Get a list of AprilTag detections.
+            myAprilTagDetections = dispatch.getAprilTagProcessor().getDetections();
+
+            // If there's been a new frame...
+            if(myAprilTagDetections != null)
+            {
+                telemetry.addData("FPS", dispatch.getVisionPortal().getFps());
+//                telemetry.addData("Overhead ms", camera.getOverheadTimeMs());
+//                telemetry.addData("Pipeline ms", camera.getPipelineTimeMs());
+
+                // If we don't see any tags
+                if(myAprilTagDetections.size() == 0)
+                {
+                    numFramesWithoutDetection++;
+
+                    // If we haven't seen a tag for a few frames, lower the decimation
+                    // so we can hopefully pick one up if we're e.g. far back
+                    if(numFramesWithoutDetection >= THRESHOLD_NUM_FRAMES_NO_DETECTION_BEFORE_LOW_DECIMATION)
+                    {
+                        dispatch.getAprilTagProcessor().setDecimation(DECIMATION_LOW);
+//                        telemetry.addLine("Must lower decimation on the VisionPortal pipeline");
+                    }
+
+                }
+                // We do see tags!
+                else
+                {
+                    numFramesWithoutDetection = 0;
+
+                    // If the target is within 1 meter, turn on high decimation to
+                    // increase the frame rate
+                    if(myAprilTagDetections.get(0).ftcPose.z < THRESHOLD_HIGH_DECIMATION_RANGE_METERS)
+                    {
+                        dispatch.getAprilTagProcessor().setDecimation(DECIMATION_HIGH);
+                    }
+
+                    for(AprilTagDetection detection : myAprilTagDetections)
+                    {
+                        if (detection.metadata != null && detection.id == desiredTagId) {  // This check for non-null Metadata is not needed for reading only ID code.
+
+                            //Orientation rot = Orientation.getOrientation(detection.pose.R, AxesReference.INTRINSIC, AxesOrder.YXZ, AngleUnit.DEGREES);
+                            telemetry.addData("Camera Streaming?", dispatch.getVisionPortal().getCameraState());
+                            telemetry.addLine(String.format("\nDetected tag ID=%d", detection.id));
+                            telemetry.addLine(String.format("Translation X: %.2f inches", detection.ftcPose.x));
+                            telemetry.addLine(String.format("Translation Y: %.2f inches", detection.ftcPose.y));
+                            telemetry.addLine(String.format("Translation Y: %.2f inches", detection.ftcPose.y-9));
+                            telemetry.addLine(String.format("Translation Z: %.2f inches", detection.ftcPose.z));
+                            telemetry.addLine(String.format("Rotation Yaw: %.2f degrees", detection.ftcPose.yaw));
+                            telemetry.addLine(String.format("Rotation Pitch: %.2f degrees", detection.ftcPose.pitch));
+                            telemetry.addLine(String.format("Rotation Roll: %.2f degrees", detection.ftcPose.roll));
+                            telemetry.addLine(String.format("Range (distance to tag center): %.2f inches", detection.ftcPose.range));
+                            telemetry.addLine(String.format("Bearing (delta yaw from apriltag center): %.2f degrees", detection.ftcPose.bearing));
+                            telemetry.addLine(String.format("Elevation (delta pitch from apriltag center): %.2f degrees", detection.ftcPose.elevation));
+
+                            packet.put("Rotation Yaw: %.2f degrees", detection.ftcPose.yaw);
+                            packet.put("Rotation Pitch: %.2f degrees", detection.ftcPose.pitch);
+                            packet.put("Rotation Roll: %.2f degrees", detection.ftcPose.roll);
+                            packet.put("Range (distance to tag center): %.2f inches", detection.ftcPose.range);
+                            packet.put("Bearing (delta yaw from apriltag center): %.2f degrees", detection.ftcPose.bearing);
+                            return detection;
+                        }
+
+                    }
+                }
+            }
+            return null;
+        }
+
 
         public void streamTfod(){
             java.util.List<Recognition> currentRecognitions = dispatch.robot.getTfodProcessor().getRecognitions();
@@ -248,8 +328,8 @@ public class Methods {
             dispatch.constantHeadingV2(movePower, x, y, theta, kp, ki, kd);
         }
 
-        public void AprilTagMove(AprilTagDetection tag){
-            dispatch.AprilTagMove(tag);
+        public boolean AprilTagMove(AprilTagDetection tag){
+            return dispatch.AprilTagMove(tag);
         }
 
         public void turnAbsPID(double theta){ //turning relative to its initial point
@@ -258,6 +338,32 @@ public class Methods {
 
         public void runIntake(double power, double timeout){
             dispatch.spinIntake(power, timeout);
+        }
+
+        public void UpdateTelemetry(){
+            //        packet.put("Top Left Power", robot.lf.getPower());
+//        packet.put("Top Right Power", robot.rf.getPower());
+//        packet.put("Bottom Left Power", robot.lb.getPower());
+//        packet.put("Bottom Right Power", robot.rb.getPower());
+//
+//        packet.put("Top Left Encoder Position", robot.lf.getCurrentPosition());
+//        packet.put("Top Right Encoder Position", robot.rf.getCurrentPosition());
+//        packet.put("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
+//        packet.put("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+//        packet.put("Yaw", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+//        packet.put("Yaw (Absolute Angle)", getAbsoluteAngle());
+
+            telemetry.addData("Top Left Encoder Position", dispatch.robot.lf.getCurrentPosition());
+            telemetry.addData("Top Right Encoder Position", dispatch.robot.rf.getCurrentPosition());
+            telemetry.addData("Bottom Left Encoder Position", dispatch.robot.lb.getCurrentPosition());
+            telemetry.addData("Bottom Right Encoder Position", dispatch.robot.rb.getCurrentPosition());
+
+            telemetry.addData("Team Element Position:", detector.getLocation());
+            telemetry.addData("April Tag Processor On?", dispatch.getVisionPortal().getProcessorEnabled(dispatch.getAprilTagProcessor()));
+            telemetry.addData("TFOD Processor On?", dispatch.getVisionPortal().getProcessorEnabled(dispatch.getTfodProcessor()));
+
+            telemetry.update();
+//        dashboard.sendTelemetryPacket(packet);
         }
     }
 

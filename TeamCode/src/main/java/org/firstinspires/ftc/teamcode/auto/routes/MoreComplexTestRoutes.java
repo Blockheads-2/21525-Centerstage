@@ -12,12 +12,17 @@ import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.Methods;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Autonomous(name="More Complex Test Routes", group="Autonomous")
 public class MoreComplexTestRoutes extends Methods.auto{ //currently oriented for F2 route
 //    Runnable runnable = new CameraThread();
     boolean aprilTagProcessor = false;
     boolean tfodProcessor = true;
+    volatile int desiredTag = -1;
+    volatile AprilTagDetection tag = null;
+
+    Runnable runnable = new CameraThread();
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -39,30 +44,26 @@ public class MoreComplexTestRoutes extends Methods.auto{ //currently oriented fo
 
         elementLocation = detector.getLocation();
 
-        stopOpenCV();
+        if (elementLocation == TeamElementDetectionPipeline.Location.LEFT){ //refer to Appendix G of the FTC Centerstage Game Manual 2 for the AprilTag IDs.
+            desiredTag = 4;
+        } else if (elementLocation == TeamElementDetectionPipeline.Location.MID){
+            desiredTag = 5;
+        } else if (elementLocation == TeamElementDetectionPipeline.Location.RIGHT){
+            desiredTag = 6;
+        }
+
+//        stopOpenCV();
 
 //        dispatch.initCamera(telemetry);
 
-        boolean aprilTagProcessor = false;
-        boolean tfodProcessor = false;
-
-//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
-//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
-
-//        while (!opModeIsActive()){
-//            telemetry.addData("Team Element Position:", detector.getLocation());
-//            telemetry.addData("Team Element Position va:", elementLocation);
-//            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
-//            telemetry.addData("TFOD Processor On?", tfodProcessor);
-//
-////            if (aprilTagProcessor){
-////                streamAprilTag();
-////            } else if (tfodProcessor){
-////                streamTfod();
-////            }
-//        }
-
         waitForStart();
+
+        Thread cameraThread = new Thread(runnable);
+        cameraThread.start(); //initializes thread.
+
+        Thread.sleep(1000); //guestimate of how long it takes for cameraThread to fully complete
+        //the most band-aid solution in the history of histories, but yeah it works now :)
+
 
         switch (elementLocation) {
             case LEFT:
@@ -93,8 +94,12 @@ public class MoreComplexTestRoutes extends Methods.auto{ //currently oriented fo
 //        constantHeading(0.2, 0, 7, 0, 0, 0);
         constantHeading(0.2, 0, 50, 0, 0, 0);
 
-//        AprilTagMove();
+
+        boolean shouldMove = AprilTagMove(tag); //might have some crazy threading issues because CameraThread is modifying "tag", and I'm not sure if it'll sync well w/ the main thread.
+        while (shouldMove) shouldMove = AprilTagMove(tag);
 //        runIntake(-0.6, 4);
+
+        cameraThread.join();
     }
 
     public AutoHub getDispatch(){
@@ -115,6 +120,14 @@ public class MoreComplexTestRoutes extends Methods.auto{ //currently oriented fo
 
             getDispatch().robot.getVisionPortal().setProcessorEnabled(getDispatch().robot.getAprilTagProcessor(), aprilTagProcessor);
             getDispatch().robot.getVisionPortal().setProcessorEnabled(getDispatch().robot.getTfodProcessor(), tfodProcessor);
+
+            while (aprilTagProcessor || tfodProcessor) {
+                if (aprilTagProcessor) {
+                    tag = streamAprilTag(desiredTag);
+                }
+                if (tfodProcessor) streamTfod();
+            }
+
         }
     }
 }

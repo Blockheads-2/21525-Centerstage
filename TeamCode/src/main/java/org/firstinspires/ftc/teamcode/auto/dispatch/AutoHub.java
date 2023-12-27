@@ -28,16 +28,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.auto.math.MathConstHead;
+import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 
+import org.firstinspires.ftc.teamcode.common.Methods;
 import org.firstinspires.ftc.teamcode.common.pid.TurnPIDController;
 import org.firstinspires.ftc.teamcode.common.positioning.MathSpline;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
@@ -77,6 +81,8 @@ public class AutoHub {
     View relativeLayout;
 
     GPS gps;
+
+    Methods.auto.TelemetryFunc UpdateTelemetry;
 
     public AutoHub(LinearOpMode plinear){
 
@@ -131,33 +137,16 @@ public class AutoHub {
     public AprilTagProcessor getAprilTagProcessor(){
         return robot.getAprilTagProcessor();
     }
+    public TfodProcessor getTfodProcessor(){
+        return robot.getTfodProcessor();
+    }
 
-    public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet){
+    public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet, Methods.auto.TelemetryFunc UpdateTelemetry){
         this.dashboard = dashboard;
         this.packet = packet;
+        this.UpdateTelemetry = UpdateTelemetry;
     }
 
-    public void updateTelemetry(){
-//        packet.put("Top Left Power", robot.lf.getPower());
-//        packet.put("Top Right Power", robot.rf.getPower());
-//        packet.put("Bottom Left Power", robot.lb.getPower());
-//        packet.put("Bottom Right Power", robot.rb.getPower());
-//
-//        packet.put("Top Left Encoder Position", robot.lf.getCurrentPosition());
-//        packet.put("Top Right Encoder Position", robot.rf.getCurrentPosition());
-//        packet.put("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
-//        packet.put("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
-//        packet.put("Yaw", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-//        packet.put("Yaw (Absolute Angle)", getAbsoluteAngle());
-
-        linearOpMode.telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
-        linearOpMode.telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
-        linearOpMode.telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
-        linearOpMode.telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
-
-        linearOpMode.telemetry.update();
-//        dashboard.sendTelemetryPacket(packet);
-    }
 
     //====================================================================================
     //====================================================================================
@@ -421,7 +410,8 @@ public class AutoHub {
     public void constantHeadingV2(double movePower, double x, double y, double theta, double kp, double ki, double kd){
         mathConstHead.setFinalPose(x,y);
 
-        updateTelemetry();
+//        updateTelemetry();
+        UpdateTelemetry.update();
 
         double targetAngle = theta; //want to keep heading constant (current angle)
 
@@ -494,8 +484,10 @@ public class AutoHub {
 
 //                linearOpMode.telemetry.update();
 
-                updateTelemetry();
+//                updateTelemetry();
+                UpdateTelemetry.update();
             }
+
 
             // Stop all motion;
             robot.lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -508,13 +500,16 @@ public class AutoHub {
             robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            updateTelemetry();
+//            updateTelemetry();
+            UpdateTelemetry.update();
+
         }
     }
     public void constantHeadingV2(double movePower, double x, double y, double kp, double ki, double kd){
         mathConstHead.setFinalPose(x,y);
 
-        updateTelemetry();
+//        updateTelemetry();
+        UpdateTelemetry.update();
 
         double targetAngle = getAbsoluteAngle(); //want to keep heading constant (current angle)
 
@@ -590,7 +585,9 @@ public class AutoHub {
 
 //                linearOpMode.telemetry.update();
 
-                updateTelemetry();
+//                updateTelemetry();
+                UpdateTelemetry.update();
+
             }
 
             // Stop all motion;
@@ -604,13 +601,22 @@ public class AutoHub {
             robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            updateTelemetry();
+//            updateTelemetry();
+            UpdateTelemetry.update();
+
 
         }
     }
 
 
     public boolean AprilTagMove(AprilTagDetection tag) { //return true if must move; return false otherwise
+        if (tag == null) {
+            linearOpMode.telemetry.addLine("No april tag detected");
+            return false;
+        } else {
+            linearOpMode.telemetry.addLine("Tag detected");
+        }
+
         // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
         double  rangeError      = (tag.ftcPose.range - Constants.DESIRED_DISTANCE);
         double  headingError    = tag.ftcPose.bearing;
@@ -655,7 +661,8 @@ public class AutoHub {
     public void constantHeading(double speed, double xPose, double yPose, double kP, double kI, double kD) {
         mathConstHead.setFinalPose(xPose,yPose);
 
-        updateTelemetry();
+//        updateTelemetry();
+        UpdateTelemetry.update();
 
         double targetAngle = getAbsoluteAngle();
         TurnPIDController pidTurn = new TurnPIDController(targetAngle, kP, kI, kD);
@@ -719,7 +726,9 @@ public class AutoHub {
                 linearOpMode.telemetry.addData("rb Target Position:", robot.rb.getTargetPosition());
 //                linearOpMode.telemetry.update();
 
-                updateTelemetry();
+//                updateTelemetry();
+                UpdateTelemetry.update();
+
             }
 
             // Stop all motion;
@@ -733,7 +742,8 @@ public class AutoHub {
             robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            updateTelemetry();
+//            updateTelemetry();
+            UpdateTelemetry.update();
 
         }
     }
