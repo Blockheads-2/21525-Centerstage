@@ -528,6 +528,11 @@ public class Methods {
             telemetry.addData("DPAD Left", gamepad1.dpad_left);
             telemetry.addData("DPAD Right", gamepad1.dpad_right);
 
+            telemetry.addData("Top Left Power", robot.lf.getPower());
+            telemetry.addData("Bottom Left Power", robot.lb.getPower());
+            telemetry.addData("Top Right Power", robot.rf.getPower());
+            telemetry.addData("Bottom Right Power", robot.rb.getPower());
+
             telemetry.addData("Right trigger", gamepad1.right_trigger);
             telemetry.addData("Left trigger", gamepad1.left_trigger);
 
