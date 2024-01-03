@@ -61,6 +61,7 @@ public class F2Auto extends Methods.auto{
 
         waitForStart();
 
+<<<<<<< Updated upstream
         switch (elementLocation) {
             case LEFT:
                 //...
@@ -91,5 +92,23 @@ public class F2Auto extends Methods.auto{
         constantHeading(0.2, 0, 90, 0, 0, 0);
 
 //        runIntake(-0.6, 4);
+=======
+        //1 tile = 24, Trapezoid tape to board = 12
+        //Run 1
+//        dispatch.constantHeading(0.5, 0, 24,  0.03, 0, 0);
+//        dispatch.turn(90);
+//        dispatch.constantHeading(0.5, 0, 96,  0.03, 0, 0);
+//        dispatch.constantHeading(0.5, 0, -96, 0.03, 0, 0);
+//        dispatch.turn(-90);
+//        dispatch.constantHeading(0.5, 0, -24,  0.03, 0, 0);
+//        //Run 2
+//        dispatch.constantHeading(0.5, 0, 24,  0.03, 0, 0);
+//        dispatch.turn(90);
+//        dispatch.constantHeading(0.5, 0, 96,  0.03, 0, 0);
+//        dispatch.constantHeading(0.5, 24, 0, 0.03, 0, 0);
+
+
+        telemetry.update();
+>>>>>>> Stashed changes
     }
 }
