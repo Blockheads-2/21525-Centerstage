@@ -20,6 +20,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -27,14 +28,20 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.robotcore.external.tfod.TFObjectDetector;
 import org.firstinspires.ftc.teamcode.auto.math.MathConstHead;
+import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.HardwareDrive;
 
+import org.firstinspires.ftc.teamcode.common.Methods;
 import org.firstinspires.ftc.teamcode.common.pid.TurnPIDController;
 import org.firstinspires.ftc.teamcode.common.positioning.MathSpline;
 import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagPoseFtc;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 import java.util.List;
 
@@ -74,6 +81,8 @@ public class AutoHub {
     View relativeLayout;
 
     GPS gps;
+
+    Methods.auto.TelemetryFunc UpdateTelemetry;
 
     public AutoHub(LinearOpMode plinear){
 
@@ -128,33 +137,16 @@ public class AutoHub {
     public AprilTagProcessor getAprilTagProcessor(){
         return robot.getAprilTagProcessor();
     }
+    public TfodProcessor getTfodProcessor(){
+        return robot.getTfodProcessor();
+    }
 
-    public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet){
+    public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet, Methods.auto.TelemetryFunc UpdateTelemetry){
         this.dashboard = dashboard;
         this.packet = packet;
+        this.UpdateTelemetry = UpdateTelemetry;
     }
 
-    public void updateTelemetry(){
-//        packet.put("Top Left Power", robot.lf.getPower());
-//        packet.put("Top Right Power", robot.rf.getPower());
-//        packet.put("Bottom Left Power", robot.lb.getPower());
-//        packet.put("Bottom Right Power", robot.rb.getPower());
-//
-//        packet.put("Top Left Encoder Position", robot.lf.getCurrentPosition());
-//        packet.put("Top Right Encoder Position", robot.rf.getCurrentPosition());
-//        packet.put("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
-//        packet.put("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
-//        packet.put("Yaw", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
-//        packet.put("Yaw (Absolute Angle)", getAbsoluteAngle());
-
-        linearOpMode.telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
-        linearOpMode.telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
-        linearOpMode.telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
-        linearOpMode.telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
-
-        linearOpMode.telemetry.update();
-//        dashboard.sendTelemetryPacket(packet);
-    }
 
     //====================================================================================
     //====================================================================================
@@ -418,7 +410,8 @@ public class AutoHub {
     public void constantHeadingV2(double movePower, double x, double y, double theta, double kp, double ki, double kd){
         mathConstHead.setFinalPose(x,y);
 
-        updateTelemetry();
+//        updateTelemetry();
+        UpdateTelemetry.update();
 
         double targetAngle = theta; //want to keep heading constant (current angle)
 
@@ -491,8 +484,10 @@ public class AutoHub {
 
 //                linearOpMode.telemetry.update();
 
-                updateTelemetry();
+//                updateTelemetry();
+                UpdateTelemetry.update();
             }
+
 
             // Stop all motion;
             robot.lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -505,13 +500,16 @@ public class AutoHub {
             robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            updateTelemetry();
+//            updateTelemetry();
+            UpdateTelemetry.update();
+
         }
     }
     public void constantHeadingV2(double movePower, double x, double y, double kp, double ki, double kd){
         mathConstHead.setFinalPose(x,y);
 
-        updateTelemetry();
+//        updateTelemetry();
+        UpdateTelemetry.update();
 
         double targetAngle = getAbsoluteAngle(); //want to keep heading constant (current angle)
 
@@ -587,7 +585,9 @@ public class AutoHub {
 
 //                linearOpMode.telemetry.update();
 
-                updateTelemetry();
+//                updateTelemetry();
+                UpdateTelemetry.update();
+
             }
 
             // Stop all motion;
@@ -601,14 +601,68 @@ public class AutoHub {
             robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            updateTelemetry();
+//            updateTelemetry();
+            UpdateTelemetry.update();
+
 
         }
     }
+
+
+    public boolean AprilTagMove(AprilTagDetection tag) { //return true if must move; return false otherwise
+        if (tag == null) {
+            linearOpMode.telemetry.addLine("No april tag detected");
+            return false;
+        } else {
+            linearOpMode.telemetry.addLine("Tag detected");
+        }
+
+        // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+        double  rangeError      = (tag.ftcPose.range - Constants.DESIRED_DISTANCE);
+        double  headingError    = tag.ftcPose.bearing;
+        double  yawError        = tag.ftcPose.yaw;
+
+        if (Math.abs(rangeError) <= 2 && Math.abs(headingError) <= 4){
+            return false;
+        }
+
+        // Use the speed and turn "gains" to calculate how we want the robot to move.
+        double drive  = Range.clip(rangeError * Constants.SPEED_GAIN, -Constants.MAX_AUTO_SPEED, Constants.MAX_AUTO_SPEED);
+        double turn   = Range.clip(headingError * Constants.TURN_GAIN, -Constants.MAX_AUTO_TURN, Constants.MAX_AUTO_TURN) ;
+        double strafe = Range.clip(-yawError * Constants.STRAFE_GAIN, -Constants.MAX_AUTO_STRAFE, Constants.MAX_AUTO_STRAFE);
+
+        // Calculate wheel powers.
+        double leftFrontPower    =  drive - strafe - turn;
+        double rightFrontPower   =  drive + strafe + turn;
+        double leftBackPower     =  drive + strafe - turn;
+        double rightBackPower    =  drive - strafe + turn;
+
+        // Normalize wheel powers to be less than 1.0
+        double max = Math.max(Math.abs(leftFrontPower), Math.abs(rightFrontPower));
+        max = Math.max(max, Math.abs(leftBackPower));
+        max = Math.max(max, Math.abs(rightBackPower));
+
+        if (max > 1.0) {
+            leftFrontPower /= max;
+            rightFrontPower /= max;
+            leftBackPower /= max;
+            rightBackPower /= max;
+        }
+
+        // Send powers to the wheels.
+        robot.lf.setPower(leftFrontPower);
+        robot.rf.setPower(rightFrontPower);
+        robot.lb.setPower(leftBackPower);
+        robot.rb.setPower(rightBackPower);
+
+        return true;
+    }
+
     public void constantHeading(double speed, double xPose, double yPose, double kP, double kI, double kD) {
         mathConstHead.setFinalPose(xPose,yPose);
 
-        updateTelemetry();
+//        updateTelemetry();
+        UpdateTelemetry.update();
 
         double targetAngle = getAbsoluteAngle();
         TurnPIDController pidTurn = new TurnPIDController(targetAngle, kP, kI, kD);
@@ -672,7 +726,9 @@ public class AutoHub {
                 linearOpMode.telemetry.addData("rb Target Position:", robot.rb.getTargetPosition());
 //                linearOpMode.telemetry.update();
 
-                updateTelemetry();
+//                updateTelemetry();
+                UpdateTelemetry.update();
+
             }
 
             // Stop all motion;
@@ -686,7 +742,8 @@ public class AutoHub {
             robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            updateTelemetry();
+//            updateTelemetry();
+            UpdateTelemetry.update();
 
         }
     }
@@ -926,8 +983,6 @@ public class AutoHub {
         }
     }
 
-
-
     //Turn
     public void resetAngle(){
         lastAngles = robot.imu.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
@@ -954,59 +1009,6 @@ public class AutoHub {
         linearOpMode.telemetry.addData("gyro", orientation.firstAngle);
         return currAngle;
     }
-    public void turn(double degrees){
-        resetAngle();
-
-        double error = degrees;
-
-        while (linearOpMode.opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            robot.lf.setPower(-motorPower);
-            robot.rf.setPower(motorPower);
-            robot.lb.setPower(-motorPower);
-            robot.rb.setPower(motorPower);
-
-//            detectColor();
-//            checkButton();
-
-            error = degrees - getAngle();
-            linearOpMode.telemetry.addData("error", error);
-            linearOpMode.telemetry.update();
-        }
-
-        robot.lf.setPower(0);
-        robot.rf.setPower(0);
-        robot.lb.setPower(0);
-        robot.rb.setPower(0);
-
-    }
-
-    public void absoluteTurn(double theta){
-        double currAngle = -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
-
-        double error = deltaAngle(theta, currAngle);
-
-        while (linearOpMode.opModeIsActive() && Math.abs(error) > 2) {
-            double motorPower = (error < 0 ? -0.3 : 0.3);
-            robot.lf.setPower(-motorPower);
-            robot.rf.setPower(motorPower);
-            robot.lb.setPower(-motorPower);
-            robot.rb.setPower(motorPower);
-
-//            detectColor();
-//            checkButton();
-
-            error = deltaAngle(theta, currAngle);
-            linearOpMode.telemetry.addData("error", error);
-            linearOpMode.telemetry.update();
-        }
-
-        robot.lf.setPower(0);
-        robot.rf.setPower(0);
-        robot.lb.setPower(0);
-        robot.rb.setPower(0);
-    }
-
     public double getAbsoluteAngle() {
 //        return robot.imu.getRobotOrientation(
 //                AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES
@@ -1022,23 +1024,32 @@ public class AutoHub {
         return (Math.abs(turnAmount1) < Math.abs(turnAmount2) ? turnAmount1 : turnAmount2);
     }
 
-    public void turnPID(double degrees,double timeOut) {
-        turnMath(-degrees + getAbsoluteAngle(), timeOut);
+    public static double clamp(double degrees){
+        if (Math.abs(degrees) >= 360) degrees %= 360;
+        if (degrees == -180) degrees = 180;
+
+        if (degrees < -180){
+            degrees = 180 - (Math.abs(degrees) - 180);
+        } else if (degrees > 180){
+            degrees = -180 + (Math.abs(degrees) - 180);
+        }
+        return degrees;
     }
+
     public void turnAbsPID(double absDegrees, double timeOut){
-        turnMath(-absDegrees, timeOut);
+        turnMath(absDegrees, timeOut);
     }
     void turnMath(double targetAngle, double timeoutS) {
-        TurnPIDController pid = new TurnPIDController(targetAngle, 0.01, 0, 0.003);
+        TurnPIDController pid = new TurnPIDController(targetAngle, 0.03, 0, 0.01);
         linearOpMode.telemetry.setMsTransmissionInterval(50);
         // Checking lastSlope to make sure that it's not oscillating when it quits
         runtime.reset();
-        while ((runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) > 0.25 || pid.getLastSlope() > 0.15)) {
+        while ((runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) > 5 || pid.getLastSlope() > 0.15)) {
             double motorPower = pid.update(getAbsoluteAngle());
-            robot.lf.setPower(-motorPower);
-            robot.rf.setPower(motorPower);
-            robot.lb.setPower(-motorPower);
-            robot.rb.setPower(motorPower);
+            robot.lf.setPower(motorPower);
+            robot.rf.setPower(-motorPower);
+            robot.lb.setPower(motorPower);
+            robot.rb.setPower(-motorPower);
 
 //            detectColor();
 

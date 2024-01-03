@@ -25,18 +25,25 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
         NOT_FOUND
     }
     private Location location;
+    static final Rect MID_ROI = new Rect(new Point(400, 100), new Point(650, 300)); //470-810
+    static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 350));
+    static final Rect RIGHT_ROI = new Rect(new Point(1250, 100), new Point(980, 450));
 
-    static final Rect MID_ROI = new Rect(new Point(500, 100), new Point(750, 300)); //470-810
-    static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 300));
-    static final Rect RIGHT_ROI = new Rect(new Point(1280, 100), new Point(1080, 400));
+    static double PERCENT_COLOR_THRESHOLD = 0.30;
+    double[] hsvThresholdHueBlue = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
+    double[] hsvThresholdSaturationBlue = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
+    double[] hsvThresholdValueBlue = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
 
-
-    static double PERCENT_COLOR_THRESHOLD = 0.4;
-    double[] hsvThresholdHue = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
-    double[] hsvThresholdSaturation = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
-    double[] hsvThresholdValue = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
+    double[] hsvThresholdHueRed = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
+    double[] hsvThresholdSaturationRed = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
+    double[] hsvThresholdValueRed = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
 
     public TeamElementDetectionPipeline(Telemetry t) { telemetry = t; }
+
+    public boolean blue = true;
+    public void blueOrRed(boolean blue){
+        this.blue = blue;
+    }
 
     @Override
     public Mat processFrame(Mat input) {
@@ -47,8 +54,11 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
         blur(blurInput, blurType, blurRadius, blurOutput);
 
         // Step HSV_Threshold0:
+        double[] hsvHue = (this.blue ? hsvThresholdHueBlue : hsvThresholdHueRed);
+        double[] hsvSat = (this.blue ? hsvThresholdSaturationBlue : hsvThresholdSaturationRed);
+        double[] hsvValue = (this.blue ? hsvThresholdValueBlue : hsvThresholdValueRed);
         Mat hsvThresholdInput = blurOutput;
-        hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, mat); //mat is the output
+        hsvThreshold(hsvThresholdInput, hsvHue, hsvSat, hsvValue, mat); //mat is the output
 
         Mat left = mat.submat(LEFT_ROI);
         Mat mid = mat.submat(MID_ROI);

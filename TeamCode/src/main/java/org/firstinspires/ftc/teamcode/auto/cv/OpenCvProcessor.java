@@ -1,11 +1,10 @@
 package org.firstinspires.ftc.teamcode.auto.cv;
 
-import android.graphics.Canvas;
+import android.util.Pair;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.tfod.CanvasAnnotator;
-import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration;
 import org.firstinspires.ftc.teamcode.common.Constants;
+import org.firstinspires.ftc.vision.VisionProcessor;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -14,9 +13,12 @@ import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
-public class RawDataProcessorImpl extends RawDataProcessor{
+import java.util.Date;
+
+public abstract class OpenCvProcessor implements VisionProcessor {
+
     Telemetry telemetry;
-    Mat mat = new Mat();
+    Mat hsvOutput = new Mat();
     Mat blurOutput = new Mat();
     int lowHue = 120;
     int highHue = 180;
@@ -31,23 +33,21 @@ public class RawDataProcessorImpl extends RawDataProcessor{
     static final Rect MID_ROI = new Rect(new Point(500, 100), new Point(750, 300)); //470-810
     static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 300));
     static final Rect RIGHT_ROI = new Rect(new Point(1280, 100), new Point(1080, 400));
-
-
     static double PERCENT_COLOR_THRESHOLD = 0.4;
     double[] hsvThresholdHue = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
     double[] hsvThresholdSaturation = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
     double[] hsvThresholdValue = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
-    public RawDataProcessorImpl(Telemetry telemetry){
-        this.telemetry = telemetry;
+
+
+    public static class Builder {
+        public OpenCvProcessor build(){
+            return new OpenCvProcessorImpl();
+        }
     }
 
-    @Override
-    public void init(int width, int height, CameraCalibration calibration){
+    public abstract Pair<Mat, Date> getCameraFrame();
 
-    }
-
-    @Override
-    public Object processFrame(Mat input, long captureTimeNanos){
+    public void processFrameHSV(Mat input){
         // Step Blur0:
         Mat blurInput = input;
         BlurType blurType = BlurType.get("Box Blur");
@@ -56,10 +56,10 @@ public class RawDataProcessorImpl extends RawDataProcessor{
 
         // Step HSV_Threshold0:
         Mat hsvThresholdInput = blurOutput;
-        hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, mat); //mat is the output
+        hsvThreshold(hsvThresholdInput, hsvThresholdHue, hsvThresholdSaturation, hsvThresholdValue, hsvOutput); //mat is the output
 
-        Mat left = mat.submat(LEFT_ROI);
-        Mat mid = mat.submat(MID_ROI);
+        Mat left = hsvOutput.submat(LEFT_ROI);
+        Mat mid = hsvOutput.submat(MID_ROI);
 
         double leftValue = Core.sumElems(left).val[0] / LEFT_ROI.area() / 255;
         double midValue = Core.sumElems(mid).val[0] / MID_ROI.area() / 255;
@@ -74,15 +74,15 @@ public class RawDataProcessorImpl extends RawDataProcessor{
         boolean elementMid = midValue > PERCENT_COLOR_THRESHOLD;
 
         if (elementMid) {
-            location = Location.MID;
+            location = OpenCvProcessorImpl.Location.MID;
             telemetry.addData("Team Element Location", "mid");
         }
         else if (elementLeft) {
-            location = Location.LEFT;
+            location = OpenCvProcessorImpl.Location.LEFT;
             telemetry.addData("Team Element Location", "left");
         }
         else {
-            location = Location.RIGHT;
+            location = OpenCvProcessorImpl.Location.RIGHT;
             telemetry.addData("Team Element Location", "right");
         }
 
@@ -93,13 +93,12 @@ public class RawDataProcessorImpl extends RawDataProcessor{
             telemetry.update();
         }
 
-        Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
+//        Imgproc.cvtColor(mat, output, Imgproc.COLOR_GRAY2RGB);
 
-        Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0), 4);
-        Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0), 4);
-        Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0), 4);
+        Imgproc.rectangle(hsvOutput, MID_ROI, new Scalar(255,0,0), 4);
+        Imgproc.rectangle(hsvOutput, LEFT_ROI, new Scalar(255,0,0), 4);
+        Imgproc.rectangle(hsvOutput, RIGHT_ROI, new Scalar(255,0,0), 4);
 
-        return mat;
     }
 
     enum BlurType{
@@ -141,6 +140,7 @@ public class RawDataProcessorImpl extends RawDataProcessor{
      * @param doubleRadius The radius for the blur.
      * @param output The image in which to store the output.
      */
+
     private void blur(Mat input, BlurType type, double doubleRadius,
                       Mat output) {
         int radius = (int)(doubleRadius + 0.5);
@@ -180,7 +180,7 @@ public class RawDataProcessorImpl extends RawDataProcessor{
                 new Scalar(hue[1], sat[1], val[1]), out);
     }
 
-    public Location getLocation() {
+    public OpenCvProcessorImpl.Location getLocation() {
         return location;
     }
 
@@ -191,18 +191,14 @@ public class RawDataProcessorImpl extends RawDataProcessor{
         return highHue;
     }
 
+    public void setTelemetry(Telemetry telemetry){
+        this.telemetry = telemetry;
+    }
+
     public boolean isSeen(){
-        if (getLocation() == Location.MID){
+        if (getLocation() == OpenCvProcessorImpl.Location.MID){
             return true;
         }
         return false;
-    }
-
-    @Override
-    public void onDrawFrame(Canvas canvas, int onscreenWidth, int onscreenHeight, float scaleBmpPxToCanvasPx, float scaleCanvasDensity, Object userContext){
-        if (userContext != null)
-        {
-            ((CanvasAnnotator) userContext).draw(canvas, onscreenWidth, onscreenHeight, scaleBmpPxToCanvasPx, scaleCanvasDensity);
-        }
     }
 }

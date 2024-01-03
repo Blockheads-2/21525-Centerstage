@@ -8,6 +8,7 @@ public class Constants {
     public static final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     public static final double MAX_AUTO_STRAFE = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     public static final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+    public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
     public static final double EXPOSURE_MS = 6;
     public static final int CAMERA_GAIN = 250;
     //Drive Train Constants
@@ -27,8 +28,8 @@ public class Constants {
     public static float HORIZONTAL_DISTANCE_BETWEEN_WHEEL_AND_CENTER;
     //Distance Between swerve module and Center
     public static float DISTANCE_BETWEEN_MODULE_AND_CENTER = 3.406f; //3.405512
-    public static double DEFAULT_SPEED = 0.75;
-    //Camera Constants
+    public static double DEFAULT_SPEED = 1;
+    // Camera Constants
     public static float WIDTH = 1280.0f;
     public static float HEIGHT = 720.0f;
     public static double CAMERA_ERROR = 2.0f; //typically off by ~2 inches in the y-direction.  Not sure about the x-direction.
@@ -38,12 +39,22 @@ public class Constants {
     public static double HSV_SATURATION_HIGH_BLUE = 255;
     public static double HSV_VALUE_LOW_BLUE = 0;
     public static double HSV_VALUE_HIGH_BLUE = 255;
+
+    public static double HSV_HUE_LOW_RED = 0;
+    public static double HSV_HUE_HIGH_RED = 70;
+    public static double HSV_SATURATION_LOW_RED = 90;
+    public static double HSV_SATURATION_HIGH_RED = 255;
+    public static double HSV_VALUE_LOW_RED = 0;
+    public static double HSV_VALUE_HIGH_RED = 255;
     public static double PIXEL_WIDTH_MM = 84.25;
     public static double PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA = 640.0 / (Math.tan(Math.toRadians(68.0)) * (PIXEL_WIDTH_MM / 2.0)); //pixels to mm; assumes resolution is 640x480
+//<<<<<<< HEAD
 
 //    public static double INCHES_PER_CLICK = 1.0;
 //    public static double CLICKS_FOR_INCH = INCHES_PER_CLICK * //inches;
     final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
+//=======
+//>>>>>>> f02c6e4db5109c951cbfaae30249002d98273d54
 
     public class Double {
         protected double v;

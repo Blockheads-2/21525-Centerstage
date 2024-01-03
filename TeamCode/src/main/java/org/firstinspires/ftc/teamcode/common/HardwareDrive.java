@@ -43,15 +43,12 @@ import com.sun.tools.javac.util.List;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
-import org.firstinspires.ftc.teamcode.auto.cv.RawDataProcessor;
+import org.firstinspires.ftc.teamcode.auto.cv.OpenCvProcessor;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
-
-import java.util.concurrent.TimeUnit;
+import org.firstinspires.ftc.vision.tfod.TfodProcessor;
 
 /**
  * This is NOT an opmode.
@@ -70,17 +67,20 @@ public class HardwareDrive {
     public DcMotorEx rf;
     public DcMotorEx rb;
     public DcMotorEx lb;
+    public DcMotorEx intake;
+    public DcMotorEx outtake;
+
     public Motor lf_motor;
     public Motor rf_motor;
     public Motor rb_motor;
     public Motor lb_motor;
-    public DcMotorEx intake;
     public IMU imu;
     public MecanumDrive m_drive;
     HardwareMap hwMap = null;
     private VisionPortal visionPortal;               // Used to manage the video source.
     private AprilTagProcessor aprilTag;              // Used for managing the AprilTag detection process.
-    private RawDataProcessor openCV;                 // Used for managing the OpenCV detection process.
+    private OpenCvProcessor openCV;                 // Used for managing the OpenCV detection process.
+    private TfodProcessor tfod;
     private final AprilTagDetection desiredTag = null;     // Used to hold the data for a detected AprilTag
     private Telemetry telemetry = null;
 
@@ -95,7 +95,8 @@ public class HardwareDrive {
         lb = hwMap.get(DcMotorEx.class, "left_back");
         rf = hwMap.get(DcMotorEx.class, "right_front");
         rb = hwMap.get(DcMotorEx.class, "right_back");
-        intake = hwMap.get(DcMotorEx.class, "intake");
+//        intake = hwMap.get(DcMotorEx.class, "intake");
+//        outtake = hwMap.get(DcMotorEx.class, "outtake");
         imu = hwMap.get(IMU.class, "imu");
 
         lf_motor = new Motor(ahwMap, "left_front", Constants.CPR, Constants.RPM); //playing around with ftclib
@@ -104,8 +105,10 @@ public class HardwareDrive {
         rb_motor = new Motor(ahwMap, "right_back", Constants.CPR, Constants.RPM);
         m_drive = new MecanumDrive(lf_motor, rf_motor, lb_motor, rb_motor);
 
-        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+//        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
+//        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
+        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.UP;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
 
         imu.initialize(new IMU.Parameters(orientationOnRobot));
@@ -114,7 +117,8 @@ public class HardwareDrive {
         lb.setDirection(DcMotorSimple.Direction.REVERSE);
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+//        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+//        outtake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         resetEncoderPos();
         imu.resetYaw();
@@ -139,14 +143,24 @@ public class HardwareDrive {
                 .setDrawAxes(true) // Default: false.
                 .setDrawCubeProjection(true) // Default: false.
                 .build(); // Create an AprilTagProcessor by calling build()
+//
+//            openCV = new OpenCvProcessor.Builder()
+//                    .build();
+//            openCV.setTelemetry(telemetry);
 
-            openCV = new RawDataProcessor.Builder()
-                    .build(telemetry);
+            tfod = new TfodProcessor.Builder() // Create a new TFOD Processor Builder object.
+                    .setMaxNumRecognitions(10) // Max. number of recognitions the network will return
+                    .setUseObjectTracker(true) // Whether to use the object tracker
+                    .setTrackerMaxOverlap((float) 0.2) // Max. % of box overlapped by another box at recognition time
+                    .setTrackerMinSize(16) // Min. size of object that the object tracker will track
+                    .build(); // Create a TFOD Processor by calling build()
 
             visionPortal = new VisionPortal.Builder() // Create a new VisionPortal Builder object.
                 .setCamera(hwMap.get(WebcamName.class, "Webcam 1")) // Specify the camera to be used for this VisionPortal.
-                .addProcessors(aprilTag, openCV) // Add the AprilTag Processor to the VisionPortal Builder.
-                .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
+//                .addProcessors(aprilTag, openCV, tfod) // Add the AprilTag Processor to the VisionPortal Builder.
+                .addProcessors(aprilTag, tfod) // Add the AprilTag Processor to the VisionPortal Builder.
+//                .setCameraResolution(new Size(640, 480)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
+                .setCameraResolution(new Size(1280, 720)) // Each resolution, for each camera model, needs calibration values for good pose estimation.
                 .setStreamFormat(VisionPortal.StreamFormat.MJPEG) // MJPEG format uses less bandwidth than the default YUY2.
                 .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.
                 .setAutoStopLiveView(true) // Automatically stop LiveView (RC preview) when all vision processors are disabled.
@@ -182,7 +196,11 @@ public class HardwareDrive {
         return aprilTag;
     }
 
-    public RawDataProcessor getOpenCVProcessor() {return openCV;}
+    public OpenCvProcessor getOpenCVProcessor() {return openCV;}
+
+    public TfodProcessor getTfodProcessor(){
+        return tfod;
+    }
 
     public void pauseStream() {
         visionPortal.stopLiveView(); //temporarily sops the live view (RC preview). This should be fine as we don't use an RC phone.

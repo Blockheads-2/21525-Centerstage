@@ -30,8 +30,11 @@ public class DetectElement extends Methods.auto {
         initVisionPortal();
 
         dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), false);
+        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), false);
 
         while (!opModeIsActive()){
+//            dispatch.robot.getOpenCVProcessor().processFrameHSV(dispatch.robot.getOpenCVProcessor().getCameraFrame().first);
+
             updateValueDecrease.update(gamepad1.a);
             updateValueIncrease.update(gamepad1.b);
 
@@ -56,14 +59,20 @@ public class DetectElement extends Methods.auto {
         dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), true);
         dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getOpenCVProcessor(), false);
 
+
+        //
+        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), true);
+
         while (opModeIsActive())
         {
-            streamAprilTag();
+            streamAprilTag(); //concern: AprilTag expects 640x480, I believe
+            streamTfod();
 
             updateTelemetry();
             sleep(20);
         }
 
+        dispatch.robot.getVisionPortal().close();
         phoneCam.stopStreaming();
     }
 }
