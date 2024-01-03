@@ -77,5 +77,4 @@ public class Constants {
     public static final double LOW_OUTTAKE = 0;
     public static final double MID_OUTTAKE = 500;
     public static final double HIGH_OUTTAKE = 1000;
-//>>>>>>> 4816f08f730b4e51cc2240300bd099b7ac7e0b7f
 }
