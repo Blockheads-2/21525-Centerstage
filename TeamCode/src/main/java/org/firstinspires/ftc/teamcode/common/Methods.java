@@ -363,7 +363,7 @@ public class Methods {
             telemetry.addData("Bottom Left Encoder Position", dispatch.robot.lb.getCurrentPosition());
             telemetry.addData("Bottom Right Encoder Position", dispatch.robot.rb.getCurrentPosition());
 
-            telemetry.addData("Team Element Position:", detector.getLocation());
+//            telemetry.addData("Team Element Position:", detector.getLocation());
             telemetry.addData("April Tag Processor On?", dispatch.getVisionPortal().getProcessorEnabled(dispatch.getAprilTagProcessor()));
             telemetry.addData("TFOD Processor On?", dispatch.getVisionPortal().getProcessorEnabled(dispatch.getTfodProcessor()));
 
@@ -425,20 +425,11 @@ public class Methods {
             double lbPower = (-directionX + directionY + directionR) * drivePower;
             double rfPower = (-directionX + directionY - directionR) * drivePower;
             double rbPower = (directionX + directionY - directionR) * drivePower;
-            List<Double> args = List.of(lfPower, lbPower, rfPower, rbPower);
 
-            double max = Math.max(Math.abs(lfPower), Math.abs(rfPower));
-            max = Math.max(max, Math.abs(lbPower));
-            max = Math.max(max, Math.abs(rbPower));
-
-            for (int i = 0; i < args.size(); i++) if (max > 1.0) args.set(i, args.get(i) / max);
-
-
-            for (DcMotorEx chain : List.of(robot.lf, robot.lb, robot.rf, robot.rb)) {
-                double arg = args.get(i1);
-                chain.setPower(arg);
-                i1++;
-            }
+            robot.lf.setPower(lfPower);
+            robot.lb.setPower(lbPower);
+            robot.rf.setPower(rfPower);
+            robot.rb.setPower(rbPower);
         }
 
         public double driveTrainSpeed() {

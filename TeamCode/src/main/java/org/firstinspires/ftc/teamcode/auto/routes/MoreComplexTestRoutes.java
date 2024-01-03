@@ -28,12 +28,13 @@ public class MoreComplexTestRoutes extends Methods.auto{ //currently oriented fo
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        streamOpenCV(true);
+        streamOpenCV(false);
 
         boolean detectTeamElement = true;
 
 
         TeamElementDetectionPipeline.Location elementLocation;
+
         while (!opModeIsActive() && detectTeamElement){
 //            if (detector.isSeen()) {
 //                detectTeamElement = false;
