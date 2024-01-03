@@ -1,5 +1,10 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import static org.firstinspires.ftc.teamcode.common.Constants.HIGH_OUTTAKE;
+import static org.firstinspires.ftc.teamcode.common.Constants.LOW_OUTTAKE;
+import static org.firstinspires.ftc.teamcode.common.Constants.MAX_OUTTAKE_CLICKS;
+import static org.firstinspires.ftc.teamcode.common.Constants.MID_OUTTAKE;
+import static org.firstinspires.ftc.teamcode.common.Constants.MIN_OUTTAKE_CLICKS;
 import static java.lang.Thread.sleep;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -426,9 +431,8 @@ public class Methods {
             max = Math.max(max, Math.abs(lbPower));
             max = Math.max(max, Math.abs(rbPower));
 
-            for (double power : args) {
-                if (max > 1.0) power /= max;
-            }
+            for (int i = 0; i < args.size(); i++) if (max > 1.0) args.set(i, args.get(i) / max);
+
 
             for (DcMotorEx chain : List.of(robot.lf, robot.lb, robot.rf, robot.rb)) {
                 double arg = args.get(i1);
@@ -471,19 +475,13 @@ public class Methods {
                 robot.rf.setPower(drivePower / 2);
                 robot.rb.setPower(-drivePower / 2);
             }
-
         }
 
-        int MAX_OUTTAKE_CLICKS = 1000;
-        int MIN_OUTTAKE_CLICKS = 0;
-        int LOW_OUTTAKE = 0;
-        int MID_OUTTAKE = 500;
-        int HIGH_OUTTAKE = 1000;
         public void robotBaseOuttakeLoop() {
-            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() + (int)(-gamepad2.left_stick_y * 70), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
-            if (bottomOuttake.is(Button.State.TAP)) clickTarget = LOW_OUTTAKE;
-            else if (midOuttake.is(Button.State.TAP)) clickTarget = MID_OUTTAKE;
-            else if (highOuttake.is(Button.State.TAP)) clickTarget = HIGH_OUTTAKE;
+            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() + (int)(-gamepad2.left_stick_y * 70), (int)MIN_OUTTAKE_CLICKS, (int)MAX_OUTTAKE_CLICKS);
+            if (bottomOuttake.is(Button.State.TAP)) clickTarget = (int)LOW_OUTTAKE;
+            else if (midOuttake.is(Button.State.TAP)) clickTarget = (int)MID_OUTTAKE;
+            else if (highOuttake.is(Button.State.TAP)) clickTarget = (int)HIGH_OUTTAKE;
 
             robot.outtake.setTargetPosition(clickTarget);
             robot.outtake.setPower(-gamepad2.left_stick_y);
