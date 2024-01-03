@@ -16,7 +16,6 @@ public class Constants {
 
 
     public static final double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
-//>>>>>>> 4816f08f730b4e51cc2240300bd099b7ac7e0b7f
     public static final double EXPOSURE_MS = 6;
     public static final int CAMERA_GAIN = 250;
     //Drive Train Constants
@@ -56,11 +55,6 @@ public class Constants {
     public static double HSV_VALUE_HIGH_RED = 255;
     public static double PIXEL_WIDTH_MM = 84.25;
     public static double PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA = 640.0 / (Math.tan(Math.toRadians(68.0)) * (PIXEL_WIDTH_MM / 2.0)); //pixels to mm; assumes resolution is 640x480
-
-
-    final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
-//=======
-//>>>>>>> f02c6e4db5109c951cbfaae30249002d98273d54
 
     public class Double {
         protected double v;

@@ -34,6 +34,7 @@ import android.util.Size;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -121,6 +122,7 @@ public class HardwareDrive {
 //        outtake.setDirection(DcMotorSimple.Direction.FORWARD);
 
         resetEncoderPos();
+        runWithoutEncoder();
         imu.resetYaw();
     }
 
@@ -128,6 +130,12 @@ public class HardwareDrive {
         for (DcMotorEx motor : List.of(lf, lb, rf, rb)) {
             motor.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
             motor.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        }
+    }
+
+    public void runWithoutEncoder(){
+        for (DcMotorEx motor : List.of(lf, lb, rf, rb)) {
+            motor.setMode(DcMotorEx.RunMode.RUN_WITHOUT_ENCODER);
         }
     }
 
