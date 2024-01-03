@@ -40,6 +40,9 @@ public class Constants {
     public static double HSV_VALUE_HIGH_BLUE = 255;
     public static double PIXEL_WIDTH_MM = 84.25;
     public static double PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA = 640.0 / (Math.tan(Math.toRadians(68.0)) * (PIXEL_WIDTH_MM / 2.0)); //pixels to mm; assumes resolution is 640x480
+
+//    public static double INCHES_PER_CLICK = 1.0;
+//    public static double CLICKS_FOR_INCH = INCHES_PER_CLICK * //inches;
     final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
 
     public class Double {
