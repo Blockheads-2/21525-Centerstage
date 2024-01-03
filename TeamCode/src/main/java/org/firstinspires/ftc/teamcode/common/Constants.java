@@ -8,7 +8,11 @@ public class Constants {
     public static final double MAX_AUTO_SPEED = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     public static final double MAX_AUTO_STRAFE = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     public static final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
+
+    //Which one?
     public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
+    final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
+
     public static final double EXPOSURE_MS = 6;
     public static final int CAMERA_GAIN = 250;
     //Drive Train Constants
@@ -50,8 +54,7 @@ public class Constants {
     public static double PIXEL_WIDTH_TO_DISTANCE_FROM_CAMERA = 640.0 / (Math.tan(Math.toRadians(68.0)) * (PIXEL_WIDTH_MM / 2.0)); //pixels to mm; assumes resolution is 640x480
 //<<<<<<< HEAD
 
-//    public static double INCHES_PER_CLICK = 1.0;
-//    public static double CLICKS_FOR_INCH = INCHES_PER_CLICK * //inches;
+
     final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
 //=======
 //>>>>>>> f02c6e4db5109c951cbfaae30249002d98273d54
