@@ -32,6 +32,8 @@ public class F2Auto extends Methods.auto{ //currently oriented for F2 route
 
         waitForStart();
 
+        //1 TILE = 24 INCHES
+
         switch (elementLocation) {
             case LEFT:
                 //...
@@ -51,7 +53,7 @@ public class F2Auto extends Methods.auto{ //currently oriented for F2 route
 
             case MID:
                 //...
-                constantHeading(0.3, -3, 37, 0, 0, 0);
+                constantHeading(0.3, 0, 37, 0, 0, 0);
                 constantHeading(0.2, 0, -7, 0, 0, 0);
 
                 turnAbsPID(90);

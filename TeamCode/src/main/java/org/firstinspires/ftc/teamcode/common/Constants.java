@@ -10,10 +10,8 @@ public class Constants {
     public static final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
 
-    //Which one?
-    //public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
-    //final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
 
+    //public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
 
     public static final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
     public static final double EXPOSURE_MS = 6;

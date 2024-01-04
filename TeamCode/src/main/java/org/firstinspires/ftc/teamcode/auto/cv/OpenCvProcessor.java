@@ -34,9 +34,9 @@ public abstract class OpenCvProcessor implements VisionProcessor {
     static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 300));
     static final Rect RIGHT_ROI = new Rect(new Point(1280, 100), new Point(1080, 400));
     static double PERCENT_COLOR_THRESHOLD = 0.4;
-    double[] hsvThresholdHue = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
-    double[] hsvThresholdSaturation = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
-    double[] hsvThresholdValue = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
+    double[] hsvThresholdHue = {Constants.HSV_HUE_LOW_RED, Constants.HSV_HUE_HIGH_RED};
+    double[] hsvThresholdSaturation = {Constants.HSV_SATURATION_LOW_RED, Constants.HSV_SATURATION_HIGH_RED};
+    double[] hsvThresholdValue = {Constants.HSV_VALUE_LOW_RED, Constants.HSV_VALUE_HIGH_RED};
 
 
     public static class Builder {
