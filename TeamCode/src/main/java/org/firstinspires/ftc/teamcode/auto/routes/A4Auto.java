@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.Methods;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="A4 (Red Near)", group="Autonomous")
+@Autonomous(name="A4 (Blue Near)", group="Autonomous")
 public class A4Auto extends Methods.auto{ //currently oriented for F2 route
     @Override
     public void runOpMode() throws InterruptedException {
