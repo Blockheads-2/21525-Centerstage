@@ -34,9 +34,9 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
     double[] hsvThresholdSaturationBlue = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
     double[] hsvThresholdValueBlue = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
 
-    double[] hsvThresholdHueRed = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
-    double[] hsvThresholdSaturationRed = {Constants.HSV_SATURATION_LOW_BLUE, Constants.HSV_SATURATION_HIGH_BLUE};
-    double[] hsvThresholdValueRed = {Constants.HSV_VALUE_LOW_BLUE, Constants.HSV_VALUE_HIGH_BLUE};
+    double[] hsvThresholdHueRed = {Constants.HSV_HUE_LOW_RED, Constants.HSV_HUE_HIGH_RED};
+    double[] hsvThresholdSaturationRed = {Constants.HSV_SATURATION_LOW_RED, Constants.HSV_SATURATION_HIGH_RED};
+    double[] hsvThresholdValueRed = {Constants.HSV_VALUE_LOW_RED, Constants.HSV_VALUE_HIGH_RED};
 
     public TeamElementDetectionPipeline(Telemetry t) { telemetry = t; }
 

@@ -414,11 +414,11 @@ public class Methods {
             double directionR = 0;
             int i1 = 0;
 
-            if (Math.abs(gamepad1.left_stick_x) > 0.35)
+            if (Math.abs(gamepad1.left_stick_x) > 0.25)
                 directionX = Math.pow(gamepad1.left_stick_x, 1);
-            if (Math.abs(gamepad1.left_stick_y) > 0.35)
+            if (Math.abs(gamepad1.left_stick_y) > 0.25)
                 directionY = -Math.pow(gamepad1.left_stick_y, 1);
-            if (Math.abs(gamepad1.right_stick_x) > 0.35)
+            if (Math.abs(gamepad1.right_stick_x) > 0.25)
                 directionR = Math.pow(gamepad1.right_stick_x, 1);
 
             double lfPower = (directionX + directionY + directionR) * drivePower;
