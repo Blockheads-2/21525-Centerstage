@@ -65,13 +65,13 @@ public class Methods {
             packet = new TelemetryPacket();
             telemetry.setMsTransmissionInterval(50);
 
-            TelemetryFunc updateTele = () -> {
-                UpdateTelemetry();
-            };
+//            TelemetryFunc updateTele = () -> {
+//                UpdateTelemetry();
+//            };
 
-            dispatch.initTelemetry(dashboard, packet, updateTele);
+            dispatch.initTelemetry(dashboard, packet);
 
-            UpdateTelemetry();
+//            UpdateTelemetry();
         }
 
         public void initVisionPortal(){
@@ -363,7 +363,7 @@ public class Methods {
             telemetry.addData("Bottom Left Encoder Position", dispatch.robot.lb.getCurrentPosition());
             telemetry.addData("Bottom Right Encoder Position", dispatch.robot.rb.getCurrentPosition());
 
-//            telemetry.addData("Team Element Position:", detector.getLocation());
+            telemetry.addData("Team Element Position:", detector.getLocation());
             telemetry.addData("April Tag Processor On?", dispatch.getVisionPortal().getProcessorEnabled(dispatch.getAprilTagProcessor()));
             telemetry.addData("TFOD Processor On?", dispatch.getVisionPortal().getProcessorEnabled(dispatch.getTfodProcessor()));
 

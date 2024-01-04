@@ -28,7 +28,7 @@ public class MoreComplexTestRoutes extends Methods.auto{ //currently oriented fo
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        streamOpenCV(false);
+        streamOpenCV(true);
 
         boolean detectTeamElement = true;
 
@@ -55,52 +55,50 @@ public class MoreComplexTestRoutes extends Methods.auto{ //currently oriented fo
 
 //        stopOpenCV();
 
-//        dispatch.initCamera(telemetry);
-
         waitForStart();
 
-        Thread cameraThread = new Thread(runnable);
-        cameraThread.start(); //initializes thread.
-
-        Thread.sleep(1000); //guestimate of how long it takes for cameraThread to fully complete
+//        Thread cameraThread = new Thread(runnable);
+//        cameraThread.start(); //initializes thread.
+//
+//        Thread.sleep(1000); //guestimate of how long it takes for cameraThread to fully complete
         //the most band-aid solution in the history of histories, but yeah it works now :)
 
 
         switch (elementLocation) {
             case LEFT:
                 //...
-                constantHeading(0.2, -7, 37, 0, 0, 0,0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.3, -7, 37, 0, 0, 0,0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
                 turnAbsPID(90);
-                constantHeading(0.2, 0, 7, 0, 0, 0);
+                constantHeading(0.3, 0, 90, 0, 0, 0);
                 break;
 
             case RIGHT:
                 //...
-                constantHeading(0.2, 7, 37, 0, 0, 0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.3, 7, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
                 turnAbsPID(90);
+                constantHeading(0.3, 0, 80, 0, 0, 0);
                 break;
 
             case MID:
                 //...
-                constantHeading(0.2, 0, 37, 0, 0, 0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
-                turnAbsPID(90);
-                constantHeading(0.2, 0, 7, 0, 0, 0);
+                constantHeading(0.3, -3, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
 
+                turnAbsPID(90);
+                constantHeading(0.3, 0, 85, 0, 0, 0);
                 break;
         }
 
 //        constantHeading(0.2, 0, 7, 0, 0, 0);
-        constantHeading(0.2, 0, 50, 0, 0, 0);
 
 
-        boolean shouldMove = AprilTagMove(tag); //might have some crazy threading issues because CameraThread is modifying "tag", and I'm not sure if it'll sync well w/ the main thread.
-        while (shouldMove) shouldMove = AprilTagMove(tag);
+//        boolean shouldMove = AprilTagMove(tag); //might have some crazy threading issues because CameraThread is modifying "tag", and I'm not sure if it'll sync well w/ the main thread.
+//        while (shouldMove) shouldMove = AprilTagMove(tag);
 //        runIntake(-0.6, 4);
 
-        cameraThread.join();
+//        cameraThread.join();
     }
 
     public AutoHub getDispatch(){

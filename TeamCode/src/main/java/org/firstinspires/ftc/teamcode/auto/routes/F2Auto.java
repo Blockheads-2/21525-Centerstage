@@ -12,103 +12,51 @@ import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.Methods;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="F2 Auto (Red Far)", group="Autonomous")
-public class F2Auto extends Methods.auto{
-
+@Autonomous(name="F2 (Red Far)", group="Autonomous")
+public class F2Auto extends Methods.auto{ //currently oriented for F2 route
     @Override
     public void runOpMode() throws InterruptedException {
         initRobot();
 
-        streamOpenCV(true);
-
-        boolean detectTeamElement = true;
-
+        streamOpenCV(false);
 
         TeamElementDetectionPipeline.Location elementLocation;
-        while (!opModeIsActive() && detectTeamElement){
-//            if (detector.isSeen()) {
-//                detectTeamElement = false;
-//            }
-//            dispatch.updateTelemetry();
+
+        while (!opModeIsActive()){
             elementLocation = detector.getLocation();
         }
 
         elementLocation = detector.getLocation();
 
-        stopOpenCV();
-
-//        dispatch.initCamera(telemetry);
-
-        boolean aprilTagProcessor = false;
-        boolean tfodProcessor = false;
-
-//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
-//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
-
-//        while (!opModeIsActive()){
-//            telemetry.addData("Team Element Position:", detector.getLocation());
-//            telemetry.addData("Team Element Position va:", elementLocation);
-//            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
-//            telemetry.addData("TFOD Processor On?", tfodProcessor);
-//
-////            if (aprilTagProcessor){
-////                streamAprilTag();
-////            } else if (tfodProcessor){
-////                streamTfod();
-////            }
-//        }
-
         waitForStart();
 
-<<<<<<< Updated upstream
         switch (elementLocation) {
             case LEFT:
                 //...
-                constantHeading(0.2, -7, 37, 0, 0, 0,0);
-                constantHeading(0.2, 0, -10, 0, 0, 0);
+                constantHeading(0.3, -7, 37, 0, 0, 0,0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
                 turnAbsPID(90);
-                constantHeading(0.2, 0, 7, 0, 0, 0);
+                constantHeading(0.3, 0, 90, 0, 0, 0);
                 break;
 
             case RIGHT:
                 //...
-                constantHeading(0.2, 7, 37, 0, 0, 0);
-                constantHeading(0.2, 0, -10, 0, 0, 0);
+                constantHeading(0.3, 7, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
                 turnAbsPID(90);
+                constantHeading(0.3, 0, 80, 0, 0, 0);
                 break;
 
             case MID:
                 //...
-                constantHeading(0.2, 0, 37, 0, 0, 0);
-                constantHeading(0.2, 0, -10, 0, 0, 0);
-                turnAbsPID(90);
-                constantHeading(0.2, 0, 7, 0, 0, 0);
+                constantHeading(0.3, -3, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
 
+                turnAbsPID(90);
+                constantHeading(0.3, 0, 85, 0, 0, 0);
                 break;
         }
-
-//        constantHeading(0.2, 0, 7, 0, 0, 0);
-        constantHeading(0.2, 0, 90, 0, 0, 0);
-
-//        runIntake(-0.6, 4);
-=======
-        //1 tile = 24, Trapezoid tape to board = 12
-        //Run 1
-//        dispatch.constantHeading(0.5, 0, 24,  0.03, 0, 0);
-//        dispatch.turn(90);
-//        dispatch.constantHeading(0.5, 0, 96,  0.03, 0, 0);
-//        dispatch.constantHeading(0.5, 0, -96, 0.03, 0, 0);
-//        dispatch.turn(-90);
-//        dispatch.constantHeading(0.5, 0, -24,  0.03, 0, 0);
-//        //Run 2
-//        dispatch.constantHeading(0.5, 0, 24,  0.03, 0, 0);
-//        dispatch.turn(90);
-//        dispatch.constantHeading(0.5, 0, 96,  0.03, 0, 0);
-//        dispatch.constantHeading(0.5, 24, 0, 0.03, 0, 0);
-
-
-        telemetry.update();
->>>>>>> Stashed changes
     }
 }

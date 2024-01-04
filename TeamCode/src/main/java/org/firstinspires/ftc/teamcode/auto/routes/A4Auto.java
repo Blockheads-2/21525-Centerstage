@@ -12,80 +12,50 @@ import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
 import org.firstinspires.ftc.teamcode.common.Button;
 import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.Methods;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="A4 Auto (Blue Near)", group="Autonomous")
-public class A4Auto extends Methods.auto{
-
+@Autonomous(name="A4 (Red Near)", group="Autonomous")
+public class A4Auto extends Methods.auto{ //currently oriented for F2 route
     @Override
     public void runOpMode() throws InterruptedException {
         initRobot();
 
         streamOpenCV(true);
 
-        boolean detectTeamElement = true;
-
-
         TeamElementDetectionPipeline.Location elementLocation;
-        while (!opModeIsActive() && detectTeamElement){
-//            if (detector.isSeen()) {
-//                detectTeamElement = false;
-//            }
-//            dispatch.updateTelemetry();
+
+        while (!opModeIsActive()){
             elementLocation = detector.getLocation();
         }
 
         elementLocation = detector.getLocation();
-
-        stopOpenCV();
-
-//        dispatch.initCamera(telemetry);
-
-        boolean aprilTagProcessor = false;
-        boolean tfodProcessor = false;
-
-//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getAprilTagProcessor(), aprilTagProcessor);
-//        dispatch.robot.getVisionPortal().setProcessorEnabled(dispatch.robot.getTfodProcessor(), tfodProcessor);
-
-//        while (!opModeIsActive()){
-//            telemetry.addData("Team Element Position:", detector.getLocation());
-//            telemetry.addData("Team Element Position va:", elementLocation);
-//            telemetry.addData("April Tag Processor On?", aprilTagProcessor);
-//            telemetry.addData("TFOD Processor On?", tfodProcessor);
-//
-////            if (aprilTagProcessor){
-////                streamAprilTag();
-////            } else if (tfodProcessor){
-////                streamTfod();
-////            }
-//        }
 
         waitForStart();
 
         switch (elementLocation) {
             case LEFT:
                 //...
-                constantHeading(0.2, -12, 37, 0, 0, 0,0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.3, -7, 37, 0, 0, 0,0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
+                turnAbsPID(-90);
+                constantHeading(0.3, 0, 55, 0, 0, 0);
                 break;
 
             case RIGHT:
                 //...
-                constantHeading(0.2, 12, 37, 0, 0, 0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, -7, 0, 0, 0, 0);
-
+                constantHeading(0.3, 7, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
+                turnAbsPID(-90);
+                constantHeading(0.3, 0, 45, 0, 0, 0);
                 break;
 
             case MID:
                 //...
-                constantHeading(0.2, 0, 37, 0, 0, 0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, -5, 0, 0, 0, 0);
+                constantHeading(0.3, -3, 37, 0, 0, 0);
+                constantHeading(0.2, 0, -7, 0, 0, 0);
+                turnAbsPID(-90);
+                constantHeading(0.3, 0, 50, 0, 0, 0);
                 break;
         }
-
-//        constantHeading(0.2, 0, 7, 0, 0, 0);
-        constantHeading(0.2, -55, 0, 0, 0, 0);
-//        runIntake(-0.6, 4);
     }
 }

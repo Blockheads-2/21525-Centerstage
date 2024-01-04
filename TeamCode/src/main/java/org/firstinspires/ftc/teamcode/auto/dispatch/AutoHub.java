@@ -141,10 +141,10 @@ public class AutoHub {
         return robot.getTfodProcessor();
     }
 
-    public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet, Methods.auto.TelemetryFunc UpdateTelemetry){
+    public void initTelemetry(FtcDashboard dashboard, TelemetryPacket packet){
         this.dashboard = dashboard;
         this.packet = packet;
-        this.UpdateTelemetry = UpdateTelemetry;
+//        this.UpdateTelemetry = UpdateTelemetry;
     }
 
 
@@ -411,7 +411,7 @@ public class AutoHub {
         mathConstHead.setFinalPose(x,y);
 
 //        updateTelemetry();
-        UpdateTelemetry.update();
+//        UpdateTelemetry.update();
 
         double targetAngle = theta; //want to keep heading constant (current angle)
 
@@ -485,7 +485,7 @@ public class AutoHub {
 //                linearOpMode.telemetry.update();
 
 //                updateTelemetry();
-                UpdateTelemetry.update();
+//                UpdateTelemetry.update();
             }
 
 
@@ -501,7 +501,7 @@ public class AutoHub {
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //            updateTelemetry();
-            UpdateTelemetry.update();
+//            UpdateTelemetry.update();
 
         }
     }
@@ -509,7 +509,7 @@ public class AutoHub {
         mathConstHead.setFinalPose(x,y);
 
 //        updateTelemetry();
-        UpdateTelemetry.update();
+//        UpdateTelemetry.update();
 
         double targetAngle = getAbsoluteAngle(); //want to keep heading constant (current angle)
 
@@ -565,7 +565,7 @@ public class AutoHub {
 //                detectColor();
 //                gps.periodic(runtime.seconds());
 
-//                double angleCorrection = pidTurn.update(getAbsoluteAngle());
+                double angleCorrection = pidTurn.update(getAbsoluteAngle());
 
 //                robot.lf.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio) - (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
 //                robot.rf.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio) + (movePower * angleCorrection * constants.MAX_VELOCITY_DT));
@@ -576,17 +576,20 @@ public class AutoHub {
                 robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio));
                 robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio));
 
-                // Display it for the driver.
-//                linearOpMode.telemetry.addData("Time: ", timeoutS);
+//                 Display it for the driver.
+                linearOpMode.telemetry.addData("Time: ", timeoutS);
 //                linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
 //                linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
 //                linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
-//                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
-
-//                linearOpMode.telemetry.update();
+                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+                linearOpMode.telemetry.addData("lf velocity", robot.lf.getVelocity());
+                linearOpMode.telemetry.addData("rf velocity", robot.rf.getVelocity());
+                linearOpMode.telemetry.addData("lb velocity", robot.lb.getVelocity());
+                linearOpMode.telemetry.addData("rb velocity", robot.rb.getVelocity());
+                linearOpMode.telemetry.update();
 
 //                updateTelemetry();
-                UpdateTelemetry.update();
+//                UpdateTelemetry.update();
 
             }
 
@@ -602,9 +605,13 @@ public class AutoHub {
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //            updateTelemetry();
-            UpdateTelemetry.update();
+//            UpdateTelemetry.update();
 
-
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -662,7 +669,7 @@ public class AutoHub {
         mathConstHead.setFinalPose(xPose,yPose);
 
 //        updateTelemetry();
-        UpdateTelemetry.update();
+//        UpdateTelemetry.update();
 
         double targetAngle = getAbsoluteAngle();
         TurnPIDController pidTurn = new TurnPIDController(targetAngle, kP, kI, kD);
@@ -727,7 +734,7 @@ public class AutoHub {
 //                linearOpMode.telemetry.update();
 
 //                updateTelemetry();
-                UpdateTelemetry.update();
+//                UpdateTelemetry.update();
 
             }
 
@@ -743,7 +750,7 @@ public class AutoHub {
             robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //            updateTelemetry();
-            UpdateTelemetry.update();
+//            UpdateTelemetry.update();
 
         }
     }
@@ -1044,12 +1051,12 @@ public class AutoHub {
         linearOpMode.telemetry.setMsTransmissionInterval(50);
         // Checking lastSlope to make sure that it's not oscillating when it quits
         runtime.reset();
-        while ((runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) > 5 || pid.getLastSlope() > 0.15)) {
+        while ((runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) > 2 || pid.getLastSlope() > 0.15)) {
             double motorPower = pid.update(getAbsoluteAngle());
-            robot.lf.setPower(motorPower);
-            robot.rf.setPower(-motorPower);
-            robot.lb.setPower(motorPower);
-            robot.rb.setPower(-motorPower);
+            robot.lf.setPower(motorPower * 0.5);
+            robot.rf.setPower(-motorPower * 0.5);
+            robot.lb.setPower(motorPower * 0.5);
+            robot.rb.setPower(-motorPower * 0.5);
 
 //            detectColor();
 
@@ -1065,7 +1072,6 @@ public class AutoHub {
         robot.rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
 
         constantHeading(1,0,0,0,0,0); //Brakes
     }
