@@ -75,4 +75,9 @@ public class Constants {
     public static final double LOW_OUTTAKE = 0;
     public static final double MID_OUTTAKE = 500;
     public static final double HIGH_OUTTAKE = 1000;
+
+    //Servo
+        //Plane
+    public static final double HOLD = 0.3;
+    public static final double RELEASE = 0.0;
 }

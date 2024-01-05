@@ -20,23 +20,14 @@ import org.firstinspires.ftc.teamcode.common.Methods;
 @TeleOp(name="Test Motors", group="Beta")
 public class TestMotors extends OpMode {
 
-    public DcMotorEx lf;
-    public DcMotorEx  rf;
-    public DcMotorEx  rb;
-    public DcMotorEx  lb;
+    HardwareDrive robot = new HardwareDrive();
 
 
     View relativeLayout;
     @Override
     public void init() {
-        lf = hardwareMap.get(DcMotorEx.class, "left_front");
-        lb = hardwareMap.get(DcMotorEx.class, "left_back");
-        rf = hardwareMap.get(DcMotorEx.class, "right_front");
-        rb = hardwareMap.get(DcMotorEx.class, "right_back");
-        lf.setDirection(DcMotorSimple.Direction.REVERSE);
-        lb.setDirection(DcMotorSimple.Direction.REVERSE);
-        rf.setDirection(DcMotorSimple.Direction.FORWARD);
-        rb.setDirection(DcMotorSimple.Direction.FORWARD);
+        robot.init(hardwareMap);
+        robot.plane.setPosition(0);
     }
 
     @Override
@@ -46,25 +37,29 @@ public class TestMotors extends OpMode {
 
     @Override
     public void start() {
-
+        robot.plane.setPosition(0.3);
     }
 
     @Override
     public void loop() {
-        lf.setPower(-gamepad1.left_stick_y);
-        rf.setPower(-gamepad1.left_stick_y);
-        lb.setPower(-gamepad1.left_stick_y);
-        rb.setPower(-gamepad1.left_stick_y);
+//        robot.lf.setPower(-gamepad1.left_stick_y);
+//        robot.rf.setPower(-gamepad1.left_stick_y);
+//        robot.lb.setPower(-gamepad1.left_stick_y);
+//        robot.rb.setPower(-gamepad1.left_stick_y);
+//
+//        telemetry.addData("Top Left Encoder Position", robot.lf.getCurrentPosition());
+//        telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
+//        telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
+//        telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+//
+//        telemetry.addData("Top Left Motor Velocity", robot.lf.getVelocity());
+//        telemetry.addData("Top Right Motor Velocity", robot.rf.getVelocity());
+//        telemetry.addData("Bottom Left Motor Velocity", robot.lb.getVelocity());
+//        telemetry.addData("Bottom Right Motor Velocity", robot.rb.getVelocity());
 
-        telemetry.addData("Top Left Encoder Position", lf.getCurrentPosition());
-        telemetry.addData("Top Right Encoder Position", rf.getCurrentPosition());
-        telemetry.addData("Bottom Left Encoder Position", lb.getCurrentPosition());
-        telemetry.addData("Bottom Right Encoder Position", rb.getCurrentPosition());
+        telemetry.addData("plane servo position", robot.plane.getPosition());
 
-        telemetry.addData("Top Left Motor Velocity", lf.getVelocity());
-        telemetry.addData("Top Right Motor Velocity", rf.getVelocity());
-        telemetry.addData("Bottom Left Motor Velocity", lb.getVelocity());
-        telemetry.addData("Bottom Right Motor Velocity", rb.getVelocity());
+        robot.plane.setPosition(robot.plane.getPosition() - (gamepad1.left_stick_y * 0.1));
         telemetry.update();
     }
 

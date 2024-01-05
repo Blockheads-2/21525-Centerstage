@@ -33,6 +33,8 @@ public class F4Auto extends Methods.auto{ //currently oriented for F2 route
         waitForStart();
 
         switch (elementLocation) {
+
+            //Park Right
             case LEFT:
                 //...
                 constantHeading(0.3, -7, 25, 0, 0, 0);
@@ -44,7 +46,8 @@ public class F4Auto extends Methods.auto{ //currently oriented for F2 route
 
             case RIGHT:
                 //...
-                constantHeading(0.3, 7, 25, 0, 0, 0);
+                constantHeading(0.3, 0, 25, 0, 0, 0);
+                constantHeading(0.2, 5, 0, 0, 0, 0);
                 constantHeading(0.2, 0, -7, 0, 0, 0);
                 constantHeading(0.2, -7, 12, 0, 0, 0);
                 turnAbsPID(90);
@@ -54,10 +57,11 @@ public class F4Auto extends Methods.auto{ //currently oriented for F2 route
             case MID:
                 //...
                 constantHeading(0.3, 0, 30, 0, 0, 0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, -7, 10, 0, 0, 0);
+                constantHeading(0.3, 5, 0, 0, 0, 0);
+                constantHeading(0.2, 0, -10, 0, 0, 0);
                 turnAbsPID(90);
-                constantHeading(0.3, 0, 37, 0, 0, 0);
+                constantHeading(0.3, 30, 0, 0, 0, 0);
+                constantHeading(0.3, 0, 12, 0, 0, 0);
                 break;
         }
     }

@@ -387,6 +387,7 @@ public class Methods {
         Button bottomOuttake = new Button();
         Button midOuttake = new Button();
         Button highOuttake = new Button();
+        Button planeButton = new Button();
         protected possibleLiftStates liftState = possibleLiftStates.BOTTOM;
 
         public void initRobot() {
@@ -406,6 +407,15 @@ public class Methods {
 
 //            robot.outtake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //            robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        public void PlayerOne(){
+            robotBaseDriveLoop(driveTrainSpeed());
+            robotBaseMicroAdjustLoop(driveTrainSpeed());
+        }
+
+        public void PlayerTwo(){
+            planeLaunch();
         }
 
         public void robotBaseDriveLoop(double drivePower) {
@@ -507,6 +517,12 @@ public class Methods {
 //            }
         }
 
+        public void planeLaunch(){
+            if (planeButton.is(Button.State.TAP)){
+                robot.plane.setPosition(Constants.RELEASE);
+            }
+        }
+
         protected void UpdateTelemetry(){
             telemetry.addData("X", gamepad1.left_stick_x);
             telemetry.addData("Y", -gamepad1.left_stick_y);
@@ -566,6 +582,7 @@ public class Methods {
             bottomOuttake.update(gamepad2.a);
             midOuttake.update(gamepad2.b);
             highOuttake.update(gamepad2.y);
+            planeButton.update(gamepad2.b);
         }
     }
 }

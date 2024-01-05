@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.sun.tools.javac.util.List;
 
@@ -70,6 +71,7 @@ public class HardwareDrive {
     public DcMotorEx lb;
     public DcMotorEx intake;
     public DcMotorEx outtake;
+    public Servo plane;
 
     public Motor lf_motor;
     public Motor rf_motor;
@@ -96,6 +98,7 @@ public class HardwareDrive {
         lb = hwMap.get(DcMotorEx.class, "left_back");
         rf = hwMap.get(DcMotorEx.class, "right_front");
         rb = hwMap.get(DcMotorEx.class, "right_back");
+        plane = hwMap.get(Servo.class, "plane");
 //        intake = hwMap.get(DcMotorEx.class, "intake");
 //        outtake = hwMap.get(DcMotorEx.class, "outtake");
         imu = hwMap.get(IMU.class, "imu");
@@ -120,6 +123,8 @@ public class HardwareDrive {
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
 //        intake.setDirection(DcMotorSimple.Direction.REVERSE);
 //        outtake.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        plane.setPosition(Constants.HOLD);
 
         resetEncoderPos();
         runWithoutEncoder();

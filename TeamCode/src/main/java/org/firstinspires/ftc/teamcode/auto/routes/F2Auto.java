@@ -35,31 +35,55 @@ public class F2Auto extends Methods.auto{ //currently oriented for F2 route
         //1 TILE = 24 INCHES
 
         switch (elementLocation) {
+            //Park Left
             case LEFT:
                 //...
+                //Place
                 constantHeading(0.3, -7, 25, 0, 0, 0);
+                //Move out
                 constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, 5, 10, 0, 0, 0);
+                //Go forward
+                constantHeading(0.2, 5, 7, 0, 0, 0);
+                //Turn
                 turnAbsPID(90);
-                constantHeading(0.3, 0, 90, 0, 0, 0);
+                //Go to the board
+                constantHeading(0.3, 0, 100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, -5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, 7, 0, 0, 0);
                 break;
 
             case RIGHT:
                 //...
-                constantHeading(0.3, 7, 25, 0, 0, 0);
+                //Place
+                constantHeading(0.3, -7, -25, 0, 0, 0);
+                //Move out
                 constantHeading(0.2, 0, -5, 0, 0, 0);
-                constantHeading(0.2, -5, 10, 0, 0, 0);
+                //Go forward
+                constantHeading(0.2, 5, -7, 0, 0, 0);
+                //Turn
                 turnAbsPID(90);
-                constantHeading(0.3, 0, 100, 0, 0, 0);
+                //Go to the board
+                constantHeading(0.3, 0, -100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, -5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, 7, 0, 0, 0);
                 break;
 
             case MID:
                 //...
                 constantHeading(0.3, 0, 30, 0, 0, 0);
-                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.3, 5, 0, 0, 0, 0);
+                constantHeading(0.2, 0, -10, 0, 0, 0);
                 constantHeading(0.2, -5, 10, 0, 0, 0);
                 turnAbsPID(90);
                 constantHeading(0.3, 0, 100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, -5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, 7, 0, 0, 0);
                 break;
         }
     }

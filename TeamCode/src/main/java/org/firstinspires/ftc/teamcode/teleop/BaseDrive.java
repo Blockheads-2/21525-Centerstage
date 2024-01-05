@@ -22,8 +22,8 @@ public class BaseDrive extends Methods.teleOp {
 
     @Override
     public void loop() {
-        robotBaseDriveLoop(driveTrainSpeed());
-        robotBaseMicroAdjustLoop(driveTrainSpeed());
+        PlayerOne();
+        PlayerTwo();
 //        robotBaseIntakeLoop();
 //        robotBaseOuttakeLoop(); //uncomment these when you configure intake and outtake motors.
         UpdateButton();
