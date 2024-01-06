@@ -61,11 +61,11 @@ public class A2Auto extends Methods.auto{
                 //Move to Place on board
                 constantHeading(0.2, 26, 0, 0, 0, 0);
 
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+//                runOuttake(Constants.MID_OUTTAKE, 0.6);
+//
+//                //open claw
+//
+//                runOuttake(0, 0.5);
 
                 break;
 
@@ -90,11 +90,11 @@ public class A2Auto extends Methods.auto{
                 //Move to Place on board
                 constantHeading(0.2, 15, 0, 0, 0, 0); //y-value may change based on the length of the claw.
 
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+//                runOuttake(Constants.MID_OUTTAKE, 0.6);
+//
+//                //open claw
+//
+//                runOuttake(0, 0.5);
 
                 break;
 
@@ -120,11 +120,11 @@ public class A2Auto extends Methods.auto{
                 //Move to Place on board
                 constantHeading(0.2, 24, 0, 0, 0, 0); //y-value will changed based on the length of the claw
 
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+//                runOuttake(Constants.MID_OUTTAKE, 0.6);
+//
+//                //open claw
+//
+//                runOuttake(0, 0.5);
 
                 break;
         }

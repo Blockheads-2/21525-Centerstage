@@ -51,13 +51,13 @@ public class F4Auto extends Methods.auto{
                 turnAbsPID(90);
 
                 //Move to park
-                constantHeading(0.3, 7, -40, 0, 0, 0); //y-value will changed based on the length of the claw
+                constantHeading(0.3, 7, -41, 0, 0, 0); //y-value will changed based on the length of the claw
 
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+//                runOuttake(Constants.MID_OUTTAKE, 0.6);
+//
+//                //open claw
+//
+//                runOuttake(0, 0.5);
 
                 constantHeading(0.2, -25, 0, 0, 0, 0);
 
@@ -75,13 +75,13 @@ public class F4Auto extends Methods.auto{
                 turnAbsPID(90);
 
                 //Move to park
-                constantHeading(0.3, 0, -34, 0, 0, 0); //y-value will changed based on the length of the claw
-
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+                constantHeading(0.3, 0, -44, 0, 0, 0); //y-value will changed based on the length of the claw
+//
+//                runOuttake(Constants.MID_OUTTAKE, 0.6);
+//
+//                //open claw
+//
+//                runOuttake(0, 0.5);
 
                 constantHeading(0.2, -15, 0, 0, 0, 0);
 
@@ -98,13 +98,13 @@ public class F4Auto extends Methods.auto{
                 turnAbsPID(90);
 
                 //Move to place on board
-                constantHeading(0.3, 0, -37, 0, 0, 0); //y-value will changed based on the length of the claw
+                constantHeading(0.3, 0, -41, 0, 0, 0); //y-value will changed based on the length of the claw
 
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+//                runOuttake(Constants.MID_OUTTAKE, 0.6);
+//
+//                //open claw
+//
+//                runOuttake(0, 0.5);
 
                 constantHeading(0.2, -20, 0, 0, 0, 0);
 

@@ -581,7 +581,7 @@ public class Methods {
             bottomOuttake.update(gamepad2.a);
             midOuttake.update(gamepad2.x);
             highOuttake.update(gamepad2.y);
-            planeButton.update(gamepad2.b);
+            planeButton.update(gamepad1.b);
         }
     }
 }
