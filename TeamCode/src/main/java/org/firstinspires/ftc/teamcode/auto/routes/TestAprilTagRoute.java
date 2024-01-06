@@ -85,7 +85,8 @@ import java.util.concurrent.TimeUnit;
  *
  */
 
-@TeleOp(name="Omni Drive To AprilTag", group = "Concept")
+@TeleOp(name="Test April Tag Route", group = "Concept")
+@Disabled
 public class TestAprilTagRoute extends LinearOpMode
 {
     // Adjust these numbers to suit your robot.
@@ -126,10 +127,10 @@ public class TestAprilTagRoute extends LinearOpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must match the names assigned during the robot configuration.
         // step (using the FTC Robot Controller app on the phone).
-        leftFrontDrive  = hardwareMap.get(DcMotor.class, "left_front");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front");
-        leftBackDrive  = hardwareMap.get(DcMotor.class, "left_back");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back");
+        leftFrontDrive  = hardwareMap.get(DcMotor.class, "leftfront_drive");
+        rightFrontDrive = hardwareMap.get(DcMotor.class, "rightfront_drive");
+        leftBackDrive  = hardwareMap.get(DcMotor.class, "leftback_drive");
+        rightBackDrive = hardwareMap.get(DcMotor.class, "rightback_drive");
 
         // To drive forward, most robots need the motor on one side to be reversed, because the axles point in opposite directions.
         // When run, this OpMode should start both motors driving forward. So adjust these two lines based on your first test drive.
@@ -172,7 +173,6 @@ public class TestAprilTagRoute extends LinearOpMode
                     // This tag is NOT in the library, so we don't have enough information to track to it.
                     telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
                 }
-                telemetry.update();
             }
 
             // Tell the driver what we see, and what to do.
@@ -200,7 +200,8 @@ public class TestAprilTagRoute extends LinearOpMode
                 strafe = Range.clip(-yawError * STRAFE_GAIN, -MAX_AUTO_STRAFE, MAX_AUTO_STRAFE);
 
                 telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
-            } else
+            } else {
+
                 // drive using manual POV Joystick mode.  Slow things down to make the robot more controlable.
                 drive  = -gamepad1.left_stick_y  / 2.0;  // Reduce drive rate to 50%.
                 strafe = -gamepad1.left_stick_x  / 2.0;  // Reduce strafe rate to 50%.
@@ -213,6 +214,7 @@ public class TestAprilTagRoute extends LinearOpMode
             moveRobot(drive, strafe, turn);
             sleep(10);
         }
+    }
 
     /**
      * Move robot according to desired axes motions

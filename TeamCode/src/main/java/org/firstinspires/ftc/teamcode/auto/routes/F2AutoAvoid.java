@@ -14,8 +14,8 @@ import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.Methods;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="F2 (Red Far)", group="Autonomous")
-public class F2Auto extends Methods.auto{
+@Autonomous(name="F2 (Red Far; No board-drop-off)", group="Autonomous")
+public class F2AutoAvoid extends Methods.auto{
     @Override
     public void runOpMode() throws InterruptedException {
         initRobot();
@@ -43,7 +43,7 @@ public class F2Auto extends Methods.auto{
                 constantHeading(0.2, 19, -34, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, -21, 9, 0, 0, 0);
+                constantHeading(0.2, -22, 9, 0, 0, 0);
 
                 //Move to middle
                 constantHeading(0.2, 0, -41, 0, 0, 0);
@@ -52,18 +52,7 @@ public class F2Auto extends Methods.auto{
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 80, 0, 0, 0);
-
-                turnAbsPID(90);
-
-                //Move to Place on board
-                constantHeading(0.2, -15, 0, 0, 0, 0); //y-value may change based on the length of the claw.
-
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+                constantHeading(0.3, 0, 83, 0, 0, 0);
                 break;
 
             case RIGHT:
@@ -73,7 +62,7 @@ public class F2Auto extends Methods.auto{
                 constantHeading(0.2, -17, 0, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 24, 6, 0, 0, 0);
+                constantHeading(0.2, 24, 5, 0, 0, 0);
 
                 //Move to middle
                 constantHeading(0.2, 0, -34, 0, 0, 0);
@@ -82,18 +71,7 @@ public class F2Auto extends Methods.auto{
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 87, 0, 0, 0);
-
-                turnAbsPID(90);
-
-                //Move to Place on board
-                constantHeading(0.2, -26, 0, 0, 0, 0);
-
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+                constantHeading(0.3, 0, 88, 0, 0, 0);
 
                 break;
 
@@ -111,19 +89,7 @@ public class F2Auto extends Methods.auto{
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 98, 0, 0, 0);
-
-                //Turn 180 degrees
-                turnAbsPID(90);
-
-                //Move to Place on board
-                constantHeading(0.2, -24, 0, 0, 0, 0); //y-value will changed based on the length of the claw
-
-                runOuttake(Constants.MID_OUTTAKE, 0.6);
-
-                //open claw
-
-                runOuttake(0, 0.5);
+                constantHeading(0.3, 0, 100, 0, 0, 0);
 
                 break;
         }

@@ -42,9 +42,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
 
 @TeleOp(name = "Internal Camera Example", group = "CV")
 public class InternalCameraExample extends LinearOpMode {
-    static final Rect MID_ROI = new Rect(new Point(400, 100), new Point(650, 300)); //470-810
-    static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 350));
-    static final Rect RIGHT_ROI = new Rect(new Point(1250, 100), new Point(980, 450));
+    static final Rect MID_ROI = new Rect(new Point(650, 325), new Point(875, 575)); //470-810
+    static final Rect LEFT_ROI = new Rect(new Point(90, 350), new Point(320, 650));
+    static final Rect RIGHT_ROI = new Rect(new Point(1250, 350), new Point(980, 650));
 
     /*
      * An example image processing pipeline to be run upon receipt of each frame from the camera.
@@ -216,7 +216,7 @@ public class InternalCameraExample extends LinearOpMode {
 
             Imgproc.rectangle(input, MID_ROI, new Scalar(255, 0, 0), 4);
             Imgproc.rectangle(input, LEFT_ROI, new Scalar(255, 0, 0), 4);
-            Imgproc.rectangle(input, RIGHT_ROI, new Scalar(255, 0, 0), 4);
+//            Imgproc.rectangle(input, RIGHT_ROI, new Scalar(255, 0, 0), 4);
             /**
              * NOTE: to see how to get data from your pipeline to your OpMode as well as how
              * to change which stage of the pipeline is rendered to the viewport when it is

@@ -342,7 +342,16 @@ public class Methods {
         }
 
         public void runIntake(double power, double timeout){
-            dispatch.spinIntake(power, timeout);
+//            dispatch.spinIntake(power, timeout);
+        }
+
+        public void runOuttake(int clickTarget, double power){
+            while (opModeIsActive() && Math.abs(dispatch.robot.outtake.getCurrentPosition() - clickTarget) >= 15){
+                dispatch.robot.outtake.setTargetPosition(clickTarget);
+                dispatch.robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                dispatch.robot.outtake.setPower(power);
+            }
+            dispatch.robot.outtake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
         public void UpdateTelemetry(){
@@ -378,17 +387,18 @@ public class Methods {
         protected FtcDashboard dashboard;
         protected SpinPID outtakePositioner;
         protected TelemetryPacket packet;
-        protected enum possibleLiftStates {
-            BOTTOM,
-            MIDDLE,
-            TOP
+        protected enum IntakeState {
+            LEFT_OPEN,
+            LEFT_CLOSED,
+            RIGHT_OPEN,
+            RIGHT_CLOSED
         }
+        protected IntakeState claw_state = IntakeState.LEFT_OPEN; //for now, just left claw (right claw is the V-push bot)
 
         Button bottomOuttake = new Button();
         Button midOuttake = new Button();
         Button highOuttake = new Button();
         Button planeButton = new Button();
-        protected possibleLiftStates liftState = possibleLiftStates.BOTTOM;
 
         public void initRobot() {
             robot.init(hardwareMap);
@@ -415,6 +425,8 @@ public class Methods {
         }
 
         public void PlayerTwo(){
+            robotBaseOuttakeLoop();
+//            robotBaseIntakeLoop();
             planeLaunch();
         }
 
@@ -450,9 +462,6 @@ public class Methods {
             return drivePower;
         }
 
-        public void robotBaseIntakeLoop() {
-            if (gamepad1.left_trigger != 0) robot.intake.setPower(gamepad1.left_trigger);
-        }
 
         public void robotBaseMicroAdjustLoop(double drivePower) {
             if (gamepad1.dpad_up) {
@@ -479,47 +488,34 @@ public class Methods {
         }
 
         public void robotBaseOuttakeLoop() {
-            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() + (int)(-gamepad2.left_stick_y * 70), (int)MIN_OUTTAKE_CLICKS, (int)MAX_OUTTAKE_CLICKS);
-            if (bottomOuttake.is(Button.State.TAP)) clickTarget = (int)LOW_OUTTAKE;
-            else if (midOuttake.is(Button.State.TAP)) clickTarget = (int)MID_OUTTAKE;
-            else if (highOuttake.is(Button.State.TAP)) clickTarget = (int)HIGH_OUTTAKE;
+            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+            if (bottomOuttake.is(Button.State.HELD)) clickTarget = LOW_OUTTAKE;
+            else if (midOuttake.is(Button.State.HELD)) clickTarget = MID_OUTTAKE;
+            else if (highOuttake.is(Button.State.HELD)) clickTarget = HIGH_OUTTAKE;
 
             robot.outtake.setTargetPosition(clickTarget);
-            robot.outtake.setPower(-gamepad2.left_stick_y);
-
-//            if (gamepad2.left_stick_y >= 0.2) {
-//                switch (liftState) {
-//                    case BOTTOM:
-//                        liftState = possibleLiftStates.MIDDLE;
-//                        robot.outtake.setTargetPosition(100);
-//                        outtakePositioner.setTargets(100, 0.01, 0, 0.01);
-//                        robot.outtake.setPower(outtakePositioner.update(robot.outtake.getCurrentPosition()));
-//                        robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                        break;
-//                    case MIDDLE:
-//                        liftState = possibleLiftStates.TOP;
-//                        robot.outtake.setTargetPosition(200);
-//                        outtakePositioner.setTargets(200, 0.01, 0, 0.01);
-//                        robot.outtake.setPower(outtakePositioner.update(robot.outtake.getCurrentPosition()));
-//                        robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//                        break;
-//                }
-//            }
-//            if (gamepad2.left_stick_y <= -0.2) {
-//                switch (liftState) {
-//                    case TOP:
-//                        liftState = possibleLiftStates.MIDDLE;
-//                        break;
-//                    case MIDDLE:
-//                        liftState = possibleLiftStates.BOTTOM;
-//                        break;
-//                }
-//            }
+            robot.outtake.setPower(0.8);
         }
 
+        public void robotBaseIntakeLoop() {
+            if (gamepad2.left_bumper){
+                if (claw_state == IntakeState.LEFT_CLOSED) {
+                    robot.intake.setPosition(Constants.RELEASE_INTAKE);
+                    claw_state = IntakeState.LEFT_OPEN;
+                }
+                else {
+                    robot.intake.setPosition(Constants.HOLD_INTAKE);
+                    claw_state = IntakeState.LEFT_CLOSED;
+                }
+            } else if (gamepad2.right_bumper){
+//                if (claw_state == IntakeState.RIGHT_CLOSED)
+            }
+        }
+
+
         public void planeLaunch(){
-            if (planeButton.is(Button.State.TAP)){
-                robot.plane.setPosition(Constants.RELEASE);
+            if (planeButton.is(Button.State.DOUBLE_TAP)){
+                robot.plane.setPosition(Constants.RELEASE_PLANE);
             }
         }
 
@@ -545,6 +541,9 @@ public class Methods {
             telemetry.addData("Top Right Encoder Position", robot.rf.getCurrentPosition());
             telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
             telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
+
+            telemetry.addData("Outtake Motor Position", robot.outtake.getCurrentPosition());
+            telemetry.addData("Plane Servo Position", robot.plane.getPosition());
 
             telemetry.addData("Top Left Velocity", robot.lf.getVelocity());
             telemetry.addData("Top Left Acceleration", robot.lf.getVelocity() / runtime.seconds()); //only works if holding down max power at the beginning of the opmode.
@@ -580,7 +579,7 @@ public class Methods {
 
         public void UpdateButton(){
             bottomOuttake.update(gamepad2.a);
-            midOuttake.update(gamepad2.b);
+            midOuttake.update(gamepad2.x);
             highOuttake.update(gamepad2.y);
             planeButton.update(gamepad2.b);
         }

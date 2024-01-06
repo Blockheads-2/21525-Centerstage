@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.auto.routes;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.auto.cv.TeamElementDetectionPipeline;
@@ -18,6 +19,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 import java.util.List;
 
 @Autonomous(name="Detect Element", group="Autonomous")
+@Disabled
 public class DetectElement extends Methods.auto {
     Button updateValueDecrease = new Button();
     Button updateValueIncrease = new Button();

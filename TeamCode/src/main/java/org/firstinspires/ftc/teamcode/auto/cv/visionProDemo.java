@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.auto.cv;
 
 import android.util.Size;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -28,6 +29,7 @@ import java.util.List;
 //demo apriltags found on APrilTag Test Images in the ftc-docs.firstinspires.org
 
 @TeleOp
+@Disabled
 public class visionProDemo extends LinearOpMode {
     static final double FEET_PER_METER = 3.28084;
 

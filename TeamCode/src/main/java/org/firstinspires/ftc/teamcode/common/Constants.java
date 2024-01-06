@@ -70,14 +70,17 @@ public class Constants {
         }
     }
 
-    public static final double MAX_OUTTAKE_CLICKS = 1000;
-    public static final double MIN_OUTTAKE_CLICKS = 0;
-    public static final double LOW_OUTTAKE = 0;
-    public static final double MID_OUTTAKE = 500;
-    public static final double HIGH_OUTTAKE = 1000;
+    public static final int MAX_OUTTAKE_CLICKS = 2300;
+    public static final int MIN_OUTTAKE_CLICKS = 100;
+    public static final int LOW_OUTTAKE = 100;
+    public static final int MID_OUTTAKE = 1100;
+    public static final int HIGH_OUTTAKE = 2250;
 
     //Servo
         //Plane
-    public static final double HOLD = 0.3;
-    public static final double RELEASE = 0.0;
+    public static final double HOLD_PLANE = 0.3;
+    public static final double RELEASE_PLANE = 0.0;
+        //Intake
+    public static final double HOLD_INTAKE = 1.0;
+    public static final double RELEASE_INTAKE = 0.0;
 }

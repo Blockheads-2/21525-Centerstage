@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.common.Methods;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Autonomous(name="F4 (Red Near)", group="Autonomous")
-public class F4Auto extends Methods.auto{ //currently oriented for F2 route
+public class F4Auto extends Methods.auto{
     @Override
     public void runOpMode() throws InterruptedException {
         initRobot();
@@ -30,38 +30,84 @@ public class F4Auto extends Methods.auto{ //currently oriented for F2 route
 
         elementLocation = detector.getLocation();
 
+        stopOpenCV();
+
         waitForStart();
 
-        switch (elementLocation) {
+        //1 TILE = 24 INCHES
 
-            //Park Right
+        switch (elementLocation) {
+            //Park Left
             case LEFT:
-                //...
-                constantHeading(0.3, -7, 25, 0, 0, 0);
-                constantHeading(0.2, 0, -7, 0, 0, 0);
-                constantHeading(0.2, 7, 12, 0, 0, 0);
+                //Place
+                constantHeading(0.2, -3, -33, 0, 0, 0);
+
+                constantHeading(0.2, 17, 0, 0, 0, 0);
+
+                //Move Out of the way
+                constantHeading(0.2, 0, 3.5, 0, 0, 0);
+
+                //turn
                 turnAbsPID(90);
-                constantHeading(0.3, 0, 32, 0, 0, 0);
+
+                //Move to park
+                constantHeading(0.3, 7, -40, 0, 0, 0); //y-value will changed based on the length of the claw
+
+                runOuttake(Constants.MID_OUTTAKE, 0.6);
+
+                //open claw
+
+                runOuttake(0, 0.5);
+
+                constantHeading(0.2, -25, 0, 0, 0, 0);
+
+
                 break;
 
             case RIGHT:
-                //...
-                constantHeading(0.3, 0, 25, 0, 0, 0);
-                constantHeading(0.2, 5, 0, 0, 0, 0);
-                constantHeading(0.2, 0, -7, 0, 0, 0);
-                constantHeading(0.2, -7, 12, 0, 0, 0);
+                //Place
+                constantHeading(0.2, -22, -33, 0, 0, 0);
+
+                //Move Out of the way
+                constantHeading(0.2, 0, 5, 0, 0, 0);
+
+                //turn
                 turnAbsPID(90);
-                constantHeading(0.3, 0, 32, 0, 0, 0);
+
+                //Move to park
+                constantHeading(0.3, 0, -34, 0, 0, 0); //y-value will changed based on the length of the claw
+
+                runOuttake(Constants.MID_OUTTAKE, 0.6);
+
+                //open claw
+
+                runOuttake(0, 0.5);
+
+                constantHeading(0.2, -15, 0, 0, 0, 0);
+
                 break;
 
             case MID:
-                //...
-                constantHeading(0.3, 0, 30, 0, 0, 0);
-                constantHeading(0.3, 5, 0, 0, 0, 0);
-                constantHeading(0.2, 0, -10, 0, 0, 0);
+                //Place
+                constantHeading(0.2, -4, -35, 0, 0, 0);
+
+                //Move Out of the way
+                constantHeading(0.2, 0, 5, 0, 0, 0);
+
+                //turn
                 turnAbsPID(90);
-                constantHeading(0.3, 30, 0, 0, 0, 0);
-                constantHeading(0.3, 0, 12, 0, 0, 0);
+
+                //Move to place on board
+                constantHeading(0.3, 0, -37, 0, 0, 0); //y-value will changed based on the length of the claw
+
+                runOuttake(Constants.MID_OUTTAKE, 0.6);
+
+                //open claw
+
+                runOuttake(0, 0.5);
+
+                constantHeading(0.2, -20, 0, 0, 0, 0);
+
                 break;
         }
     }

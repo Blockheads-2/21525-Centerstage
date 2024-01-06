@@ -496,10 +496,10 @@ public class AutoHub {
             robot.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             // Turn off RUN_TO_POSITION
-            robot.lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //            updateTelemetry();
 //            UpdateTelemetry.update();
 
@@ -600,18 +600,18 @@ public class AutoHub {
             robot.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
             // Turn off RUN_TO_POSITION
-            robot.lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //            updateTelemetry();
 //            UpdateTelemetry.update();
 
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+//            try {
+//                Thread.sleep(100);
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
         }
     }
 
@@ -1049,9 +1049,16 @@ public class AutoHub {
     void turnMath(double targetAngle, double timeoutS) {
         TurnPIDController pid = new TurnPIDController(targetAngle, 0.03, 0, 0.01);
         linearOpMode.telemetry.setMsTransmissionInterval(50);
+
+        //turn off BRAKE, if on.
+        robot.lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         // Checking lastSlope to make sure that it's not oscillating when it quits
         runtime.reset();
-        while ((runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) > 2 || pid.getLastSlope() > 0.15)) {
+        while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) >= 2 || pid.getLastSlope() > 0.15)) {
             double motorPower = pid.update(getAbsoluteAngle());
             robot.lf.setPower(motorPower * 0.5);
             robot.rf.setPower(-motorPower * 0.5);
@@ -1073,20 +1080,20 @@ public class AutoHub {
         robot.lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        constantHeading(1,0,0,0,0,0); //Brakes
+        constantHeadingV2(1,0,0,0,0,0); //Brakes
     }
 
     //Peripheral Movements
 
-    public void spinIntake(double power, double timeout){
-        runtime.reset();
-
-        while (linearOpMode.opModeIsActive() && runtime.seconds() <= timeout){
-            robot.intake.setPower(power);
-        }
-        robot.intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.intake.setPower(0);
-    }
+//    public void spinIntake(double power, double timeout){
+//        runtime.reset();
+//
+//        while (linearOpMode.opModeIsActive() && runtime.seconds() <= timeout){
+//            robot.intake.setPower(power);
+//        }
+//        robot.intake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//        robot.intake.setPower(0);
+//    }
 
 //    public void spinCarousel(double velocity){
 //        robot.duckWheel.setVelocity(velocity);

@@ -25,9 +25,9 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
         NOT_FOUND
     }
     private Location location;
-    static final Rect MID_ROI = new Rect(new Point(400, 100), new Point(650, 300)); //470-810
-    static final Rect LEFT_ROI = new Rect(new Point(0, 100), new Point(200, 350));
-    static final Rect RIGHT_ROI = new Rect(new Point(1250, 100), new Point(980, 450));
+    static final Rect MID_ROI = new Rect(new Point(650, 325), new Point(875, 575)); //470-810
+    static final Rect LEFT_ROI = new Rect(new Point(90, 350), new Point(320, 650));
+    static final Rect RIGHT_ROI = new Rect(new Point(1250, 350), new Point(980, 650));
 
     static double PERCENT_COLOR_THRESHOLD = 0.30;
     double[] hsvThresholdHueBlue = {Constants.HSV_HUE_LOW_BLUE, Constants.HSV_HUE_HIGH_BLUE};
@@ -98,7 +98,7 @@ public class TeamElementDetectionPipeline extends OpenCvPipeline {
 
         Imgproc.rectangle(mat, MID_ROI, new Scalar(255,0,0), 4);
         Imgproc.rectangle(mat, LEFT_ROI, new Scalar(255,0,0), 4);
-        Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0), 4);
+//        Imgproc.rectangle(mat, RIGHT_ROI, new Scalar(255,0,0), 4);
 
         return mat;
     }
