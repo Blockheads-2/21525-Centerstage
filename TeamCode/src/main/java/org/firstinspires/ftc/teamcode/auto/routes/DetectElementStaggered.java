@@ -45,9 +45,7 @@ public class DetectElementStaggered extends Methods.auto {
             if (detector.isSeen()) detectTeamElement = false;
             updateTelemetry();
         }
-
-//        stopOpenCV();
-
+        
         waitForStart();
 
         Thread cameraThread = new Thread(runnable);
