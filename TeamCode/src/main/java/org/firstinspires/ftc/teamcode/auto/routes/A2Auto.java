@@ -53,13 +53,14 @@ public class A2Auto extends Methods.auto{
                 //turn
                 turnAbsPID(90);
 
-                //Move to park
+                //Move to board
                 constantHeading(0.3, 0, 87, 0, 0, 0);
 
-                turnAbsPID(-90);
+                //Move left of the board
+                constantHeading(0.3, -34, 0, 0, 0, 0);
 
-                //Move to Place on board
-                constantHeading(0.2, 26, 0, 0, 0, 0);
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -85,10 +86,11 @@ public class A2Auto extends Methods.auto{
                 //Move to park
                 constantHeading(0.3, 0, 80, 0, 0, 0);
 
-                turnAbsPID(-90);
+                //Move to left of board
+                constantHeading(0.3, -34, 0, 0, 0, 0);
 
-                //Move to Place on board
-                constantHeading(0.2, 15, 0, 0, 0, 0); //y-value may change based on the length of the claw.
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -114,11 +116,11 @@ public class A2Auto extends Methods.auto{
                 //Move to park
                 constantHeading(0.3, 0, 98, 0, 0, 0);
 
-                //Turn 180 degrees
-                turnAbsPID(-90);
+                //Move left of the board
+                constantHeading(0.3, -34, 0, 0, 0, 0);
 
-                //Move to Place on board
-                constantHeading(0.2, 24, 0, 0, 0, 0); //y-value will changed based on the length of the claw
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //

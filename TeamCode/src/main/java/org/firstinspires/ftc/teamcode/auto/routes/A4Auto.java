@@ -48,7 +48,7 @@ public class A4Auto extends Methods.auto{
                 //turn
                 turnAbsPID(-90);
 
-                //Move to park
+                //Move to board
                 constantHeading(0.3, 4, -40, 0, 0, 0); //y-value will changed based on the length of the claw; prob will have to tune x-value
 //
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
@@ -57,7 +57,11 @@ public class A4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                constantHeading(0.2, 15, 0, 0, 0, 0);
+                //Move left of the board
+                constantHeading(0.3, -34, 0, 0, 0, 0);
+
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
 
                 break;
 
@@ -82,7 +86,11 @@ public class A4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                constantHeading(0.2, 25, 0, 0, 0, 0);
+                //Move left of the board
+                constantHeading(0.3, -34, 0, 0, 0, 0);
+
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
 
 
                 break;
@@ -106,7 +114,11 @@ public class A4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                constantHeading(0.2, 20, 0, 0, 0, 0);
+                //Move left of the board
+                constantHeading(0.3, -34, 0, 0, 0, 0);
+
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
 
                 break;
         }
