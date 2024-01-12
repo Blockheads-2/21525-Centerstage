@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.robot.Robot;
 
@@ -15,6 +16,7 @@ import org.firstinspires.ftc.teamcode.common.Methods;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
 @Autonomous(name="F2 (Red Far; No board-drop-off)", group="Autonomous")
+@Disabled
 public class F2AutoAvoid extends Methods.auto{
     @Override
     public void runOpMode() throws InterruptedException {

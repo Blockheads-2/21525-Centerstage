@@ -40,16 +40,16 @@ public class A4Auto extends Methods.auto{
             //Park Left
             case LEFT:
                 //Place
-                constantHeading(0.2, 12, -33, 0, 0, 0);
+                constantHeading(0.2, 19, -32, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 0, 5, 0, 0, 0);
+                constantHeading(0.2, -5, 24, 0, 0, 0);
 
                 //turn
-                turnAbsPID(-90);
+                turnAbsPID(90);
 
-                //Move to board
-                constantHeading(0.3, 4, -40, 0, 0, 0); //y-value will changed based on the length of the claw; prob will have to tune x-value
+                //Move to park
+                constantHeading(0.3, 0, 42, 0, 0, 0); //y-value will changed based on the length of the claw
 //
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -57,28 +57,40 @@ public class A4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                //Move left of the board
-                constantHeading(0.3, -34, 0, 0, 0, 0);
+//                constantHeading(0.2, -15, 0, 0, 0, 0);
 
-                //Move forward & park
-                constantHeading(0.3, 0, 27, 0, 0, 0);
 
                 break;
 
             case RIGHT:
+                constantHeading(0.4, 50, 0, 0, 0, 0);
+
+                //try splining
                 //Place
-                constantHeading(0.2, -3, -33, 0, 0, 0);
+//                spline(0.3, 15, -32, 15);
+//
+//                turnAbsPID(90);
+//
+//                //Move out of the way
+//                constantHeading(0.2, 0, -15, 0, 0, 0);
+//
+//                //Park
+//                constantHeading(0.3, -15, -44, 0, 0, 0);
 
-                constantHeading(0.2, -17, 0, 0, 0, 0);
-
-                //Move Out of the way
-                constantHeading(0.2, 0, 3.5, 0, 0, 0);
-
-                //turn
-                turnAbsPID(-90);
-
-                //Move to park
-                constantHeading(0.3, -5, -43, 0, 0, 0); //y-value will changed based on the length of the claw; prob will have to tune x-value
+                //try 90 degree movement to position
+//                //Place
+//                constantHeading(0.2, -3, -33, 0, 0, 0);
+//
+//                constantHeading(0.2, 17, 0, 0, 0, 0);
+//
+//                //Move Out of the way
+//                constantHeading(0.2, 0, 3.5, 0, 0, 0);
+//
+//                //turn
+//                turnAbsPID(90);
+//
+//                //Move to park
+//                constantHeading(0.3, 7, -41, 0, 0, 0); //y-value will changed based on the length of the claw
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -86,27 +98,21 @@ public class A4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                //Move left of the board
-                constantHeading(0.3, -34, 0, 0, 0, 0);
-
-                //Move forward & park
-                constantHeading(0.3, 0, 27, 0, 0, 0);
-
-
+//                constantHeading(0.2, -25, 0, 0, 0, 0);
                 break;
 
             case MID:
                 //Place
-                constantHeading(0.2, 0, -35, 0, 0, 0);
+                constantHeading(0.2, 4, -34, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 0, 7, 0, 0, 0);
+                constantHeading(0.2, 0, 28, 0, 0, 0);
 
                 //turn
-                turnAbsPID(-90);
+                turnAbsPID(90);
 
                 //Move to place on board
-                constantHeading(0.3, 0, -40, 0, 0, 0); //y-value will changed based on the length of the claw; prob will have to tune x-value
+                constantHeading(0.3, 0, 48, 0, 0, 0); //y-value will changed based on the length of the claw
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -114,11 +120,7 @@ public class A4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                //Move left of the board
-                constantHeading(0.3, -34, 0, 0, 0, 0);
-
-                //Move forward & park
-                constantHeading(0.3, 0, 27, 0, 0, 0);
+//                constantHeading(0.2, -20, 0, 0, 0, 0);
 
                 break;
         }
