@@ -39,6 +39,7 @@ public class F4Auto extends Methods.auto{
         switch (elementLocation) {
             //Park Left
             case LEFT:
+<<<<<<< Updated upstream
                 //Place
                 constantHeading(0.2, -3, -33, 0, 0, 0);
 
@@ -120,7 +121,40 @@ public class F4Auto extends Methods.auto{
                 //Move forward & park
                 constantHeading(0.3, 0, 27, 0, 0, 0);
 
+=======
+                //...
+                constantHeading(0.3, 0, -25, 0, 0, 0);
+                constantHeading(0.2, 5, 0, 0, 0, 0);
+                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.2, 0, 10, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.2, 0, -24, 0, 0, 0);
+                constantHeading(0.2, -30, 0, 0, 0, 0);
+                constantHeading(0.3, 0, -12, 0, 0, 0);
+                break;
+
+            case RIGHT:
+                //...
+                constantHeading(0.3, 0, -25, 0, 0, 0);
+                constantHeading(0.2, -5, 0, 0, 0, 0);
+                constantHeading(0.2, 0, -5, 0, 0, 0);
+                constantHeading(0.2, 0, 10, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.2, -30, 0, 0, 0, 0);
+                constantHeading(0.2, 0, -12, 0, 0, 0);
+                break;
+
+            case MID:
+                //...
+                constantHeading(0.3, 0, -30, 0, 0, 0);
+                constantHeading(0.3, -5, 0, 0, 0, 0);
+                constantHeading(0.2, 0, 10, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.3, -30, 0, 0, 0, 0);
+                constantHeading(0.3, 0, -12, 0, 0, 0);
+>>>>>>> Stashed changes
                 break;
         }
     }
 }
+

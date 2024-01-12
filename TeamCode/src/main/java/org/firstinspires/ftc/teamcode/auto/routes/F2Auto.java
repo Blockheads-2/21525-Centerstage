@@ -40,6 +40,7 @@ public class F2Auto extends Methods.auto{
             //Park Left
             case LEFT:
                 //Place
+<<<<<<< Updated upstream
                 constantHeading(0.2, 19, -34, 0, 0, 0);
 
                 //Move Out of the way
@@ -132,6 +133,53 @@ public class F2Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
+=======
+                constantHeading(0.3, 7, -25, 0, 0, 0);
+                //Move out
+                constantHeading(0.2, 0, 5, 0, 0, 0);
+                //Go forward
+                constantHeading(0.2, -5, -7, 0, 0, 0);
+                //Turn
+                turnAbsPID(90);
+                //Go to the board
+                constantHeading(0.3, 0, -100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, 5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, -7, 0, 0, 0);
+                break;
+
+            case RIGHT:
+                //...
+                //Place
+                constantHeading(0.3, 7, 25, 0, 0, 0);
+                //Move out
+                constantHeading(0.2, 0, 5, 0, 0, 0);
+                //Go forward
+                constantHeading(0.2, -5, 7, 0, 0, 0);
+                //Turn
+                turnAbsPID(90);
+                //Go to the board
+                constantHeading(0.3, 0, 100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, 5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, -7, 0, 0, 0);
+                break;
+
+            case MID:
+                //...
+                constantHeading(0.3, 0, -30, 0, 0, 0);
+                constantHeading(0.3, -5, 0, 0, 0, 0);
+                constantHeading(0.2, 0, 10, 0, 0, 0);
+                constantHeading(0.2, 5, -10, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.3, 0, -100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, 5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, -7, 0, 0, 0);
+>>>>>>> Stashed changes
                 break;
         }
     }
