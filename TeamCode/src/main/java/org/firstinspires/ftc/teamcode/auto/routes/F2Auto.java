@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.common.Constants;
 import org.firstinspires.ftc.teamcode.common.Methods;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 
-@Autonomous(name="F2 (Red Far) JOSH", group="Autonomous")
+@Autonomous(name="F2 (Red Far)", group="Autonomous")
 public class F2Auto extends Methods.auto{
     @Override
     public void runOpMode() throws InterruptedException {
