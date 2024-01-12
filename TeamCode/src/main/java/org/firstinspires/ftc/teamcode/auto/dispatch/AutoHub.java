@@ -211,10 +211,10 @@ public class AutoHub {
                     && robot.lb.isBusy() && robot.rb.isBusy()) {
 
 //                checkButton();
-                robot.lf.setVelocity(speed * mathSpline.returnLPower());
-                robot.rf.setVelocity(speed * mathSpline.returnRPower());
-                robot.lb.setVelocity(speed * mathSpline.returnLPower());
-                robot.rb.setVelocity(speed * mathSpline.returnRPower());
+                robot.lf.setPower(speed * mathSpline.returnLPower());
+                robot.rf.setPower(speed * mathSpline.returnRPower());
+                robot.lb.setPower(speed * mathSpline.returnLPower());
+                robot.rb.setPower(speed * mathSpline.returnRPower());
 
 
             }
@@ -1047,7 +1047,7 @@ public class AutoHub {
         turnMath(absDegrees, timeOut);
     }
     void turnMath(double targetAngle, double timeoutS) {
-        TurnPIDController pid = new TurnPIDController(targetAngle, 0.03, 0, 0.01);
+        TurnPIDController pid = new TurnPIDController(targetAngle, 0.05, 0, 0.01);
         linearOpMode.telemetry.setMsTransmissionInterval(50);
 
         //turn off BRAKE, if on.
@@ -1058,7 +1058,7 @@ public class AutoHub {
 
         // Checking lastSlope to make sure that it's not oscillating when it quits
         runtime.reset();
-        while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) >= 2 || pid.getLastSlope() > 0.15)) {
+        while (linearOpMode.opModeIsActive() && (runtime.seconds() < timeoutS) && (Math.abs(targetAngle - getAbsoluteAngle()) >= 1 || pid.getLastSlope() > 0.15)) {
             double motorPower = pid.update(getAbsoluteAngle());
             robot.lf.setPower(motorPower * 0.5);
             robot.rf.setPower(-motorPower * 0.5);

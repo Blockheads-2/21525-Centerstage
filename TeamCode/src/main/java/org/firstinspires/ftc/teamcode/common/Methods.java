@@ -333,6 +333,14 @@ public class Methods {
             dispatch.constantHeadingV2(movePower, x, y, theta, kp, ki, kd);
         }
 
+        public void spline(double speed, double x, double y, double timeoutS){
+            dispatch.variableHeading(speed, x, y, timeoutS);
+        }
+
+        public void spline(double speed, double x, double y){
+            dispatch.variableHeading(speed, x, y);
+        }
+
         public boolean AprilTagMove(AprilTagDetection tag){
             return dispatch.AprilTagMove(tag);
         }

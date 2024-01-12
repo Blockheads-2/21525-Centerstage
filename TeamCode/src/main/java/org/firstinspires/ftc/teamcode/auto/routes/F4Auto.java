@@ -39,19 +39,33 @@ public class F4Auto extends Methods.auto{
         switch (elementLocation) {
             //Park Left
             case LEFT:
+                constantHeading(0.4, -50, 0, 0, 0, 0);
+                //try splining
                 //Place
-                constantHeading(0.2, -3, -33, 0, 0, 0);
+//                spline(0.3, 15, -32, 15);
+//
+//                turnAbsPID(90);
+//
+//                //Move out of the way
+//                constantHeading(0.2, 0, -15, 0, 0, 0);
+//
+//                //Park
+//                constantHeading(0.3, -15, -44, 0, 0, 0);
 
-                constantHeading(0.2, 17, 0, 0, 0, 0);
-
-                //Move Out of the way
-                constantHeading(0.2, 0, 3.5, 0, 0, 0);
-
-                //turn
-                turnAbsPID(90);
-
-                //Move to park
-                constantHeading(0.3, 7, -41, 0, 0, 0); //y-value will changed based on the length of the claw
+                //try 90 degree movement to position
+//                //Place
+//                constantHeading(0.2, -3, -33, 0, 0, 0);
+//
+//                constantHeading(0.2, 17, 0, 0, 0, 0);
+//
+//                //Move Out of the way
+//                constantHeading(0.2, 0, 3.5, 0, 0, 0);
+//
+//                //turn
+//                turnAbsPID(90);
+//
+//                //Move to park
+//                constantHeading(0.3, 7, -41, 0, 0, 0); //y-value will changed based on the length of the claw
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -59,23 +73,23 @@ public class F4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                constantHeading(0.2, -25, 0, 0, 0, 0);
+//                constantHeading(0.2, -25, 0, 0, 0, 0);
 
 
                 break;
 
             case RIGHT:
                 //Place
-                constantHeading(0.2, -22, -33, 0, 0, 0);
+                constantHeading(0.2, -19, -32, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 0, 5, 0, 0, 0);
+                constantHeading(0.2, 5, 24, 0, 0, 0);
 
                 //turn
-                turnAbsPID(90);
+                turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, -44, 0, 0, 0); //y-value will changed based on the length of the claw
+                constantHeading(0.3, 0, 42, 0, 0, 0); //y-value will changed based on the length of the claw
 //
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -83,22 +97,22 @@ public class F4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                constantHeading(0.2, -15, 0, 0, 0, 0);
+//                constantHeading(0.2, -15, 0, 0, 0, 0);
 
                 break;
 
             case MID:
                 //Place
-                constantHeading(0.2, -4, -35, 0, 0, 0);
+                constantHeading(0.2, -4, -34, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 0, 5, 0, 0, 0);
+                constantHeading(0.2, 0, 28, 0, 0, 0);
 
                 //turn
-                turnAbsPID(90);
+                turnAbsPID(-90);
 
                 //Move to place on board
-                constantHeading(0.3, 0, -41, 0, 0, 0); //y-value will changed based on the length of the claw
+                constantHeading(0.3, 0, 48, 0, 0, 0); //y-value will changed based on the length of the claw
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -106,7 +120,7 @@ public class F4Auto extends Methods.auto{
 //
 //                runOuttake(0, 0.5);
 
-                constantHeading(0.2, -20, 0, 0, 0, 0);
+//                constantHeading(0.2, -20, 0, 0, 0, 0);
 
                 break;
         }

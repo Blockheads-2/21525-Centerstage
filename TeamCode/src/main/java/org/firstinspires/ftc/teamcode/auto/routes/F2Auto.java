@@ -40,24 +40,24 @@ public class F2Auto extends Methods.auto{
             //Park Left
             case LEFT:
                 //Place
-                constantHeading(0.2, 19, -34, 0, 0, 0);
+                constantHeading(0.2, 17, -32, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, -21, 9, 0, 0, 0);
+                constantHeading(0.15, -14, 5, 0, 0, 0);
 
                 //Move to middle
-                constantHeading(0.2, 0, -41, 0, 0, 0);
+                constantHeading(0.2, 0, -35, 0, 0, 0);
 
                 //turn
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 80, 0, 0, 0);
+                constantHeading(0.3, 0, 92, 0, 0, 0);
 
-                turnAbsPID(90);
-
-//                Move to Place on board
-                constantHeading(0.2, -15, 0, 0, 0, 0); //y-value may change based on the length of the claw.
+//                turnAbsPID(90);
+//
+////                Move to Place on board
+//                constantHeading(0.2, -15, 0, 0, 0, 0); //y-value may change based on the length of the claw.
 //
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -68,27 +68,41 @@ public class F2Auto extends Methods.auto{
 
             case RIGHT:
                 //Place
-                constantHeading(0.2, 0, -27, 0, 0, 0);
+                spline(0.3, -10, -30, 15); //so this just goes straight...
 
-                constantHeading(0.2, -17, 0, 0, 0, 0);
-
-                //Move Out of the way
-                constantHeading(0.2, 24, 6, 0, 0, 0);
-
-                //Move to middle
-                constantHeading(0.2, 0, -34, 0, 0, 0);
-
-                //turn
                 turnAbsPID(-90);
 
+                //Move Out of the way
+                constantHeading(0.2, 0, -10, 0, 0, 0);
+
+                //Move to middle
+                constantHeading(0.2, -30, 0, 0, 0, 0);
+
                 //Move to park
-                constantHeading(0.3, 0, 87, 0, 0, 0);
+                constantHeading(0.3, 0, 95, 0, 0, 0);
 
-                turnAbsPID(90);
-
-                //Move to Place on board
-                constantHeading(0.2, -26, 0, 0, 0, 0);
+//                //Place
+//                constantHeading(0.2, 0, -27, 0, 0, 0);
 //
+//                constantHeading(0.2, -17, 0, 0, 0, 0);
+//
+//                //Move Out of the way
+//                constantHeading(0.2, 24, 6, 0, 0, 0);
+//
+//                //Move to middle
+//                constantHeading(0.2, 0, -34, 0, 0, 0);
+//
+//                //turn
+//                turnAbsPID(-90);
+//
+//                //Move to park
+//                constantHeading(0.3, 0, 87, 0, 0, 0);
+//
+//                turnAbsPID(90);
+//
+//                //Move to Place on board
+//                constantHeading(0.2, -26, 0, 0, 0, 0);
+////
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
 //                //open claw
@@ -99,25 +113,25 @@ public class F2Auto extends Methods.auto{
 
             case MID:
                 //Place
-                constantHeading(0.2, 0, -31, 0, 0, 0);
+                constantHeading(0.2, 0, -32, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 20, 7, 0, 0, 0);
+                constantHeading(0.15, 20, 5, 0, 0, 0);
 
                 //Move to middle
-                constantHeading(0.2, 0, -33, 0, 0, 0);
+                constantHeading(0.2, 0, -30, 0, 0, 0);
 
                 //turn
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 98, 0, 0, 0);
+                constantHeading(0.3, 0, 105, 0, 0, 0);
 
-                //Turn 180 degrees
-                turnAbsPID(90);
-
-                //Move to Place on board
-                constantHeading(0.2, -24, 0, 0, 0, 0); //y-value will changed based on the length of the claw
+//                //Turn 180 degrees
+//                turnAbsPID(90);
+//
+//                //Move to Place on board
+//                constantHeading(0.2, -24, 0, 0, 0, 0); //y-value will changed based on the length of the claw
 //
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
