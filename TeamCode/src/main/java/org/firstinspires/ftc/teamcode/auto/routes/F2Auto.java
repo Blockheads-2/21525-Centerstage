@@ -40,19 +40,19 @@ public class F2Auto extends Methods.auto{
             //Park Left
             case LEFT:
                 //Place
-                constantHeading(0.2, 17, -32, 0, 0, 0);
+                constantHeading(0.2, 14, -32, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.15, -14, 5, 0, 0, 0);
+                constantHeading(0.5, -18, 10, 0, 0, 0);
 
                 //Move to middle
-                constantHeading(0.2, 0, -35, 0, 0, 0);
+                constantHeading(0.2, 0, -37, 0, 0, 0);
 
                 //turn
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 92, 0, 0, 0);
+                constantHeading(0.3, 0, 88, 0, 0, 0);
 
 //                turnAbsPID(90);
 //
@@ -76,7 +76,7 @@ public class F2Auto extends Methods.auto{
                 constantHeading(0.2, 0, -10, 0, 0, 0);
 
                 //Move to middle
-                constantHeading(0.2, -30, 0, 0, 0, 0);
+                constantHeading(0.2, -24, 0, 0, 0, 0);
 
                 //Move to park
                 constantHeading(0.3, 0, 95, 0, 0, 0);
@@ -113,7 +113,7 @@ public class F2Auto extends Methods.auto{
 
             case MID:
                 //Place
-                constantHeading(0.2, 0, -32, 0, 0, 0);
+                constantHeading(0.2, 0, -31, 0, 0, 0);
 
                 //Move Out of the way
                 constantHeading(0.15, 20, 5, 0, 0, 0);
@@ -125,7 +125,7 @@ public class F2Auto extends Methods.auto{
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 105, 0, 0, 0);
+                constantHeading(0.3, 4, 105, 0, 0, 0);
 
 //                //Turn 180 degrees
 //                turnAbsPID(90);

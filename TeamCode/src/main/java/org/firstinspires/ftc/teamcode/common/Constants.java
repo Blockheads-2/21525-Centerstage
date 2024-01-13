@@ -78,9 +78,14 @@ public class Constants {
 
     //Servo
         //Plane
-    public static final double HOLD_PLANE = 0.3;
-    public static final double RELEASE_PLANE = 0.0;
-        //Intake
-    public static final double HOLD_INTAKE = 1.0;
-    public static final double RELEASE_INTAKE = 0.0;
+    public static final double HOLD_PLANE = 0.0;
+    public static final double RELEASE_PLANE = 0.3;
+
+        //left claw
+    public static final double LEFT_CLAW_HOLD = 0.45;
+    public static final double LEFT_CLAW_RELEASE = 0.75;
+
+        //right caw
+    public static final double RIGHT_CLAW_HOLD = 0.45;
+    public static final double RIGHT_CLAW_RELEASE = 0.75;
 }

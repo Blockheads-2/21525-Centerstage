@@ -39,7 +39,7 @@ public class F4Auto extends Methods.auto{
         switch (elementLocation) {
             //Park Left
             case LEFT:
-                constantHeading(0.4, -50, 0, 0, 0, 0);
+                constantHeading(0.4, -50, -3, 0, 0, 0);
                 //try splining
                 //Place
 //                spline(0.3, 15, -32, 15);
@@ -80,10 +80,10 @@ public class F4Auto extends Methods.auto{
 
             case RIGHT:
                 //Place
-                constantHeading(0.2, -19, -32, 0, 0, 0);
+                constantHeading(0.2, -20, -32, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 5, 24, 0, 0, 0);
+                constantHeading(0.2, 5, 22, 0, 0, 0);
 
                 //turn
                 turnAbsPID(-90);
@@ -103,10 +103,10 @@ public class F4Auto extends Methods.auto{
 
             case MID:
                 //Place
-                constantHeading(0.2, -4, -34, 0, 0, 0);
+                constantHeading(0.2, -6, -34, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 0, 28, 0, 0, 0);
+                constantHeading(0.2, 0, 26, 0, 0, 0);
 
                 //turn
                 turnAbsPID(-90);

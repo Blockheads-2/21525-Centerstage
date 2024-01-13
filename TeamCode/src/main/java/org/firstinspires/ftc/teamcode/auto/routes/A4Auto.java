@@ -40,7 +40,7 @@ public class A4Auto extends Methods.auto{
             //Park Left
             case LEFT:
                 //Place
-                constantHeading(0.2, 19, -32, 0, 0, 0);
+                constantHeading(0.2, 15, -32, 0, 0, 0);
 
                 //Move Out of the way
                 constantHeading(0.2, -5, 24, 0, 0, 0);
@@ -49,7 +49,7 @@ public class A4Auto extends Methods.auto{
                 turnAbsPID(90);
 
                 //Move to park
-                constantHeading(0.3, 0, 42, 0, 0, 0); //y-value will changed based on the length of the claw
+                constantHeading(0.3, 0, 38, 0, 0, 0); //y-value will changed based on the length of the claw
 //
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -63,7 +63,8 @@ public class A4Auto extends Methods.auto{
                 break;
 
             case RIGHT:
-                constantHeading(0.4, 50, 0, 0, 0, 0);
+
+                constantHeading(0.4, 50, -3, 0, 0, 0);
 
                 //try splining
                 //Place
@@ -99,11 +100,12 @@ public class A4Auto extends Methods.auto{
 //                runOuttake(0, 0.5);
 
 //                constantHeading(0.2, -25, 0, 0, 0, 0);
+
                 break;
 
             case MID:
                 //Place
-                constantHeading(0.2, 4, -34, 0, 0, 0);
+                constantHeading(0.2, 4, -36, 0, 0, 0);
 
                 //Move Out of the way
                 constantHeading(0.2, 0, 28, 0, 0, 0);
@@ -112,7 +114,7 @@ public class A4Auto extends Methods.auto{
                 turnAbsPID(90);
 
                 //Move to place on board
-                constantHeading(0.3, 0, 48, 0, 0, 0); //y-value will changed based on the length of the claw
+                constantHeading(0.3, 0, 44, 0, 0, 0); //y-value will changed based on the length of the claw
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
