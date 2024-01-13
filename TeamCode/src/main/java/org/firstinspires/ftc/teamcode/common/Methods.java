@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import static org.firstinspires.ftc.teamcode.common.Constants.CLAW_ROT_DOWN;
 import static org.firstinspires.ftc.teamcode.common.Constants.HIGH_OUTTAKE;
 import static org.firstinspires.ftc.teamcode.common.Constants.LOW_OUTTAKE;
 import static org.firstinspires.ftc.teamcode.common.Constants.MAX_OUTTAKE_CLICKS;
@@ -399,16 +400,23 @@ public class Methods {
             LEFT_OPEN,
             LEFT_CLOSED,
             RIGHT_OPEN,
-            RIGHT_CLOSED
+            RIGHT_CLOSED,
+            CLAW_ROT_AMBIGUOUS,
+            CLAW_ROT_UP,
+            CLAW_ROT_DOWN
         }
         protected IntakeState left_claw_state = IntakeState.LEFT_CLOSED;
         protected IntakeState right_claw_state = IntakeState.RIGHT_CLOSED;
+
+        protected IntakeState rot_claw_state = IntakeState.CLAW_ROT_UP;
 
 //        Button bottomOuttake = new Button();
 //        Button midOuttake = new Button();
 //        Button highOuttake = new Button();
         Button left_claw = new Button();
         Button right_claw = new Button();
+
+        Button rot_claw = new Button();
         Button planeButton = new Button();
 
         public void initRobot() {
@@ -432,11 +440,11 @@ public class Methods {
 
         public void PlayerOne(){
             robotBaseDriveLoop(driveTrainSpeed());
-            robotBaseMicroAdjustLoop(driveTrainSpeed());
+//            robotBaseMicroAdjustLoop(driveTrainSpeed());
         }
 
         public void PlayerTwo(){
-            robotBaseOuttakeLoop();
+//            robotBaseOuttakeLoop();
             robotBaseIntakeLoop();
             planeLaunch();
         }
@@ -499,7 +507,16 @@ public class Methods {
         }
 
         public void robotBaseOuttakeLoop() {
+//            int clickTarget = robot.outtake.getCurrentPosition();
             int clickTarget = Range.clip(robot.outtake.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+
+//            if (gamepad1.dpad_down){
+//                clickTarget = Range.clip(robot.outtake.getCurrentPosition() - 300, MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+//            } else if (gamepad1.dpad_up){
+//                clickTarget = Range.clip(robot.outtake.getCurrentPosition() + 300, MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+//            }
+
+//            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
 //            if (bottomOuttake.is(Button.State.HELD)) clickTarget = LOW_OUTTAKE;
 //            else if (midOuttake.is(Button.State.HELD)) clickTarget = MID_OUTTAKE;
 //            else if (highOuttake.is(Button.State.HELD)) clickTarget = HIGH_OUTTAKE;
@@ -509,6 +526,15 @@ public class Methods {
         }
 
         public void robotBaseIntakeLoop() {
+
+            if (gamepad1.right_trigger >= 0.1){
+                robot.claw_rot.setPosition(Range.clip(robot.claw_rot.getPosition() - (0.1 * gamepad1.right_trigger), Constants.CLAW_ROT_UP, Constants.CLAW_ROT_DOWN));
+                rot_claw_state = IntakeState.CLAW_ROT_AMBIGUOUS;
+            } else if (gamepad1.left_trigger >= 0.1){
+                robot.claw_rot.setPosition(Range.clip(robot.claw_rot.getPosition() + (0.1 * gamepad1.left_trigger), Constants.CLAW_ROT_UP, Constants.CLAW_ROT_DOWN));
+                rot_claw_state = IntakeState.CLAW_ROT_AMBIGUOUS;
+            }
+
             if (left_claw.is(Button.State.TAP)){
 //                if (left_claw_state == IntakeState.LEFT_CLOSED) {
 //                    robot.left_claw.setPosition(Constants.LEFT_CLAW_RELEASE);
@@ -518,15 +544,38 @@ public class Methods {
 //                    robot.left_claw.setPosition(Constants.LEFT_CLAW_HOLD);
 //                    left_claw_state = IntakeState.LEFT_CLOSED;
 //                }
-            } else if (right_claw.is(Button.State.TAP)){
-//                if (right_claw_state == IntakeState.RIGHT_CLOSED) {
-//                    robot.right_claw.setPosition(Constants.RIGHT_CLAW_RELEASE);
-//                    right_claw_state = IntakeState.RIGHT_OPEN;
-//                }
-//                else if (right_claw_state == IntakeState.RIGHT_OPEN){
-//                    robot.right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
-//                    right_claw_state = IntakeState.RIGHT_CLOSED;
-//                }
+            }
+            if (right_claw.is(Button.State.TAP)){
+                if (right_claw_state == IntakeState.RIGHT_CLOSED && rot_claw_state != IntakeState.CLAW_ROT_UP) { //only open claw if our claw is down/ambiguous. Don't want to open our claw when
+                    robot.right_claw.setPosition(Constants.RIGHT_CLAW_RELEASE);
+                    right_claw_state = IntakeState.RIGHT_OPEN;
+                }
+                else if (right_claw_state == IntakeState.RIGHT_OPEN){
+                    robot.right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
+                    right_claw_state = IntakeState.RIGHT_CLOSED;
+                }
+            }
+            if (rot_claw.is(Button.State.TAP)){
+                if (rot_claw_state == IntakeState.CLAW_ROT_AMBIGUOUS){
+                    if (right_claw_state == IntakeState.RIGHT_OPEN){ //we don't want to pull in our claw if the claw is open.
+                        robot.right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
+                        right_claw_state = IntakeState.RIGHT_CLOSED;
+                    }
+                    robot.claw_rot.setPosition(Constants.CLAW_ROT_UP);
+                    rot_claw_state = IntakeState.CLAW_ROT_UP;
+                }
+                else if (rot_claw_state == IntakeState.CLAW_ROT_UP) {
+                    robot.claw_rot.setPosition(Constants.CLAW_ROT_DOWN);
+                    rot_claw_state = IntakeState.CLAW_ROT_DOWN;
+                }
+                else if (rot_claw_state == IntakeState.CLAW_ROT_DOWN){
+                    if (right_claw_state == IntakeState.RIGHT_OPEN){ //we don't want to pull in our claw if the claw is open.
+                        robot.right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
+                        right_claw_state = IntakeState.RIGHT_CLOSED;
+                    }
+                    robot.claw_rot.setPosition(Constants.CLAW_ROT_UP);
+                    rot_claw_state = IntakeState.CLAW_ROT_UP;
+                }
             }
         }
 
@@ -565,8 +614,11 @@ public class Methods {
 //            telemetry.addData("Left Claw Servo Position", robot.left_claw.getPosition());
 //            telemetry.addData("Left Claw Servo State", left_claw_state);
 
-//            telemetry.addData("Right Claw Servo Position", robot.right_claw.getPosition());
-//            telemetry.addData("Right Claw Servo State", right_claw_state);
+            telemetry.addData("Right Claw Servo Position", robot.right_claw.getPosition());
+            telemetry.addData("Right Claw Servo State", right_claw_state);
+
+            telemetry.addData("Claw Rot Servo Position", robot.claw_rot.getPosition());
+            telemetry.addData("Claw Rot Servo State", rot_claw_state);
 
 
             telemetry.addData("Top Left Velocity", robot.lf.getVelocity());
@@ -606,7 +658,8 @@ public class Methods {
 //            midOuttake.update(gamepad2.x);
 //            highOuttake.update(gamepad2.y);
             left_claw.update(gamepad2.a);
-            right_claw.update(gamepad2.b);
+            right_claw.update(gamepad1.y);
+            rot_claw.update(gamepad1.x);
             planeButton.update(gamepad1.b);
         }
     }

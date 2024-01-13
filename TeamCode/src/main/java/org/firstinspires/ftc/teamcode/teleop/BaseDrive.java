@@ -24,8 +24,6 @@ public class BaseDrive extends Methods.teleOp {
     public void loop() {
         PlayerOne();
         PlayerTwo();
-//        robotBaseIntakeLoop();
-//        robotBaseOuttakeLoop(); //uncomment these when you configure intake and outtake motors.
         UpdateButton();
         UpdateTelemetry();
     }

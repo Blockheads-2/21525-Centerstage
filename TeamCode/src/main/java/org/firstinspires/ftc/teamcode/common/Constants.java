@@ -85,7 +85,11 @@ public class Constants {
     public static final double LEFT_CLAW_HOLD = 0.45;
     public static final double LEFT_CLAW_RELEASE = 0.75;
 
-        //right caw
-    public static final double RIGHT_CLAW_HOLD = 0.45;
+        //right claw
+    public static final double RIGHT_CLAW_HOLD = 0.42;
     public static final double RIGHT_CLAW_RELEASE = 0.75;
+
+        //rot claw
+    public static final double CLAW_ROT_UP = 0.1;
+    public static final double CLAW_ROT_DOWN = 0.87;
 }

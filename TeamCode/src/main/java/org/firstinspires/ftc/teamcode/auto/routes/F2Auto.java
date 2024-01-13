@@ -43,7 +43,7 @@ public class F2Auto extends Methods.auto{
                 constantHeading(0.2, 14, -32, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.5, -18, 10, 0, 0, 0);
+                constantHeading(0.5, -16, 10, 0, 0, 0);
 
                 //Move to middle
                 constantHeading(0.2, 0, -37, 0, 0, 0);

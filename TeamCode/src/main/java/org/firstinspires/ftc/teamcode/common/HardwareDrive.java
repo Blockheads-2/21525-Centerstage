@@ -73,9 +73,11 @@ public class HardwareDrive {
     public DcMotorEx outtake;
     public Servo plane;
 
-    public Servo left_claw;
+//    public Servo left_claw;
 
     public Servo right_claw;
+
+    public Servo claw_rot;
 
     public Motor lf_motor;
     public Motor rf_motor;
@@ -104,7 +106,8 @@ public class HardwareDrive {
         rb = hwMap.get(DcMotorEx.class, "right_back");
         plane = hwMap.get(Servo.class, "plane");
 //        left_claw = hwMap.get(Servo.class, "claw_left");
-//        right_claw = hwMap.get(Servo.class, "claw_right");
+        right_claw = hwMap.get(Servo.class, "claw_right");
+        claw_rot = hwMap.get(Servo.class, "claw_rot");
         outtake = hwMap.get(DcMotorEx.class, "outtake");
         imu = hwMap.get(IMU.class, "imu");
 
@@ -127,11 +130,12 @@ public class HardwareDrive {
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
         outtake.setDirection(DcMotorSimple.Direction.REVERSE);
-//        right_claw.setDirection(Servo.Direction.REVERSE);
+        right_claw.setDirection(Servo.Direction.REVERSE);
 
         plane.setPosition(Constants.HOLD_PLANE);
 //        left_claw.setPosition(Constants.LEFT_CLAW_HOLD);
-//        right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
+        right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
+        claw_rot.setPosition(Constants.CLAW_ROT_UP);
 
         outtake.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         outtake.setTargetPosition(outtake.getCurrentPosition());
