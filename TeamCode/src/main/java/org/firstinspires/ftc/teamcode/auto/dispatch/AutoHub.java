@@ -506,10 +506,12 @@ public class AutoHub {
         }
     }
     public void constantHeadingV2(double movePower, double x, double y, double kp, double ki, double kd){
-        mathConstHead.setFinalPose(x,y);
+        robot.lf.setMode(DcMotor.RunMode.RUN_USING_ENCODER); //my intuition in terms of solving the power distribution problem (in hardware drive, we tell it to drive w/o encoders, and perhaps there is some internal process that occurs when running w/ encoders that MUST happen for RUN_TO_POSITION to distribute power equally.
+        robot.rf.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.lb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.rb.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-//        updateTelemetry();
-//        UpdateTelemetry.update();
+        mathConstHead.setFinalPose(x,y);
 
         double targetAngle = getAbsoluteAngle(); //want to keep heading constant (current angle)
 
@@ -576,6 +578,8 @@ public class AutoHub {
                 robot.lb.setVelocity((movePower * constants.MAX_VELOCITY_DT * rightDiagonalRatio));
                 robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio));
 
+                //if power distribution power is still reoccurring, try using setPower() instead.
+
 //                 Display it for the driver.
                 linearOpMode.telemetry.addData("Current Angle (R)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
                 linearOpMode.telemetry.addData("Time: ", timeoutS);
@@ -586,6 +590,9 @@ public class AutoHub {
                 linearOpMode.telemetry.addData("rf velocity", robot.rf.getVelocity());
                 linearOpMode.telemetry.addData("lb velocity", robot.lb.getVelocity());
                 linearOpMode.telemetry.addData("rb velocity", robot.rb.getVelocity());
+
+                linearOpMode.telemetry.addData("lf : rf", "%.3f percent", 100 * robot.lf.getVelocity() / robot.rf.getVelocity());
+                linearOpMode.telemetry.addData("lb : rb", "%.3f percent", 100 * robot.lb.getVelocity() / robot.rb.getVelocity());
                 linearOpMode.telemetry.update();
 
 //                updateTelemetry();
