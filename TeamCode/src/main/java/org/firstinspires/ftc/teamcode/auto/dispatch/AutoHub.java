@@ -577,11 +577,11 @@ public class AutoHub {
                 robot.rb.setVelocity((movePower * constants.MAX_VELOCITY_DT * leftDiagonalRatio));
 
 //                 Display it for the driver.
+                linearOpMode.telemetry.addData("Current Angle (R)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
                 linearOpMode.telemetry.addData("Time: ", timeoutS);
 //                linearOpMode.telemetry.addData("X", gps.getPose().getTranslation().getX());
 //                linearOpMode.telemetry.addData("Y", gps.getPose().getTranslation().getY());
 //                linearOpMode.telemetry.addData("R", gps.getPose().getRotation().getDegrees());
-                linearOpMode.telemetry.addData("R (IMU)", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
                 linearOpMode.telemetry.addData("lf velocity", robot.lf.getVelocity());
                 linearOpMode.telemetry.addData("rf velocity", robot.rf.getVelocity());
                 linearOpMode.telemetry.addData("lb velocity", robot.lb.getVelocity());
@@ -1069,7 +1069,7 @@ public class AutoHub {
 
 //            checkButton();
 
-            linearOpMode.telemetry.addData("Current Angle", getAbsoluteAngle());
+            linearOpMode.telemetry.addData("Current Angle (R)", getAbsoluteAngle());
             linearOpMode.telemetry.addData("Target Angle", targetAngle);
             linearOpMode.telemetry.addData("Slope", pid.getLastSlope());
             linearOpMode.telemetry.addData("Power", motorPower);
