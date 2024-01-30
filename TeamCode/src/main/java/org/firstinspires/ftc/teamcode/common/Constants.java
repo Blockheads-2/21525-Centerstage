@@ -9,13 +9,14 @@ public class Constants {
     public static final double MAX_AUTO_STRAFE = 0.5;   //  Clip the approach speed to this max value (adjust for your robot)
     public static final double MAX_AUTO_TURN = 0.3;   //  Clip the turn speed to this max value (adjust for your robot)
 
-
-
     //public static double DESIRED_DISTANCE = 12.0; //  this is how close the camera should get to the target (inches)
 
-    public static final double DESIRED_DISTANCE = 6.0; //  this is how close the camera should get to the target (inches)
+    public static final double DESIRED_ID_BLUE = 2; //middle
+    public static final double DESIRED_ID_RED = 5; //middle
+    public static final double DESIRED_DISTANCE = 8; //  this is how close the camera should get to the target (inches)
     public static final double EXPOSURE_MS = 6;
     public static final int CAMERA_GAIN = 250;
+
     //Drive Train Constants
     public static float fx = 622.001f;
     public static float fy = 622.001f;

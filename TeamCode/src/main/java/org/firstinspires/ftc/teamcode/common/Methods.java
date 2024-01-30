@@ -16,19 +16,24 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-import com.sun.tools.javac.util.List;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.ExposureControl;
+import org.firstinspires.ftc.robotcore.external.hardware.camera.controls.GainControl;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.robotcore.external.tfod.Recognition;
 import org.firstinspires.ftc.teamcode.auto.cv.TeamElementDetectionPipeline;
 import org.firstinspires.ftc.teamcode.auto.dispatch.AutoHub;
+import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.firstinspires.ftc.teamcode.common.pid.SpinPID;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Methods {
     public static class general {
@@ -421,11 +426,20 @@ public class Methods {
 
         public void initRobot() {
             robot.init(hardwareMap);
+//            robot.initCamera(telemetry);
+//            robot.getVisionPortal().setProcessorEnabled(robot.getAprilTagProcessor(), true);
+//            robot.getVisionPortal().setProcessorEnabled(robot.getTfodProcessor(), false);
 
             runtime = new ElapsedTime();
             runtime.reset();
 
             robot.imu.resetYaw();
+
+//            try {
+//                setManualExposure(6, 250); //documentation in FIRST GitHub repo (omni apriltag drive file)
+//            } catch (InterruptedException e) {
+//                throw new RuntimeException(e);
+//            }
 
             telemetry.addData("Say", "Hello Driver");
             runtime.reset();
@@ -440,6 +454,7 @@ public class Methods {
 
         public void PlayerOne(){
             robotBaseDriveLoop(driveTrainSpeed());
+//            robotBaseDriveLoopAndCameraHone(driveTrainSpeed());
 //            robotBaseMicroAdjustLoop(driveTrainSpeed());
         }
 
@@ -453,7 +468,6 @@ public class Methods {
             double directionX = 0;
             double directionY = 0;
             double directionR = 0;
-            int i1 = 0;
 
             if (Math.abs(gamepad1.left_stick_x) > 0.25)
                 directionX = Math.pow(gamepad1.left_stick_x, 1);
@@ -466,6 +480,86 @@ public class Methods {
             double lbPower = (-directionX + directionY + directionR) * drivePower;
             double rfPower = (-directionX + directionY - directionR) * drivePower;
             double rbPower = (directionX + directionY - directionR) * drivePower;
+
+            robot.lf.setPower(lfPower);
+            robot.lb.setPower(lbPower);
+            robot.rf.setPower(rfPower);
+            robot.rb.setPower(rbPower);
+        }
+
+        public void robotBaseDriveLoopAndCameraHone(double drivePower){
+            boolean targetFound     = false;    // Set to true when an AprilTag target is detected
+            double  drive           = 0;        // Desired forward power/speed (-1 to +1)
+            double  strafe          = 0;        // Desired strafe power/speed (-1 to +1)
+            double  turn            = 0;        // Desired turning power/speed (-1 to +1)
+
+            AprilTagDetection desiredTag  = null;
+
+            telemetry.addData("IMU Angle", -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+            // Step through the list of detected tags and look for a matching tag
+            List<AprilTagDetection> currentDetections = robot.getAprilTagProcessor().getDetections();
+            for (AprilTagDetection detection : currentDetections) {
+                // Look to see if we have size info on this tag.
+                if (detection.metadata != null) {
+//                    if (Math.abs(detection.ftcPose.yaw) <= Math.abs(closestYaw)) {
+//                        closestYaw = detection.ftcPose.yaw;
+//                        desiredTag = detection;
+//                        targetFound = true;
+//                    }
+                    if (detection.id == Constants.DESIRED_ID_BLUE){
+                        desiredTag = detection;
+                        targetFound = true;
+                        break;
+                    }
+                } else {
+                    // This tag is NOT in the library, so we don't have enough information to track to it.
+                    telemetry.addData("Unknown", "Tag ID %d is not in TagLibrary", detection.id);
+                }
+            }
+
+            // Tell the driver what we see, and what to do.
+            if (targetFound) {
+                telemetry.addData("\n>","HOLD Left-Bumper to Drive to Target\n");
+                telemetry.addData("Found (Desired Tag)", "ID %d (%s)", desiredTag.id, desiredTag.metadata.name);
+                telemetry.addData("Range",  "%5.1f inches", desiredTag.ftcPose.range);
+                telemetry.addData("Bearing","%3.0f degrees", desiredTag.ftcPose.bearing);
+                telemetry.addData("Yaw","%3.0f degrees", desiredTag.ftcPose.yaw);
+                telemetry.addData("Yaw - IMU(R)", desiredTag.ftcPose.yaw + robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+            } else {
+                telemetry.addData("\n>","Drive using joysticks to find valid target\n");
+            }
+
+            // If Left Trigger is being pressed hard enough, AND we have found the desired target, Drive to target Automatically .
+            if (gamepad1.dpad_up && targetFound) {
+
+                // Determine heading, range and Yaw (tag image rotation) error so we can use them to control the robot automatically.
+                double  rangeError      = (desiredTag.ftcPose.range - Constants.DESIRED_DISTANCE);
+                double  headingError    = desiredTag.ftcPose.bearing;
+                double  yawError        = desiredTag.ftcPose.yaw;
+
+                // Use the speed and turn "gains" to calculate how we want the robot to move.
+                drive  = -Range.clip(rangeError * Constants.SPEED_GAIN, -Constants.MAX_AUTO_SPEED, Constants.MAX_AUTO_SPEED); //set negative because our camera is in the back (so it's driving backwards)
+                turn   = -Range.clip(headingError * Constants.TURN_GAIN, -Constants.MAX_AUTO_TURN, Constants.MAX_AUTO_TURN) ; //keep turn positive (not sure why but this works)
+                strafe = Range.clip(-yawError * Constants.STRAFE_GAIN, -Constants.MAX_AUTO_STRAFE, Constants.MAX_AUTO_STRAFE); //set negative (this works)
+
+
+                telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+            } else {
+                if (Math.abs(gamepad1.left_stick_x) > 0.25)
+                    strafe = Math.pow(gamepad1.left_stick_x, 1) * drivePower;
+                if (Math.abs(gamepad1.left_stick_y) > 0.25)
+                    drive = -Math.pow(gamepad1.left_stick_y, 1) * drivePower;
+                if (Math.abs(gamepad1.right_stick_x) > 0.25)
+                    turn = Math.pow(gamepad1.right_stick_x, 1) * drivePower;
+
+                telemetry.addData("Auto","Drive %5.2f, Strafe %5.2f, Turn %5.2f ", drive, strafe, turn);
+            }
+
+            double lfPower = (strafe + drive +  turn);
+            double rfPower = (-strafe + drive - turn);
+            double lbPower = (-strafe + drive + turn);
+            double rbPower = (strafe + drive - turn);
 
             robot.lf.setPower(lfPower);
             robot.lb.setPower(lbPower);
@@ -577,6 +671,40 @@ public class Methods {
                     rot_claw_state = IntakeState.CLAW_ROT_UP;
                 }
             }
+        }
+
+        private void setManualExposure(int exposureMS, int gain) throws InterruptedException {
+            // Wait for the camera to be open, then use the controls
+
+            if (robot.getVisionPortal() == null) {
+                return;
+            }
+
+            // Make sure camera is streaming before we try to set the exposure controls
+            if (robot.getVisionPortal().getCameraState() != VisionPortal.CameraState.STREAMING) {
+                telemetry.addData("Camera", "Waiting");
+                telemetry.update();
+                while ((robot.getVisionPortal().getCameraState() != VisionPortal.CameraState.STREAMING)) {
+                    sleep(20);
+                }
+                telemetry.addData("Camera", "Ready");
+                telemetry.update();
+            }
+
+            // Set camera controls unless we are stopping.
+//            if (!isStopRequested())
+//            {
+                ExposureControl exposureControl = robot.getVisionPortal().getCameraControl(ExposureControl.class);
+                if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
+                    exposureControl.setMode(ExposureControl.Mode.Manual);
+                    sleep(50);
+                }
+                exposureControl.setExposure((long)exposureMS, TimeUnit.MILLISECONDS);
+                sleep(20);
+                GainControl gainControl = robot.getVisionPortal().getCameraControl(GainControl.class);
+                gainControl.setGain(gain);
+                sleep(20);
+//            }
         }
 
 
