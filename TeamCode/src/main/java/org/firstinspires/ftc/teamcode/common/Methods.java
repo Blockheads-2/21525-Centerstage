@@ -394,7 +394,6 @@ public class Methods {
 //        dashboard.sendTelemetryPacket(packet);
         }
     }
-
     public abstract static class teleOp extends OpMode {
         protected HardwareDrive robot = new HardwareDrive();
         public ElapsedTime runtime;
@@ -713,7 +712,7 @@ public class Methods {
                 robot.plane.setPosition(Constants.RELEASE_PLANE);
             }
         }
-
+        // a
         protected void UpdateTelemetry(){
             telemetry.addData("X", gamepad1.left_stick_x);
             telemetry.addData("Y", -gamepad1.left_stick_y);
