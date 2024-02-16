@@ -40,25 +40,30 @@ public class F2Auto extends Methods.auto{
             //Park Left
             case LEFT:
                 //Place
-                constantHeading(0.2, 14, -32, 0, 0, 0);
+//<<<<<<< Updated upstream
+                constantHeading(0.2, 19, -34, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.5, -16, 10, 0, 0, 0);
+                constantHeading(0.2, -21, 9, 0, 0, 0);
 
                 //Move to middle
-                constantHeading(0.2, 0, -37, 0, 0, 0);
+                constantHeading(0.2, 0, -41, 0, 0, 0);
 
                 //turn
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 88, 0, 0, 0);
+                constantHeading(0.3, 0, -80, 0, 0, 0);
 
-//                turnAbsPID(90);
-//
-////                Move to Place on board
-//                constantHeading(0.2, -15, 0, 0, 0, 0); //y-value may change based on the length of the claw.
-//
+                //turnAbsPID(90);
+
+//                Move out of the way
+                //Move right of the board
+                constantHeading(0.3, 34, 0, 0, 0, 0);
+
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
+
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
 //                //open claw
@@ -68,41 +73,30 @@ public class F2Auto extends Methods.auto{
 
             case RIGHT:
                 //Place
-                spline(0.3, -10, -30, 15); //so this just goes straight...
+                constantHeading(0.2, 0, -27, 0, 0, 0);
 
-                turnAbsPID(-90);
+                constantHeading(0.2, -17, 0, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.2, 0, -10, 0, 0, 0);
+                constantHeading(0.2, 24, 6, 0, 0, 0);
 
                 //Move to middle
-                constantHeading(0.2, -24, 0, 0, 0, 0);
+                constantHeading(0.2, 0, -34, 0, 0, 0);
+
+                //turn
+                turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 0, 95, 0, 0, 0);
+                constantHeading(0.3, 0, 87, 0, 0, 0);
 
-//                //Place
-//                constantHeading(0.2, 0, -27, 0, 0, 0);
+                turnAbsPID(90);
+
+                //Move right of the board
+                constantHeading(0.3, 34, 0, 0, 0, 0);
+
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
 //
-//                constantHeading(0.2, -17, 0, 0, 0, 0);
-//
-//                //Move Out of the way
-//                constantHeading(0.2, 24, 6, 0, 0, 0);
-//
-//                //Move to middle
-//                constantHeading(0.2, 0, -34, 0, 0, 0);
-//
-//                //turn
-//                turnAbsPID(-90);
-//
-//                //Move to park
-//                constantHeading(0.3, 0, 87, 0, 0, 0);
-//
-//                turnAbsPID(90);
-//
-//                //Move to Place on board
-//                constantHeading(0.2, -26, 0, 0, 0, 0);
-////
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
 //                //open claw
@@ -116,29 +110,76 @@ public class F2Auto extends Methods.auto{
                 constantHeading(0.2, 0, -31, 0, 0, 0);
 
                 //Move Out of the way
-                constantHeading(0.15, 20, 5, 0, 0, 0);
+                constantHeading(0.2, 20, 7, 0, 0, 0);
 
                 //Move to middle
-                constantHeading(0.2, 0, -30, 0, 0, 0);
+                constantHeading(0.2, 0, -33, 0, 0, 0);
 
                 //turn
                 turnAbsPID(-90);
 
                 //Move to park
-                constantHeading(0.3, 4, 105, 0, 0, 0);
+                constantHeading(0.3, 0, 98, 0, 0, 0);
 
-//                //Turn 180 degrees
-//                turnAbsPID(90);
-//
-//                //Move to Place on board
-//                constantHeading(0.2, -24, 0, 0, 0, 0); //y-value will changed based on the length of the claw
-//
+                //Move right of the board
+                constantHeading(0.3, 34, 0, 0, 0, 0);
+
+                //Move forward & park
+                constantHeading(0.3, 0, 27, 0, 0, 0);
+
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
 //                //open claw
 //
 //                runOuttake(0, 0.5);
 
+//=======
+                constantHeading(0.3, 7, -25, 0, 0, 0);
+                //Move out
+                constantHeading(0.2, 0, 5, 0, 0, 0);
+                //Go forward
+                constantHeading(0.2, -5, -7, 0, 0, 0);
+                //Turn
+                turnAbsPID(90);
+                //Go to the board
+                constantHeading(0.3, 0, -100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, 5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, -7, 0, 0, 0);
+                break;
+
+            case RIGHT:
+                //...
+                //Place
+                constantHeading(0.3, 7, 25, 0, 0, 0);
+                //Move out
+                constantHeading(0.2, 0, 5, 0, 0, 0);
+                //Go forward
+                constantHeading(0.2, -5, 7, 0, 0, 0);
+                //Turn
+                turnAbsPID(90);
+                //Go to the board
+                constantHeading(0.3, 0, 100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, 5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, -7, 0, 0, 0);
+                break;
+
+            case MID:
+                //...
+                constantHeading(0.3, 0, -30, 0, 0, 0);
+                constantHeading(0.3, -5, 0, 0, 0, 0);
+                constantHeading(0.2, 0, 10, 0, 0, 0);
+                constantHeading(0.2, 5, -10, 0, 0, 0);
+                turnAbsPID(90);
+                constantHeading(0.3, 0, -100, 0, 0, 0);
+                //Move to the left
+                constantHeading(0.3, 5, 0, 0, 0, 0);
+                //Move forward and park
+                constantHeading(0.3, 0, -7, 0, 0, 0);
+//>>>>>>> Stashed changes
                 break;
         }
     }
