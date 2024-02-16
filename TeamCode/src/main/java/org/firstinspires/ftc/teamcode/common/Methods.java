@@ -455,7 +455,7 @@ public class Methods {
         public void PlayerOne(){
             robotBaseDriveLoop(driveTrainSpeed());
 //            robotBaseDriveLoopAndCameraHone(driveTrainSpeed());
-//            robotBaseMicroAdjustLoop(driveTrainSpeed());
+            robotBaseMicroAdjustLoop(driveTrainSpeed());
         }
 
         public void PlayerTwo(){
@@ -487,6 +487,7 @@ public class Methods {
             robot.rb.setPower(rbPower);
         }
 
+        //this function is janky because even small changes in the camera angle can lead it not to see the april tag.
         public void robotBaseDriveLoopAndCameraHone(double drivePower){
             boolean targetFound     = false;    // Set to true when an AprilTag target is detected
             double  drive           = 0;        // Desired forward power/speed (-1 to +1)
