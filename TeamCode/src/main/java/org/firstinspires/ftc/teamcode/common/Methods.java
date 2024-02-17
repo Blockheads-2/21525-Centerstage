@@ -1,11 +1,5 @@
 package org.firstinspires.ftc.teamcode.common;
 
-import static org.firstinspires.ftc.teamcode.common.Constants.CLAW_ROT_DOWN;
-import static org.firstinspires.ftc.teamcode.common.Constants.HIGH_OUTTAKE;
-import static org.firstinspires.ftc.teamcode.common.Constants.LOW_OUTTAKE;
-import static org.firstinspires.ftc.teamcode.common.Constants.MAX_OUTTAKE_CLICKS;
-import static org.firstinspires.ftc.teamcode.common.Constants.MID_OUTTAKE;
-import static org.firstinspires.ftc.teamcode.common.Constants.MIN_OUTTAKE_CLICKS;
 import static java.lang.Thread.sleep;
 
 import com.acmerobotics.dashboard.FtcDashboard;
@@ -13,7 +7,6 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
@@ -360,12 +353,12 @@ public class Methods {
         }
 
         public void runOuttake(int clickTarget, double power){
-            while (opModeIsActive() && Math.abs(dispatch.robot.outtake.getCurrentPosition() - clickTarget) >= 15){
-                dispatch.robot.outtake.setTargetPosition(clickTarget);
-                dispatch.robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                dispatch.robot.outtake.setPower(power);
+            while (opModeIsActive() && Math.abs(dispatch.robot.lift.getCurrentPosition() - clickTarget) >= 15){
+                dispatch.robot.lift.setTargetPosition(clickTarget);
+                dispatch.robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                dispatch.robot.lift.setPower(power);
             }
-            dispatch.robot.outtake.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            dispatch.robot.lift.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         }
 
         public void UpdateTelemetry(){
@@ -401,45 +394,34 @@ public class Methods {
         protected FtcDashboard dashboard;
         protected SpinPID outtakePositioner;
         protected TelemetryPacket packet;
-        protected enum IntakeState {
-            LEFT_OPEN,
-            LEFT_CLOSED,
-            RIGHT_OPEN,
-            RIGHT_CLOSED,
-            CLAW_ROT_AMBIGUOUS,
-            CLAW_ROT_UP,
-            CLAW_ROT_DOWN
-        }
-        protected IntakeState left_claw_state = IntakeState.LEFT_CLOSED;
-        protected IntakeState right_claw_state = IntakeState.RIGHT_CLOSED;
+//        protected enum IntakeState {
+//            LEFT_OPEN,
+//            LEFT_CLOSED,
+//            RIGHT_OPEN,
+//            RIGHT_CLOSED,
+//            CLAW_ROT_AMBIGUOUS,
+//            CLAW_ROT_UP,
+//            CLAW_ROT_DOWN
+//        }
+//        protected IntakeState lcState = IntakeState.LEFT_CLOSED;
+//        protected IntakeState rcState = IntakeState.RIGHT_CLOSED;
+//        protected IntakeState pivotState = IntakeState.CLAW_ROT_UP;
 
-        protected IntakeState rot_claw_state = IntakeState.CLAW_ROT_UP;
 
-//        Button bottomOuttake = new Button();
-//        Button midOuttake = new Button();
-//        Button highOuttake = new Button();
-        Button left_claw = new Button();
-        Button right_claw = new Button();
 
-        Button rot_claw = new Button();
+        /* GAMEPAD2 BUTTONS */
+        Button lcButton = new Button();
+        Button rcButton = new Button();
+        Button pivotButton = new Button();
         Button planeButton = new Button();
 
         public void initRobot() {
             robot.init(hardwareMap);
-//            robot.initCamera(telemetry);
-//            robot.getVisionPortal().setProcessorEnabled(robot.getAprilTagProcessor(), true);
-//            robot.getVisionPortal().setProcessorEnabled(robot.getTfodProcessor(), false);
 
             runtime = new ElapsedTime();
             runtime.reset();
 
             robot.imu.resetYaw();
-
-//            try {
-//                setManualExposure(6, 250); //documentation in FIRST GitHub repo (omni apriltag drive file)
-//            } catch (InterruptedException e) {
-//                throw new RuntimeException(e);
-//            }
 
             telemetry.addData("Say", "Hello Driver");
             runtime.reset();
@@ -447,21 +429,6 @@ public class Methods {
             dashboard = FtcDashboard.getInstance();
             packet = new TelemetryPacket();
             dashboard.setTelemetryTransmissionInterval(25);
-
-//            robot.outtake.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            robot.outtake.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        public void PlayerOne(){
-            robotBaseDriveLoop(driveTrainSpeed());
-//            robotBaseDriveLoopAndCameraHone(driveTrainSpeed());
-//            robotBaseMicroAdjustLoop(driveTrainSpeed());
-        }
-
-        public void PlayerTwo(){
-//            robotBaseOuttakeLoop();
-            robotBaseIntakeLoop();
-            planeLaunch();
         }
 
         public void robotBaseDriveLoop(double drivePower) {
@@ -502,11 +469,6 @@ public class Methods {
             for (AprilTagDetection detection : currentDetections) {
                 // Look to see if we have size info on this tag.
                 if (detection.metadata != null) {
-//                    if (Math.abs(detection.ftcPose.yaw) <= Math.abs(closestYaw)) {
-//                        closestYaw = detection.ftcPose.yaw;
-//                        desiredTag = detection;
-//                        targetFound = true;
-//                    }
                     if (detection.id == Constants.DESIRED_ID_BLUE){
                         desiredTag = detection;
                         targetFound = true;
@@ -570,11 +532,10 @@ public class Methods {
         public double driveTrainSpeed() {
             double drivePower = Constants.DEFAULT_SPEED; //0.75
             if (gamepad1.right_bumper) drivePower = 1;
-            else if (gamepad1.left_bumper) drivePower = 0.25;
+            else if (gamepad1.right_trigger >= 0.1) drivePower = 0.25;
 
             return drivePower;
         }
-
 
         public void robotBaseMicroAdjustLoop(double drivePower) {
             if (gamepad1.dpad_up) {
@@ -600,77 +561,8 @@ public class Methods {
             }
         }
 
-        public void robotBaseOuttakeLoop() {
-//            int clickTarget = robot.outtake.getCurrentPosition();
-            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+        public void robotBasePixelLoop() {
 
-//            if (gamepad1.dpad_down){
-//                clickTarget = Range.clip(robot.outtake.getCurrentPosition() - 300, MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
-//            } else if (gamepad1.dpad_up){
-//                clickTarget = Range.clip(robot.outtake.getCurrentPosition() + 300, MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
-//            }
-
-//            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
-//            if (bottomOuttake.is(Button.State.HELD)) clickTarget = LOW_OUTTAKE;
-//            else if (midOuttake.is(Button.State.HELD)) clickTarget = MID_OUTTAKE;
-//            else if (highOuttake.is(Button.State.HELD)) clickTarget = HIGH_OUTTAKE;
-
-            robot.outtake.setTargetPosition(clickTarget);
-            robot.outtake.setPower(0.8);
-        }
-
-        public void robotBaseIntakeLoop() {
-
-            if (gamepad1.right_trigger >= 0.1){
-                robot.claw_rot.setPosition(Range.clip(robot.claw_rot.getPosition() - (0.1 * gamepad1.right_trigger), Constants.CLAW_ROT_UP, Constants.CLAW_ROT_DOWN));
-                rot_claw_state = IntakeState.CLAW_ROT_AMBIGUOUS;
-            } else if (gamepad1.left_trigger >= 0.1){
-                robot.claw_rot.setPosition(Range.clip(robot.claw_rot.getPosition() + (0.1 * gamepad1.left_trigger), Constants.CLAW_ROT_UP, Constants.CLAW_ROT_DOWN));
-                rot_claw_state = IntakeState.CLAW_ROT_AMBIGUOUS;
-            }
-
-            if (left_claw.is(Button.State.TAP)){
-//                if (left_claw_state == IntakeState.LEFT_CLOSED) {
-//                    robot.left_claw.setPosition(Constants.LEFT_CLAW_RELEASE);
-//                    left_claw_state = IntakeState.LEFT_OPEN;
-//                }
-//                else if (left_claw_state == IntakeState.LEFT_OPEN){
-//                    robot.left_claw.setPosition(Constants.LEFT_CLAW_HOLD);
-//                    left_claw_state = IntakeState.LEFT_CLOSED;
-//                }
-            }
-            if (right_claw.is(Button.State.TAP)){
-                if (right_claw_state == IntakeState.RIGHT_CLOSED && rot_claw_state != IntakeState.CLAW_ROT_UP) { //only open claw if our claw is down/ambiguous. Don't want to open our claw when
-                    robot.right_claw.setPosition(Constants.RIGHT_CLAW_RELEASE);
-                    right_claw_state = IntakeState.RIGHT_OPEN;
-                }
-                else if (right_claw_state == IntakeState.RIGHT_OPEN){
-                    robot.right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
-                    right_claw_state = IntakeState.RIGHT_CLOSED;
-                }
-            }
-            if (rot_claw.is(Button.State.TAP)){
-                if (rot_claw_state == IntakeState.CLAW_ROT_AMBIGUOUS){
-                    if (right_claw_state == IntakeState.RIGHT_OPEN){ //we don't want to pull in our claw if the claw is open.
-                        robot.right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
-                        right_claw_state = IntakeState.RIGHT_CLOSED;
-                    }
-                    robot.claw_rot.setPosition(Constants.CLAW_ROT_UP);
-                    rot_claw_state = IntakeState.CLAW_ROT_UP;
-                }
-                else if (rot_claw_state == IntakeState.CLAW_ROT_UP) {
-                    robot.claw_rot.setPosition(Constants.CLAW_ROT_DOWN);
-                    rot_claw_state = IntakeState.CLAW_ROT_DOWN;
-                }
-                else if (rot_claw_state == IntakeState.CLAW_ROT_DOWN){
-                    if (right_claw_state == IntakeState.RIGHT_OPEN){ //we don't want to pull in our claw if the claw is open.
-                        robot.right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
-                        right_claw_state = IntakeState.RIGHT_CLOSED;
-                    }
-                    robot.claw_rot.setPosition(Constants.CLAW_ROT_UP);
-                    rot_claw_state = IntakeState.CLAW_ROT_UP;
-                }
-            }
         }
 
         private void setManualExposure(int exposureMS, int gain) throws InterruptedException {
@@ -737,16 +629,16 @@ public class Methods {
             telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
             telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
 
-            telemetry.addData("Outtake Motor Position", robot.outtake.getCurrentPosition());
+            telemetry.addData("Outtake Motor Position", robot.lift.getCurrentPosition());
             telemetry.addData("Plane Servo Position", robot.plane.getPosition());
-//            telemetry.addData("Left Claw Servo Position", robot.left_claw.getPosition());
-//            telemetry.addData("Left Claw Servo State", left_claw_state);
+//            telemetry.addData("Left Claw Servo Position", robot.lcButton.getPosition());
+//            telemetry.addData("Left Claw Servo State", lcState);
 
-            telemetry.addData("Right Claw Servo Position", robot.right_claw.getPosition());
-            telemetry.addData("Right Claw Servo State", right_claw_state);
+            telemetry.addData("Right Claw Servo Position", robot.rc.getPosition());
+//            telemetry.addData("Right Claw Servo State", rcState);
 
-            telemetry.addData("Claw Rot Servo Position", robot.claw_rot.getPosition());
-            telemetry.addData("Claw Rot Servo State", rot_claw_state);
+            telemetry.addData("Claw Rot Servo Position", robot.pivot.getPosition());
+//            telemetry.addData("Claw Rot Servo State", pivotState);
 
 
             telemetry.addData("Top Left Velocity", robot.lf.getVelocity());
@@ -782,13 +674,10 @@ public class Methods {
         }
 
         public void UpdateButton(){
-//            bottomOuttake.update(gamepad2.a);
-//            midOuttake.update(gamepad2.x);
-//            highOuttake.update(gamepad2.y);
-            left_claw.update(gamepad2.a);
-            right_claw.update(gamepad1.y);
-            rot_claw.update(gamepad1.x);
-            planeButton.update(gamepad1.b);
+            lcButton.update(gamepad2.left_bumper);
+            rcButton.update(gamepad2.right_bumper);
+            pivotButton.update(gamepad2.b);
+            planeButton.update(gamepad2.y);
         }
     }
 }

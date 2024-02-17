@@ -99,8 +99,8 @@ public class HardwareDrive {
         rf = hwMap.get(DcMotorEx.class, "right_front");
         rb = hwMap.get(DcMotorEx.class, "right_back");
         plane = hwMap.get(Servo.class, "plane");
-        lc = hwMap.get(Servo.class, "left_claw");
-        rc = hwMap.get(Servo.class, "right_claw");
+        lc = hwMap.get(Servo.class, "lcButton");
+        rc = hwMap.get(Servo.class, "rcButton");
         pivot = hwMap.get(Servo.class, "claw_pivot");
         imu = hwMap.get(IMU.class, "imu");
 
@@ -161,10 +161,6 @@ public class HardwareDrive {
                 .setDrawAxes(true) // Default: false.
                 .setDrawCubeProjection(true) // Default: false.
                 .build(); // Create an AprilTagProcessor by calling build()
-//
-//            openCV = new OpenCvProcessor.Builder()
-//                    .build();
-//            openCV.setTelemetry(telemetry);
 
             tfod = new TfodProcessor.Builder() // Create a new TFOD Processor Builder object.
                     .setMaxNumRecognitions(10) // Max. number of recognitions the network will return
@@ -183,20 +179,6 @@ public class HardwareDrive {
                 .enableLiveView(true) // Enable LiveView (RC preview).  I believe we don't need this because we use the Driver Hub Camera Stream, not an RC phone.
                 .setAutoStopLiveView(true) // Automatically stop LiveView (RC preview) when all vision processors are disabled.
                 .build(); // Create a VisionPortal by calling build().  The camera starts streaming.
-
-//            ExposureControl exposureControl = visionPortal.getCameraControl(ExposureControl.class);
-//            if (exposureControl.getMode() != ExposureControl.Mode.Manual) {
-//                exposureControl.setMode(ExposureControl.Mode.Manual);
-//                Methods.general.trySleep(20);
-//
-//            }
-//            exposureControl.setExposure((long) Constants.EXPOSURE_MS, TimeUnit.MILLISECONDS);
-//            Methods.general.trySleep(20);
-//
-//            GainControl gainControl = visionPortal.getCameraControl(GainControl.class);
-//            gainControl.setGain(Constants.CAMERA_GAIN);
-//            Methods.general.trySleep(20);
-
             telemetry.addData("Camera ready", visionPortal.getCameraState());
             telemetry.update();
         }

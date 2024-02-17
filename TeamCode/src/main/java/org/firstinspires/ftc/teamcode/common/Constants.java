@@ -82,15 +82,8 @@ public class Constants {
     public static final double HOLD_PLANE = 0.0;
     public static final double RELEASE_PLANE = 0.3;
 
-        //left claw
-    public static final double LEFT_CLAW_HOLD = 0.45;
-    public static final double LEFT_CLAW_RELEASE = 0.75;
+    public static final double PIVOT_PICKUP = 0;
+    public static final double PIVOT_STOW = 0;
+    public static final double PIVOT_DROP = 0;
 
-        //right claw
-    public static final double RIGHT_CLAW_HOLD = 0.42;
-    public static final double RIGHT_CLAW_RELEASE = 0.75;
-
-        //rot claw
-    public static final double CLAW_ROT_UP = 0.1;
-    public static final double CLAW_ROT_DOWN = 0.87;
 }
