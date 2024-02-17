@@ -72,7 +72,9 @@ public class HardwareDrive {
     public Servo plane;
     public Servo lc;
     public Servo rc;
-    public Servo pivot;
+
+    public Servo leftPivot;
+    public Servo rightPivot;
     public IMU imu;
     public Motor lf_motor;
     public Motor rf_motor;
@@ -99,9 +101,10 @@ public class HardwareDrive {
         rf = hwMap.get(DcMotorEx.class, "right_front");
         rb = hwMap.get(DcMotorEx.class, "right_back");
         plane = hwMap.get(Servo.class, "plane");
-        lc = hwMap.get(Servo.class, "lcButton");
-        rc = hwMap.get(Servo.class, "rcButton");
-        pivot = hwMap.get(Servo.class, "claw_pivot");
+        lc = hwMap.get(Servo.class, "left_claw");
+        rc = hwMap.get(Servo.class, "right_claw");
+        leftPivot = hwMap.get(Servo.class, "left_pivot");
+        rightPivot = hwMap.get(Servo.class, "right_pivot");
         imu = hwMap.get(IMU.class, "imu");
 
         lf_motor = new Motor(ahwMap, "left_front", Constants.CPR, Constants.RPM); //playing around with ftclib
@@ -123,9 +126,9 @@ public class HardwareDrive {
         rc.setDirection(Servo.Direction.REVERSE);
 
         plane.setPosition(Constants.HOLD_PLANE);
-        lc.setPosition(Constants.LEFT_CLAW_HOLD);
-        rc.setPosition(Constants.RIGHT_CLAW_HOLD);
-        pivot.setPosition(Constants.CLAW_ROT_UP);
+//        lc.setPosition(Constants.LEFT_CLAW_HOLD);
+//        rc.setPosition(Constants.RIGHT_CLAW_HOLD);
+//        pivot.setPosition(Constants.CLAW_ROT_UP);
 
         lift.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
         lift.setTargetPosition(lift.getCurrentPosition());

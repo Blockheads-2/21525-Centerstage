@@ -71,19 +71,50 @@ public class Constants {
         }
     }
 
-    public static final int MAX_OUTTAKE_CLICKS = 2300;
-    public static final int MIN_OUTTAKE_CLICKS = 100;
-    public static final int LOW_OUTTAKE = 100;
-    public static final int MID_OUTTAKE = 1100;
-    public static final int HIGH_OUTTAKE = 2250;
+    public static final int MAX_LIFT_CLICKS = 2300;
+    public static final int MIN_LIFT_CLICKS = 100;
+    public static final int LOW_LIFT = 100;
+    public static final int MID_LIFT = 1100;
+    public static final int HIGH_LIFT = 2250;
+
+    public enum LiftState {
+        MIN,
+        PICKUP,
+        LOW,
+        MID,
+        HIGH,
+        MAX
+    }
+
+
 
     //Servo
         //Plane
     public static final double HOLD_PLANE = 0.0;
     public static final double RELEASE_PLANE = 0.3;
+    public static final double LC_HOLD = 0.45;
+    public static final double LC_RELEASE = 0.75;
 
+    public static final double RC_HOLD = 0.42;
+    public static final double RC_RELEASE = 0.75;
+
+    public enum rcState {
+        hold,
+        release
+    }
+
+    public enum lcState {
+        hold,
+        release
+    }
+
+    public enum PivotState {
+        pickup,
+        stow,
+        deposit
+    }
     public static final double PIVOT_PICKUP = 0;
     public static final double PIVOT_STOW = 0;
-    public static final double PIVOT_DROP = 0;
+    public static final double PIVOT_DEPOSIT = 0;
 
 }
