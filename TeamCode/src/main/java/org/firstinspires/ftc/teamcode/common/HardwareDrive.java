@@ -34,7 +34,6 @@ import android.util.Size;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -69,21 +68,16 @@ public class HardwareDrive {
     public DcMotorEx rf;
     public DcMotorEx rb;
     public DcMotorEx lb;
-    public Servo intake;
-    public DcMotorEx outtake;
+    public DcMotorEx lift;
     public Servo plane;
-
-//    public Servo left_claw;
-
-    public Servo right_claw;
-
-    public Servo claw_rot;
-
+    public Servo lc;
+    public Servo rc;
+    public Servo pivot;
+    public IMU imu;
     public Motor lf_motor;
     public Motor rf_motor;
     public Motor rb_motor;
     public Motor lb_motor;
-    public IMU imu;
     public MecanumDrive m_drive;
     HardwareMap hwMap = null;
     private VisionPortal visionPortal;               // Used to manage the video source.
@@ -105,10 +99,9 @@ public class HardwareDrive {
         rf = hwMap.get(DcMotorEx.class, "right_front");
         rb = hwMap.get(DcMotorEx.class, "right_back");
         plane = hwMap.get(Servo.class, "plane");
-//        left_claw = hwMap.get(Servo.class, "claw_left");
-        right_claw = hwMap.get(Servo.class, "claw_right");
-        claw_rot = hwMap.get(Servo.class, "claw_rot");
-        outtake = hwMap.get(DcMotorEx.class, "outtake");
+        lc = hwMap.get(Servo.class, "left_claw");
+        rc = hwMap.get(Servo.class, "right_claw");
+        pivot = hwMap.get(Servo.class, "claw_pivot");
         imu = hwMap.get(IMU.class, "imu");
 
         lf_motor = new Motor(ahwMap, "left_front", Constants.CPR, Constants.RPM); //playing around with ftclib
@@ -117,8 +110,6 @@ public class HardwareDrive {
         rb_motor = new Motor(ahwMap, "right_back", Constants.CPR, Constants.RPM);
         m_drive = new MecanumDrive(lf_motor, rf_motor, lb_motor, rb_motor);
 
-//        RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.UP;
-//        RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
         RevHubOrientationOnRobot.UsbFacingDirection usbDirection = RevHubOrientationOnRobot.UsbFacingDirection.UP;
         RevHubOrientationOnRobot orientationOnRobot = new RevHubOrientationOnRobot(logoDirection, usbDirection);
@@ -129,17 +120,16 @@ public class HardwareDrive {
         lb.setDirection(DcMotorSimple.Direction.REVERSE);
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
-        outtake.setDirection(DcMotorSimple.Direction.REVERSE);
-        right_claw.setDirection(Servo.Direction.REVERSE);
+        rc.setDirection(Servo.Direction.REVERSE);
 
         plane.setPosition(Constants.HOLD_PLANE);
-//        left_claw.setPosition(Constants.LEFT_CLAW_HOLD);
-        right_claw.setPosition(Constants.RIGHT_CLAW_HOLD);
-        claw_rot.setPosition(Constants.CLAW_ROT_UP);
+        lc.setPosition(Constants.LEFT_CLAW_HOLD);
+        rc.setPosition(Constants.RIGHT_CLAW_HOLD);
+        pivot.setPosition(Constants.CLAW_ROT_UP);
 
-        outtake.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        outtake.setTargetPosition(outtake.getCurrentPosition());
-        outtake.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        lift.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
+        lift.setTargetPosition(lift.getCurrentPosition());
+        lift.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
         resetEncoderPos();
         runWithoutEncoder();
