@@ -71,8 +71,9 @@ public class Constants {
         }
     }
 
-    public static final int MAX_LIFT_CLICKS = 3335;
-    public static final int MIN_LIFT_CLICKS = 75;
+    public static final int MAX_LIFT_CLICKS = 1600;
+    public static final int STOW_LIFT_CLICKS = 100;
+    public static final int MIN_LIFT_CLICKS = 50;
     public static final int LOW_LIFT = 100;
     public static final int MID_LIFT = 1100;
     public static final int HIGH_LIFT = 2250;
@@ -90,9 +91,9 @@ public class Constants {
 
     //Servo
         //Plane
-    public static final double HOLD_PLANE = 0.0;
-    public static final double RELEASE_PLANE = 0.3;
-    public static final double LC_HOLD = 0.45;
+    public static final double HOLD_PLANE = 0.25;
+    public static final double RELEASE_PLANE = 0.75;
+    public static final double LC_HOLD = 0.42;
     public static final double LC_RELEASE = 0.75;
 
     public static final double RC_HOLD = 0.42;

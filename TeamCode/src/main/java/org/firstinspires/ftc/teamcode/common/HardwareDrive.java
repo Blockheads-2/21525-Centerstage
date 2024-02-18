@@ -127,12 +127,12 @@ public class HardwareDrive {
         rc.setDirection(Servo.Direction.REVERSE);
         leftPivot.setDirection(Servo.Direction.REVERSE);
 
-        lc.setPosition(0);
-        rc.setPosition(0);
+        lc.setPosition(0.45);
+        rc.setPosition(0.45);
         leftPivot.setPosition(0);
         rightPivot.setPosition(0);
-        plane.setPosition(0);
-//        plane.setPosition(Constants.HOLD_PLANE);
+//        plane.setPosition(0.35);
+        plane.setPosition(Constants.HOLD_PLANE);
 //        lc.setPosition(Constants.LEFT_CLAW_HOLD);
 //        rc.setPosition(Constants.RIGHT_CLAW_HOLD);
 //        pivot.setPosition(Constants.CLAW_ROT_UP);
