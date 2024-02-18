@@ -79,12 +79,10 @@ public class Constants {
     public static final int HIGH_LIFT = 2250;
 
     public enum LiftState {
-        MIN,
-        PICKUP,
-        LOW,
-        MID,
-        HIGH,
-        MAX
+        GROUND,
+        DEPOSIT,
+        STOW,
+        MANUAL
     }
 
 
@@ -114,6 +112,7 @@ public class Constants {
         stow,
         deposit
     }
+
     public static final double PIVOT_PICKUP = 0;
     public static final double PIVOT_STOW = 0;
     public static final double PIVOT_DEPOSIT = 0;

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.common;
 
 import static org.firstinspires.ftc.teamcode.common.Constants.MAX_LIFT_CLICKS;
 import static org.firstinspires.ftc.teamcode.common.Constants.MIN_LIFT_CLICKS;
+import static org.firstinspires.ftc.teamcode.common.Constants.PIVOT_PICKUP;
 import static org.firstinspires.ftc.teamcode.common.Constants.PIVOT_STOW;
 import static org.firstinspires.ftc.teamcode.common.Constants.STOW_LIFT_CLICKS;
 import static java.lang.Thread.sleep;
@@ -385,7 +386,7 @@ public class Methods {
         protected FtcDashboard dashboard;
         protected TelemetryPacket packet;
 
-        Constants.LiftState liftState = Constants.LiftState.MIN;
+        Constants.LiftState liftState = Constants.LiftState.STOW;
         Constants.lcState lcState = Constants.lcState.release;
         Constants.rcState rcState = Constants.rcState.release;
         Constants.PivotState pivotState = Constants.PivotState.stow;
@@ -548,38 +549,26 @@ public class Methods {
 
 
         public void robotBasePixelLoop() {
-            int clickTarget = Range.clip(robot.lift.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_LIFT_CLICKS, MAX_LIFT_CLICKS);
-
             //BUTTON INPUT
                 //LEFT CLAW
-            if (lcButton.is(Button.State.TAP)) {
-                if (lcState == Constants.lcState.release) {
-                    lcState = Constants.lcState.hold;
-                } else if (lcState == Constants.lcState.hold) {
-                    lcState = Constants.lcState.release;
-                }
-            }
+            if (lcButton.is(Button.State.TAP)) lcState = (lcState == Constants.lcState.release ? Constants.lcState.hold : Constants.lcState.release);
+
                 //RIGHT CLAW
-            if (rcButton.is(Button.State.TAP)) {
-                if (rcState == Constants.rcState.release) {
-                    rcState = Constants.rcState.hold;
-                } else if (rcState == Constants.rcState.hold) {
-                    rcState = Constants.rcState.release;
-                }
-            }
+            if (rcButton.is(Button.State.TAP)) rcState = (rcState == Constants.rcState.release ? Constants.rcState.hold : Constants.rcState.release);
+
                 //GROUND, STOW, or DEPOSIT
             if (rcState == Constants.rcState.hold && lcState == Constants.lcState.hold){ //We don't want to move the arm if our claws are open.
                 if (STOW.is(Button.State.TAP)){
                     pivotState = Constants.PivotState.stow;
-                    clickTarget = MAX_LIFT_CLICKS;
-
+                    liftState = Constants.LiftState.STOW;
                 } else if (GROUND.is(Button.State.TAP)){
                     pivotState = Constants.PivotState.pickup;
-                    clickTarget = MIN_LIFT_CLICKS;
-
+                    liftState = Constants.LiftState.GROUND;
                 } else if (DEPOSIT.is(Button.State.TAP)){
                     pivotState = Constants.PivotState.deposit;
-                    clickTarget = STOW_LIFT_CLICKS;
+                    liftState = Constants.LiftState.DEPOSIT;
+                } else if (Math.abs(gamepad2.left_stick_y) >= 0.1){
+                    liftState = Constants.LiftState.MANUAL;
                 }
             }
 
@@ -592,21 +581,24 @@ public class Methods {
             if (rcState == Constants.rcState.release) robot.rc.setPosition(Constants.RC_RELEASE);
             else robot.rc.setPosition(Constants.RC_HOLD);
 
-                //PIVOT for depositing
+                //PIVOT
             if (pivotState == Constants.PivotState.deposit) {
                 robot.rightPivot.setPosition(Constants.PIVOT_DEPOSIT);
                 robot.leftPivot.setPosition(Constants.PIVOT_DEPOSIT);
-            }
-                //PIVOT for stowing
-            if (pivotState == Constants.PivotState.stow) {
+            } else if (pivotState == Constants.PivotState.stow) {
                 robot.rightPivot.setPosition(Constants.PIVOT_STOW);
                 robot.leftPivot.setPosition(Constants.PIVOT_STOW);
-            }
-                //PIVOT for pickup
-            if (pivotState == Constants.PivotState.pickup) {
+            } else if (pivotState == Constants.PivotState.pickup) {
                 robot.rightPivot.setPosition(Constants.PIVOT_PICKUP);
                 robot.leftPivot.setPosition(Constants.PIVOT_PICKUP);
             }
+
+            //LIFT
+            int clickTarget = Range.clip(robot.lift.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_LIFT_CLICKS, MAX_LIFT_CLICKS);
+
+            if (liftState == Constants.LiftState.GROUND) clickTarget = Constants.MIN_LIFT_CLICKS;
+            else if (liftState == Constants.LiftState.DEPOSIT) clickTarget = Constants.MAX_LIFT_CLICKS;
+            else if (liftState == Constants.LiftState.STOW) clickTarget = Constants.STOW_LIFT_CLICKS;
 
             robot.lift.setTargetPosition(Range.clip(clickTarget, Constants.MIN_LIFT_CLICKS, Constants.MAX_LIFT_CLICKS));
             robot.lift.setPower(0.7);
