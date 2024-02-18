@@ -386,7 +386,6 @@ public class Methods {
         Constants.LiftState liftState = Constants.LiftState.MIN;
         Constants.lcState lcState = Constants.lcState.release;
         Constants.rcState rcState = Constants.rcState.release;
-
         Constants.PivotState pivotState = Constants.PivotState.stow;
 
         /* GAMEPAD2 BUTTONS */
@@ -585,7 +584,7 @@ public class Methods {
             }
 
             if (pivotButton.is(Button.State.TAP)) {
-                if (pivotState == Constants.PivotState.stow && robot.lift.getCurrentPosition() > MIN_LIFT_CLICKS + 200) {
+                if (pivotState == Constants.PivotState.stow && robot.lift.getCurrentPosition() > MIN_LIFT_CLICKS) {
                     pivotState = Constants.PivotState.deposit;
                     robot.rightPivot.setPosition(Constants.PIVOT_DEPOSIT);
                     robot.leftPivot.setPosition(Constants.PIVOT_DEPOSIT);
@@ -595,12 +594,12 @@ public class Methods {
                     robot.rightPivot.setPosition(Constants.PIVOT_STOW);
                     robot.leftPivot.setPosition(Constants.PIVOT_STOW);
                 }
-                if (pivotState == Constants.PivotState.pickup && robot.lift.getCurrentPosition() > MIN_LIFT_CLICKS + 200) {
+                if (pivotState == Constants.PivotState.pickup && robot.lift.getCurrentPosition() > MIN_LIFT_CLICKS) {
                     pivotState = Constants.PivotState.deposit;
                     robot.rightPivot.setPosition(Constants.PIVOT_DEPOSIT);
                     robot.leftPivot.setPosition(Constants.PIVOT_DEPOSIT);
                 }
-                if (pivotState == Constants.PivotState.pickup && robot.lift.getCurrentPosition() < MIN_LIFT_CLICKS + 200) {
+                if (pivotState == Constants.PivotState.pickup && robot.lift.getCurrentPosition() < MIN_LIFT_CLICKS) {
                     pivotState = Constants.PivotState.stow;
                     robot.rightPivot.setPosition(Constants.PIVOT_STOW);
                     robot.leftPivot.setPosition(Constants.PIVOT_STOW);
@@ -609,8 +608,8 @@ public class Methods {
 
             if (pickupButton.is(Button.State.TAP)) {
                 if (pivotState == Constants.PivotState.deposit) {
-                    // insert lift movement logic here
-                    // if the pickup button is toggled then you MUST make the lift go down to the MIN_LIFT_CLICKS position
+                    robot.lift.setTargetPosition(75);
+                    robot.lift.setPower(0.2);
                     pivotState = Constants.PivotState.pickup;
                     robot.rightPivot.setPosition(Constants.PIVOT_PICKUP);
                     robot.leftPivot.setPosition(Constants.PIVOT_PICKUP);
@@ -622,7 +621,7 @@ public class Methods {
                 }
             }
 
-            if (pivotState == Constants.PivotState.deposit && robot.lift.getCurrentPosition() < MIN_LIFT_CLICKS + 200) {
+            if (pivotState == Constants.PivotState.deposit && robot.lift.getCurrentPosition() < MIN_LIFT_CLICKS) {
                 pivotState = Constants.PivotState.stow;
                 robot.rightPivot.setPosition(Constants.PIVOT_STOW);
                 robot.leftPivot.setPosition(Constants.PIVOT_STOW);
@@ -716,9 +715,9 @@ public class Methods {
             telemetry.addData("Bottom Left Encoder Position", robot.lb.getCurrentPosition());
             telemetry.addData("Bottom Right Encoder Position", robot.rb.getCurrentPosition());
 
-            telemetry.addData("Outtake Motor Position", robot.lift.getCurrentPosition());
+            telemetry.addData("Lift Motor Position", robot.lift.getCurrentPosition());
             telemetry.addData("Plane Servo Position", robot.plane.getPosition());
-//            telemetry.addData("Left Claw Servo Position", robot.lcButton.getPosition());
+//            telemetry.addData("Left Claw Servo Poition", robot.lcButton.getPosition());s
 //            telemetry.addData("Left Claw Servo State", lcState);
 
             telemetry.addData("Right Claw Servo Position", robot.rc.getPosition());
@@ -726,6 +725,9 @@ public class Methods {
 
 //            telemetry.addData("Claw Rot Servo State", pivotState);
 
+            telemetry.addData("Right Claw Servo State", rcState);
+            telemetry.addData("Left Claw Servo State", lcState);
+            telemetry.addData("Pivot Servo State", pivotState);
 
             telemetry.addData("Top Left Velocity", robot.lf.getVelocity());
             telemetry.addData("Top Left Acceleration", robot.lf.getVelocity() / runtime.seconds()); //only works if holding down max power at the beginning of the opmode.

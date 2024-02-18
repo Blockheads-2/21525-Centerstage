@@ -71,8 +71,8 @@ public class Constants {
         }
     }
 
-    public static final int MAX_LIFT_CLICKS = 2300;
-    public static final int MIN_LIFT_CLICKS = 100;
+    public static final int MAX_LIFT_CLICKS = 3335;
+    public static final int MIN_LIFT_CLICKS = 75;
     public static final int LOW_LIFT = 100;
     public static final int MID_LIFT = 1100;
     public static final int HIGH_LIFT = 2250;

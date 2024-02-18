@@ -105,6 +105,7 @@ public class HardwareDrive {
         rc = hwMap.get(Servo.class, "right_claw");
         leftPivot = hwMap.get(Servo.class, "left_pivot");
         rightPivot = hwMap.get(Servo.class, "right_pivot");
+        lift = hwMap.get(DcMotorEx.class, "outtake");
         imu = hwMap.get(IMU.class, "imu");
 
         lf_motor = new Motor(ahwMap, "left_front", Constants.CPR, Constants.RPM); //playing around with ftclib
@@ -124,7 +125,7 @@ public class HardwareDrive {
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
         rc.setDirection(Servo.Direction.REVERSE);
-        rightPivot.setDirection(Servo.Direction.REVERSE);
+        leftPivot.setDirection(Servo.Direction.REVERSE);
 
         lc.setPosition(0);
         rc.setPosition(0);
