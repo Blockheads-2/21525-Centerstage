@@ -124,8 +124,14 @@ public class HardwareDrive {
         rf.setDirection(DcMotorSimple.Direction.FORWARD);
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
         rc.setDirection(Servo.Direction.REVERSE);
+        rightPivot.setDirection(Servo.Direction.REVERSE);
 
-        plane.setPosition(Constants.HOLD_PLANE);
+        lc.setPosition(0);
+        rc.setPosition(0);
+        leftPivot.setPosition(0);
+        rightPivot.setPosition(0);
+        plane.setPosition(0);
+//        plane.setPosition(Constants.HOLD_PLANE);
 //        lc.setPosition(Constants.LEFT_CLAW_HOLD);
 //        rc.setPosition(Constants.RIGHT_CLAW_HOLD);
 //        pivot.setPosition(Constants.CLAW_ROT_UP);
