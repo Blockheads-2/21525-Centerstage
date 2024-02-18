@@ -393,6 +393,7 @@ public class Methods {
         Button rcButton = new Button();
         Button pivotButton = new Button();
         Button planeButton = new Button();
+        Button pickupButton = new Button();
 
         public void initRobot() {
             robot.init(hardwareMap);
@@ -563,10 +564,47 @@ public class Methods {
             }
 
             if (pivotButton.is(Button.State.TAP)) {
-                if (pivotState == Constants.PivotState.stow && robot.lift.getCurrentPosition() > MIN_LIFT_CLICKS) {
+                if (pivotState == Constants.PivotState.stow && robot.lift.getCurrentPosition() > MIN_LIFT_CLICKS + 200) {
                     pivotState = Constants.PivotState.deposit;
                     robot.rightPivot.setPosition(Constants.PIVOT_DEPOSIT);
+                    robot.leftPivot.setPosition(Constants.PIVOT_DEPOSIT);
                 }
+                if (pivotState == Constants.PivotState.deposit && robot.lift.getCurrentPosition() > MIN_LIFT_CLICKS) {
+                    pivotState = Constants.PivotState.stow;
+                    robot.rightPivot.setPosition(Constants.PIVOT_STOW);
+                    robot.leftPivot.setPosition(Constants.PIVOT_STOW);
+                }
+                if (pivotState == Constants.PivotState.pickup && robot.lift.getCurrentPosition() > MIN_LIFT_CLICKS + 200) {
+                    pivotState = Constants.PivotState.deposit;
+                    robot.rightPivot.setPosition(Constants.PIVOT_DEPOSIT);
+                    robot.leftPivot.setPosition(Constants.PIVOT_DEPOSIT);
+                }
+                if (pivotState == Constants.PivotState.pickup && robot.lift.getCurrentPosition() < MIN_LIFT_CLICKS + 200) {
+                    pivotState = Constants.PivotState.stow;
+                    robot.rightPivot.setPosition(Constants.PIVOT_STOW);
+                    robot.leftPivot.setPosition(Constants.PIVOT_STOW);
+                }
+            }
+
+            if (pickupButton.is(Button.State.TAP)) {
+                if (pivotState == Constants.PivotState.deposit) {
+                    // insert lift movement logic here
+                    // if the pickup button is toggled then you MUST make the lift go down to the MIN_LIFT_CLICKS position
+                    pivotState = Constants.PivotState.pickup;
+                    robot.rightPivot.setPosition(Constants.PIVOT_PICKUP);
+                    robot.leftPivot.setPosition(Constants.PIVOT_PICKUP);
+                }
+                if (pivotState == Constants.PivotState.stow) {
+                    pivotState = Constants.PivotState.pickup;
+                    robot.rightPivot.setPosition(Constants.PIVOT_PICKUP);
+                    robot.leftPivot.setPosition(Constants.PIVOT_PICKUP);
+                }
+            }
+
+            if (pivotState == Constants.PivotState.deposit && robot.lift.getCurrentPosition() < MIN_LIFT_CLICKS + 200) {
+                pivotState = Constants.PivotState.stow;
+                robot.rightPivot.setPosition(Constants.PIVOT_STOW);
+                robot.leftPivot.setPosition(Constants.PIVOT_STOW);
             }
 
             if (lcState == Constants.lcState.release) robot.lc.setPosition(Constants.LC_RELEASE);
@@ -574,6 +612,23 @@ public class Methods {
 
             if (rcState == Constants.rcState.release) robot.rc.setPosition(Constants.RC_RELEASE);
             if (rcState == Constants.rcState.hold) robot.rc.setPosition(Constants.RC_HOLD);
+
+            if (pivotState == Constants.PivotState.deposit) {
+                robot.rightPivot.setPosition(Constants.PIVOT_DEPOSIT);
+                robot.leftPivot.setPosition(Constants.PIVOT_DEPOSIT);
+            }
+
+            if (pivotState == Constants.PivotState.stow) {
+                robot.rightPivot.setPosition(Constants.PIVOT_STOW);
+                robot.leftPivot.setPosition(Constants.PIVOT_STOW);
+            }
+
+            if (pivotState == Constants.PivotState.pickup) {
+                // IMPORTANT: see line 591 or so
+                // TLDR; implement lift logic here too!!
+                robot.rightPivot.setPosition(Constants.PIVOT_PICKUP);
+                robot.leftPivot.setPosition(Constants.PIVOT_PICKUP);
+            }
         }
 
         private void setManualExposure(int exposureMS, int gain) throws InterruptedException {
@@ -648,7 +703,6 @@ public class Methods {
             telemetry.addData("Right Claw Servo Position", robot.rc.getPosition());
 //            telemetry.addData("Right Claw Servo State", rcState);
 
-            telemetry.addData("Claw Rot Servo Position", robot.pivot.getPosition());
 //            telemetry.addData("Claw Rot Servo State", pivotState);
 
 
@@ -687,6 +741,7 @@ public class Methods {
         public void UpdateButton() {
             lcButton.update(gamepad2.left_bumper);
             rcButton.update(gamepad2.right_bumper);
+            pickupButton.update(gamepad2.a);
             pivotButton.update(gamepad2.b);
             planeButton.update(gamepad2.y);
         }
