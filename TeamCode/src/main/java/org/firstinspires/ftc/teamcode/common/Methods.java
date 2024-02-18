@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.common;
 
+import static org.firstinspires.ftc.teamcode.common.Constants.MAX_LIFT_CLICKS;
 import static org.firstinspires.ftc.teamcode.common.Constants.MIN_LIFT_CLICKS;
 import static java.lang.Thread.sleep;
 
@@ -403,6 +404,8 @@ public class Methods {
 
             robot.imu.resetYaw();
 
+            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
             telemetry.addData("Say", "Hello Driver");
             runtime.reset();
 
@@ -543,6 +546,24 @@ public class Methods {
 
 
         public void robotBasePixelLoop() {
+
+            //            int clickTarget = robot.outtake.getCurrentPosition();
+            int clickTarget = Range.clip(robot.lift.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_LIFT_CLICKS, MAX_LIFT_CLICKS);
+
+//            if (gamepad1.dpad_down){
+//                clickTarget = Range.clip(robot.outtake.getCurrentPosition() - 300, MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+//            } else if (gamepad1.dpad_up){
+//                clickTarget = Range.clip(robot.outtake.getCurrentPosition() + 300, MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+//            }
+
+//            int clickTarget = Range.clip(robot.outtake.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_OUTTAKE_CLICKS, MAX_OUTTAKE_CLICKS);
+//            if (bottomOuttake.is(Button.State.HELD)) clickTarget = LOW_OUTTAKE;
+//            else if (midOuttake.is(Button.State.HELD)) clickTarget = MID_OUTTAKE;
+//            else if (highOuttake.is(Button.State.HELD)) clickTarget = HIGH_OUTTAKE;
+
+            robot.lift.setTargetPosition(clickTarget);
+            robot.lift.setPower(0.8);
+
             if (lcButton.is(Button.State.TAP)) {
                 if (lcState == Constants.lcState.release) {
                     lcState = Constants.lcState.hold;
@@ -744,6 +765,16 @@ public class Methods {
             pickupButton.update(gamepad2.a);
             pivotButton.update(gamepad2.b);
             planeButton.update(gamepad2.y);
+        }
+        public void PlayerOne(){
+            robotBaseDriveLoop(driveTrainSpeed());
+//            robotBaseDriveLoopAndCameraHone(driveTrainSpeed());
+            robotBaseMicroAdjustLoop(driveTrainSpeed());
+        }
+
+        public void PlayerTwo(){
+            robotBasePixelLoop();
+            planeLaunch();
         }
     }
 }
