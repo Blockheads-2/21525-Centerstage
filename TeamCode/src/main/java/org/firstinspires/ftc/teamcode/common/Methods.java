@@ -386,9 +386,9 @@ public class Methods {
         protected FtcDashboard dashboard;
         protected TelemetryPacket packet;
 
-        Constants.LiftState liftState = Constants.LiftState.STOW;
-        Constants.lcState lcState = Constants.lcState.release;
-        Constants.rcState rcState = Constants.rcState.release;
+        Constants.LiftState liftState = Constants.LiftState.MANUAL;
+        Constants.lcState lcState = Constants.lcState.hold;
+        Constants.rcState rcState = Constants.rcState.hold;
         Constants.PivotState pivotState = Constants.PivotState.stow;
 
         /* GAMEPAD2 BUTTONS */
@@ -406,8 +406,6 @@ public class Methods {
             runtime.reset();
 
             robot.imu.resetYaw();
-
-            robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
             telemetry.addData("Say", "Hello Driver");
             runtime.reset();
@@ -582,16 +580,16 @@ public class Methods {
             else robot.rc.setPosition(Constants.RC_HOLD);
 
                 //PIVOT
-            if (pivotState == Constants.PivotState.deposit) {
-                robot.rightPivot.setPosition(Constants.PIVOT_DEPOSIT);
-                robot.leftPivot.setPosition(Constants.PIVOT_DEPOSIT);
-            } else if (pivotState == Constants.PivotState.stow) {
-                robot.rightPivot.setPosition(Constants.PIVOT_STOW);
-                robot.leftPivot.setPosition(Constants.PIVOT_STOW);
-            } else if (pivotState == Constants.PivotState.pickup) {
-                robot.rightPivot.setPosition(Constants.PIVOT_PICKUP);
-                robot.leftPivot.setPosition(Constants.PIVOT_PICKUP);
-            }
+//            if (pivotState == Constants.PivotState.deposit) {
+//                robot.rightPivot.setPosition(Constants.PIVOT_DEPOSIT);
+//                robot.leftPivot.setPosition(Constants.PIVOT_DEPOSIT);
+//            } else if (pivotState == Constants.PivotState.stow) {
+//                robot.rightPivot.setPosition(Constants.PIVOT_STOW);
+//                robot.leftPivot.setPosition(Constants.PIVOT_STOW);
+//            } else if (pivotState == Constants.PivotState.pickup) {
+//                robot.rightPivot.setPosition(Constants.PIVOT_PICKUP);
+//                robot.leftPivot.setPosition(Constants.PIVOT_PICKUP);
+//            }
 
             //LIFT
             int clickTarget = Range.clip(robot.lift.getCurrentPosition() - (int)(gamepad2.left_stick_y * 300), MIN_LIFT_CLICKS, MAX_LIFT_CLICKS);
@@ -601,7 +599,7 @@ public class Methods {
             else if (liftState == Constants.LiftState.STOW) clickTarget = Constants.STOW_LIFT_CLICKS;
 
             robot.lift.setTargetPosition(Range.clip(clickTarget, Constants.MIN_LIFT_CLICKS, Constants.MAX_LIFT_CLICKS));
-            robot.lift.setPower(0.7);
+            robot.lift.setPower(0.1);
         }
 
         private void setManualExposure(int exposureMS, int gain) throws InterruptedException {
@@ -732,7 +730,7 @@ public class Methods {
         }
 
         public void PlayerTwo(){
-            robotBasePixelLoop();
+//            robotBasePixelLoop();
             planeLaunch();
         }
     }

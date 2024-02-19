@@ -41,28 +41,28 @@ public class F2Auto extends Methods.auto{
             case LEFT:
                 //Place
 //<<<<<<< Updated upstream
-                constantHeading(0.2, 19, -34, 0, 0, 0);
+                constantHeading(0.2, 19, -33, 0, 0, 0);
 
                 //Move Out of the way
                 constantHeading(0.2, -21, 9, 0, 0, 0);
 
-                //Move to middle
-                constantHeading(0.2, 0, -41, 0, 0, 0);
-
-                //turn
-                turnAbsPID(-90);
-
-                //Move to park
-                constantHeading(0.3, 0, -80, 0, 0, 0);
-
-                //turnAbsPID(90);
-
-//                Move out of the way
-                //Move right of the board
-                constantHeading(0.3, 34, 0, 0, 0, 0);
-
-                //Move forward & park
-                constantHeading(0.3, 0, 27, 0, 0, 0);
+//                //Move to middle
+//                constantHeading(0.2, 0, -41, 0, 0, 0);
+//
+//                //turn
+//                turnAbsPID(-90);
+//
+//                //Move to park
+//                constantHeading(0.3, 0, -80, 0, 0, 0);
+//
+//                //turnAbsPID(90);
+//
+////                Move out of the way
+//                //Move right of the board
+//                constantHeading(0.3, 34, 0, 0, 0, 0);
+//
+//                //Move forward & park
+//                constantHeading(0.3, 0, 27, 0, 0, 0);
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -73,29 +73,29 @@ public class F2Auto extends Methods.auto{
 
             case RIGHT:
                 //Place
-                constantHeading(0.2, 0, -27, 0, 0, 0);
+                constantHeading(0.2, 0, -26, 0, 0, 0);
 
                 constantHeading(0.2, -17, 0, 0, 0, 0);
 
                 //Move Out of the way
                 constantHeading(0.2, 24, 6, 0, 0, 0);
 
-                //Move to middle
-                constantHeading(0.2, 0, -34, 0, 0, 0);
-
-                //turn
-                turnAbsPID(-90);
-
-                //Move to park
-                constantHeading(0.3, 0, 87, 0, 0, 0);
-
-                turnAbsPID(90);
-
-                //Move right of the board
-                constantHeading(0.3, 34, 0, 0, 0, 0);
-
-                //Move forward & park
-                constantHeading(0.3, 0, 27, 0, 0, 0);
+//                //Move to middle
+//                constantHeading(0.2, 0, -34, 0, 0, 0);
+//
+//                //turn
+//                turnAbsPID(-90);
+//
+//                //Move to park
+//                constantHeading(0.3, 0, 87, 0, 0, 0);
+//
+//                turnAbsPID(90);
+//
+//                //Move right of the board
+//                constantHeading(0.3, 34, 0, 0, 0, 0);
+//
+//                //Move forward & park
+//                constantHeading(0.3, 0, 27, 0, 0, 0);
 //
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -107,25 +107,25 @@ public class F2Auto extends Methods.auto{
 
             case MID:
                 //Place
-                constantHeading(0.2, 0, -31, 0, 0, 0);
+                constantHeading(0.2, 0, -30, 0, 0, 0);
 
                 //Move Out of the way
                 constantHeading(0.2, 20, 7, 0, 0, 0);
 
-                //Move to middle
-                constantHeading(0.2, 0, -33, 0, 0, 0);
-
-                //turn
-                turnAbsPID(-90);
-
-                //Move to park
-                constantHeading(0.3, 0, 98, 0, 0, 0);
-
-                //Move right of the board
-                constantHeading(0.3, 34, 0, 0, 0, 0);
-
-                //Move forward & park
-                constantHeading(0.3, 0, 27, 0, 0, 0);
+//                //Move to middle
+//                constantHeading(0.2, 0, -33, 0, 0, 0);
+//
+//                //turn
+//                turnAbsPID(-90);
+//
+//                //Move to park
+//                constantHeading(0.3, 0, 98, 0, 0, 0);
+//
+//                //Move right of the board
+//                constantHeading(0.3, 34, 0, 0, 0, 0);
+//
+//                //Move forward & park
+//                constantHeading(0.3, 0, 27, 0, 0, 0);
 
 //                runOuttake(Constants.MID_OUTTAKE, 0.6);
 //
@@ -134,19 +134,19 @@ public class F2Auto extends Methods.auto{
 //                runOuttake(0, 0.5);
 
 //=======
-                constantHeading(0.3, 7, -25, 0, 0, 0);
-                //Move out
-                constantHeading(0.2, 0, 5, 0, 0, 0);
-                //Go forward
-                constantHeading(0.2, -5, -7, 0, 0, 0);
-                //Turn
-                turnAbsPID(90);
-                //Go to the board
-                constantHeading(0.3, 0, -100, 0, 0, 0);
-                //Move to the left
-                constantHeading(0.3, 5, 0, 0, 0, 0);
-                //Move forward and park
-                constantHeading(0.3, 0, -7, 0, 0, 0);
+//                constantHeading(0.3, 7, -25, 0, 0, 0);
+//                //Move out
+//                constantHeading(0.2, 0, 5, 0, 0, 0);
+//                //Go forward
+//                constantHeading(0.2, -5, -7, 0, 0, 0);
+//                //Turn
+//                turnAbsPID(90);
+//                //Go to the board
+//                constantHeading(0.3, 0, -100, 0, 0, 0);
+//                //Move to the left
+//                constantHeading(0.3, 5, 0, 0, 0, 0);
+//                //Move forward and park
+//                constantHeading(0.3, 0, -7, 0, 0, 0);
                 break;
 
         }

@@ -114,7 +114,7 @@ public class Constants {
     }
 
     public static final double PIVOT_PICKUP = 0;
-    public static final double PIVOT_STOW = 0;
+    public static final double PIVOT_STOW = 0; //same as PIVOT_DEPOSIT.
     public static final double PIVOT_DEPOSIT = 0;
 
 }

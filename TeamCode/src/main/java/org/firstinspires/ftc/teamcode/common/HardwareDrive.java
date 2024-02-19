@@ -126,20 +126,22 @@ public class HardwareDrive {
         rb.setDirection(DcMotorSimple.Direction.FORWARD);
         rc.setDirection(Servo.Direction.REVERSE);
         leftPivot.setDirection(Servo.Direction.REVERSE);
+        lift.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        lc.setPosition(0.45);
-        rc.setPosition(0.45);
-        leftPivot.setPosition(0);
-        rightPivot.setPosition(0);
+        lc.setPosition(0.2);
+        rc.setPosition(0.2);
+        leftPivot.setPosition(0.05);
+        rightPivot.setPosition(0.05);
 //        plane.setPosition(0.35);
         plane.setPosition(Constants.HOLD_PLANE);
-//        lc.setPosition(Constants.LEFT_CLAW_HOLD);
-//        rc.setPosition(Constants.RIGHT_CLAW_HOLD);
+//        lc.setPosition(Constants.LC_HOLD);
+//        rc.setPosition(Constants.RC_HOLD);
 //        pivot.setPosition(Constants.CLAW_ROT_UP);
 
         lift.setMode(DcMotorEx.RunMode.STOP_AND_RESET_ENCODER);
-        lift.setTargetPosition(lift.getCurrentPosition());
+        lift.setTargetPosition(lift.getCurrentPosition() + 80);
         lift.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
+        lift.setPower(0.4);
 
         resetEncoderPos();
         runWithoutEncoder();

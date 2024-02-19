@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -29,7 +30,8 @@ public class TestMotors extends OpMode {
     @Override
     public void init() {
         robot.init(hardwareMap);
-        robot.plane.setPosition(0);
+//        robot.plane.setPosition(0);
+//        robot.lift.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     @Override
@@ -39,11 +41,15 @@ public class TestMotors extends OpMode {
 
     @Override
     public void start() {
-        robot.plane.setPosition(0.3);
+//        robot.plane.setPosition(0.3);
     }
 
     @Override
     public void loop() {
+        robot.lift.setTargetPosition(100);
+        robot.lift.setPower(0.1);
+        telemetry.addData("CLICKS:", robot.lift.getCurrentPosition());
+        telemetry.addData("TARGET", robot.lift.getTargetPosition());
 //        robot.lf.setPower(-gamepad1.left_stick_y);
 //        robot.rf.setPower(-gamepad1.left_stick_y);
 //        robot.lb.setPower(-gamepad1.left_stick_y);
